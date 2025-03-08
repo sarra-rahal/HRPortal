@@ -1,0 +1,42 @@
+
+<div class="auth-container">
+  <h2>Sign In</h2>
+  <form (ngSubmit)="onSubmit()" #signInForm="ngForm">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        ngModel
+        required
+        email
+        #email="ngModel"
+        [class.invalid]="email.invalid && email.touched"
+      >
+      <div class="error" *ngIf="email.invalid && email.touched">
+        Please enter a valid email
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        ngModel
+        required
+        minlength="6"
+        #password="ngModel"
+        [class.invalid]="password.invalid && password.touched"
+      >
+      <div class="error" *ngIf="password.invalid && password.touched">
+        Password must be at least 6 characters
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="signInForm.invalid">Sign In</button>
+    <a routerLink="/forgot-password">Forgot Password?</a>
+  </form>
+</div>
