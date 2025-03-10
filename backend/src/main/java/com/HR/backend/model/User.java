@@ -3,7 +3,7 @@ package com.HR.backend.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -23,8 +23,17 @@ public class User {
     private Boolean isActive = true;
 
     @Column(name = "created")
-    private LocalTime createD = LocalTime.now();
+    private LocalDateTime created = LocalDateTime.now();
 
     @Column(name = "updated")
-    private LocalTime updateD = LocalTime.now();
+    private LocalDateTime updated = LocalDateTime.now();
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private UserRole role;
+
+    public enum UserRole {
+        HR_MANAGER,
+        EMPLOYEE
+    }
 }

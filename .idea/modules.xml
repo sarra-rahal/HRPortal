@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/HRportal.iml" filepath="$PROJECT_DIR$/.idea/HRportal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/HRPortal.iml" filepath="$PROJECT_DIR$/.idea/HRPortal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/frontend/frontend.iml" filepath="$PROJECT_DIR$/frontend/frontend.iml" />
     </modules>
   </component>
 </project>

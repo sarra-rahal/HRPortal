@@ -3,21 +3,29 @@
   margin: 50px auto;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
   h2 {
     text-align: center;
     margin-bottom: 20px;
   }
 
-  button {
-    position: relative;
+  .notification {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    text-align: center;
 
-    .spinner-border {
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
+    &.success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    &.error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
     }
   }
 
@@ -32,18 +40,17 @@
     input {
       width: 100%;
       padding: 8px;
-      border: 1px solid #ddd;
+      border: 1px solid #ccc;
       border-radius: 4px;
 
       &.invalid {
-        border-color: #ff0000;
+        border-color: red;
       }
     }
 
     .error {
-      color: #ff0000;
+      color: red;
       font-size: 12px;
-      margin-top: 5px;
     }
   }
 
@@ -68,10 +75,9 @@
     margin-top: 10px;
     color: #007bff;
     text-decoration: none;
-  }
-}
-.modal-body {
-  button {
-    margin-right: 10px; // Consistent spacing
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }

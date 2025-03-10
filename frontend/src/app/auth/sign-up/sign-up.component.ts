@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 
 interface SignUpResponse {
   success: boolean;
@@ -20,8 +20,9 @@ interface SignUpResponse {
 export class SignUpComponent implements OnInit {
   signUpForm!: FormGroup;
   loading = false;
-  message: string | null = null;
   isSuccess: boolean = false;
+  successMessage: string | null = null;
+  errorMessage: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -47,21 +48,29 @@ export class SignUpComponent implements OnInit {
     if (this.signUpForm.invalid) return;
 
     this.loading = true;
-    this.http.post<SignUpResponse>('http://localhost:8080/api/auth/signup', this.signUpForm.value).subscribe({
+    this.successMessage = null;
+    this.errorMessage = null;
+
+    const signUpData = this.signUpForm.value;
+    this.http.post<SignUpResponse>('http://localhost:8080/api/auth/signup', signUpData).subscribe({
       next: (response) => {
         this.loading = false;
-        this.isSuccess = response.success;
-        this.message = response.message;
         if (response.success) {
-          setTimeout(() => this.router.navigate(['/sign-in']), 3000);
+          this.successMessage = response.message;
+          setTimeout(() => this.router.navigate(['/sign-in']), 2000); // Redirect after 2s
         }
       },
-      error: (error) => {
+      error: (error: HttpErrorResponse) => {
         this.loading = false;
-        this.isSuccess = false;
-        this.message = error.error?.message || 'An error occurred. Please try again.';
+        this.errorMessage = error.error?.message || 'An error occurred. Please try again.';
         console.error('Signup error:', error); // Debug log
       }
     });
+  }
+  ggoToSignIn() {
+    const backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) backdrop.remove();
+    document.body.classList.remove('modal-open');
+    this.router.navigate(['/sign-in']);
   }
 }
