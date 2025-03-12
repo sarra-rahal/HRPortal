@@ -1,1 +1,7 @@
-<p>hr-dashboard works!</p>
+<div class="dashboard-container">
+  <h1>HR Manager Dashboard</h1>
+  <div class="error" *ngIf="error">{{ error }}</div>
+  <ul>
+    <li *ngFor="let employee of employees">{{ employee.cin }} - {{ employee.jobtitle }}</li>
+  </ul>
+</div>

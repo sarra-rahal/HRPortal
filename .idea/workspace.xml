@@ -5,49 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="84417b3a-da8d-4c40-ad47-5e2ea64ae2cf" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/049a1ea6-4256-4b8b-8847-57a63a239c61.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/049a1ea6-4256-4b8b-8847-57a63a239c61/storage_v2/_src_/database/hrportal.9iVxhw.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/049a1ea6-4256-4b8b-8847-57a63a239c61/storage_v2/_src_/database/hrportal.9iVxhw/schema/information_schema.FNRwLQ.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/049a1ea6-4256-4b8b-8847-57a63a239c61/storage_v2/_src_/database/hrportal.9iVxhw/schema/pg_catalog.0S1ZNQ.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/049a1ea6-4256-4b8b-8847-57a63a239c61/storage_v2/_src_/database/hrportal.9iVxhw/schema/public.abK9xQ.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/config/JwtRequestFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/config/JwtUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/dto/SignInRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/dto/SignInResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/auth.guard.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/dashboard/e-dashboard/e-dashboard.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/dashboard/e-dashboard/e-dashboard.component.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/dashboard/e-dashboard/e-dashboard.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/dashboard/hr-dashboard/hr-dashboard.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/dashboard/hr-dashboard/hr-dashboard.component.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/dashboard/hr-dashboard/hr-dashboard.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/HRportal.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/HRportal.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repository/EmployeeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repository/EmployeeRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repository/UserRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controller/EmployeeController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controller/HrController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/model/LeaveRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repository/LeaveRequestRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/service/EmployeeService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/service/LeaveRequestService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/app/services/api.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/assets/profile-placeholder.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/dto/SignInResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/dto/SignInResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/service/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/angular.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.config.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.routes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/auth/sign-in/sign-in.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/auth/sign-in/sign-in.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/auth/sign-in/sign-in.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/auth/sign-in/sign-in.component.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/auth/sign-in/sign-in.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/auth/sign-in/sign-in.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/auth/sign-up/sign-up.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/auth/sign-up/sign-up.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/auth/sign-up/sign-up.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/auth/sign-up/sign-up.component.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/auth/sign-up/sign-up.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/auth/sign-up/sign-up.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/dashboard/e-dashboard/e-dashboard.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/dashboard/e-dashboard/e-dashboard.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/dashboard/e-dashboard/e-dashboard.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/dashboard/e-dashboard/e-dashboard.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/dashboard/hr-dashboard/hr-dashboard.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/dashboard/hr-dashboard/hr-dashboard.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/dashboard/hr-dashboard/hr-dashboard.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/dashboard/hr-dashboard/hr-dashboard.component.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,6 +36,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -87,6 +66,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
@@ -107,6 +87,8 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\hp\APP\HRPortal\frontend\src\assets" />
+      <recent name="C:\Users\hp\APP\HRPortal\frontend\public" />
       <recent name="C:\Users\hp\APP\HRPortal\frontend\src\app\dashboard" />
     </key>
   </component>
@@ -136,7 +118,8 @@
       <option name="presentableId" value="Default" />
       <updated>1741497420835</updated>
       <workItem from="1741497423123" duration="908000" />
-      <workItem from="1741535628129" duration="26563000" />
+      <workItem from="1741535628129" duration="28187000" />
+      <workItem from="1741604743780" duration="42593000" />
     </task>
     <servers />
   </component>

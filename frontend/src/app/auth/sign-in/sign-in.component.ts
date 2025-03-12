@@ -9,6 +9,8 @@ interface SignInResponse {
   message: string;
   token?: string;
   role?: string;
+  firstname?: string;
+  lastname?: string;
   errorCode?: string;
 }
 
@@ -50,6 +52,8 @@ export class SignInComponent implements OnInit {
         if (response.success && response.token) {
           localStorage.setItem('token', response.token);
           localStorage.setItem('role', response.role || '');
+          localStorage.setItem('firstname', response.firstname || '');
+          localStorage.setItem('lastname', response.lastname || '');
           this.redirectToDashboard(response.role);
         }
       },
@@ -62,9 +66,9 @@ export class SignInComponent implements OnInit {
 
   private redirectToDashboard(role: string | undefined): void {
     if (role === 'HR_MANAGER') {
-      this.router.navigate(['/hr-dashboard']);
+      this.router.navigate(['/welcome']);
     } else if (role === 'EMPLOYEE') {
-      this.router.navigate(['/employee-profile']);
+      this.router.navigate(['/welcome']);
     } else {
       this.router.navigate(['/sign-in']);
     }

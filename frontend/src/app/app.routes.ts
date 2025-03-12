@@ -1,17 +1,27 @@
 import { Routes } from '@angular/router';
-import {SignUpComponent} from './auth/sign-up/sign-up.component';
-import {SignInComponent} from './auth/sign-in/sign-in.component';
-import {ForgotPasswordComponent} from './auth/forgot-password/forgot-password.component';
-import {HrDashboardComponent} from './dashboard/hr-dashboard/hr-dashboard.component';
-import {EDashboardComponent} from './dashboard/e-dashboard/e-dashboard.component';
-import {authGuard} from './auth.guard';
+import { SignUpComponent } from './auth/sign-up/sign-up.component';
+import { SignInComponent } from './auth/sign-in/sign-in.component';
+import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
+import { WelcomeComponent } from './welcome/welcome.component';
+import { ProfileComponent } from './profile/profile.component';
+import { authGuard } from './auth.guard';
 
 export const routes: Routes = [
-  { path: 'sign-in', component: SignInComponent },
   { path: 'sign-up', component: SignUpComponent },
+  { path: 'sign-in', component: SignInComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
-  { path: 'hr-dashboard', component: HrDashboardComponent, canActivate: [authGuard]},
-  { path: 'e-dashboard', component: EDashboardComponent, canActivate: [authGuard] },
+  { path: 'welcome', component: WelcomeComponent, canActivate: [authGuard] },
+  { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
+  // Placeholder routes for services
+  { path: 'leave', component: WelcomeComponent, canActivate: [authGuard] },
+  { path: 'training', component: WelcomeComponent, canActivate: [authGuard] },
+  { path: 'advance', component: WelcomeComponent, canActivate: [authGuard] },
+  { path: 'documents', component: WelcomeComponent, canActivate: [authGuard] },
+  { path: 'manage-leaves', component: WelcomeComponent, canActivate: [authGuard] },
+  { path: 'manage-training', component: WelcomeComponent, canActivate: [authGuard] },
+  { path: 'manage-advance', component: WelcomeComponent, canActivate: [authGuard] },
+  { path: 'manage-documents', component: WelcomeComponent, canActivate: [authGuard] },
+  { path: 'manage-employees', component: WelcomeComponent, canActivate: [authGuard] },
   { path: '', redirectTo: '/sign-in', pathMatch: 'full' },
   { path: '**', redirectTo: '/sign-in' }
 ];

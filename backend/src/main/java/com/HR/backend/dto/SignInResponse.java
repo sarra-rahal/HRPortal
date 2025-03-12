@@ -8,14 +8,18 @@ public class SignInResponse {
     private String message;
     private String token;
     private String role;
+    private String firstname;
+    private String lastname;
     private String errorCode;
 
-    public static SignInResponse success(String message, String token, String role) {
+    public static SignInResponse success(String message, String token, String role, String firstname, String lastname) {
         SignInResponse response = new SignInResponse();
         response.success = true;
         response.message = message;
         response.token = token;
         response.role = role;
+        response.firstname = firstname;
+        response.lastname = lastname;
         return response;
     }
 

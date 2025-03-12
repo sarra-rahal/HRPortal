@@ -67,8 +67,17 @@ public class AuthService {
             return SignInResponse.error("Invalid email or password", "INVALID_CREDENTIALS");
         }
 
+        Employee employee = employeeRepository.findByCin(user.getCin())
+                .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
+
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
         logger.info("Sign-in successful for email: {}", request.getEmail());
-        return SignInResponse.success("Sign-in successful", token, user.getRole().name());
+        return SignInResponse.success(
+                "Sign-in successful",
+                token,
+                user.getRole().name(),
+                employee.getFirstname(),
+                employee.getLastname()
+        );
     }
 }

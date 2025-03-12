@@ -1,0 +1,172 @@
+.navbar {
+  background-color: #007bff;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 10px 15px;
+}
+
+.profile-section {
+  display: flex;
+  align-items: center;
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+
+    .profile-photo {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      margin-right: 10px;
+      object-fit: cover;
+    }
+
+    &:hover {
+      color: #cce5ff !important;
+    }
+  }
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-right: 50px;
+
+  .home-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+
+    &:hover {
+      color: #cce5ff;
+    }
+  }
+
+  .nav-link {
+    color: white !important;
+    font-size: 1.5rem;
+
+    &:hover {
+      color: #cce5ff !important;
+    }
+  }
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -220px; /* Adjusted to account for button width */
+  width: 250px;
+  height: 100%;
+  background-color: rgba(52, 58, 64, 0.9);
+  color: white;
+  transition: right 0.3s ease;
+  z-index: 1000;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+
+  &.open {
+    right: 0;
+  }
+
+  .sidebar-btn {
+    position: absolute;
+    left: -40px;
+    top: 20px;
+    width: 40px;
+    height: 40px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 50% 0 0 50%;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+
+    &:hover {
+      background-color: #0056b3;
+    }
+  }
+
+  .sidebar-menu {
+    list-style: none;
+    padding: 20px 20px 20px 40px; /* Extra padding-left to avoid overlap with button */
+    margin: 0;
+
+    li {
+      margin: 10px 0;
+
+      a {
+        display: block;
+        padding: 10px 15px;
+        color: white;
+        text-decoration: none;
+        font-size: 1rem;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: rgba(73, 80, 87, 0.8);
+          color: #cce5ff;
+        }
+      }
+    }
+  }
+}
+
+.content {
+  margin-bottom: 100px;
+}
+
+.welcome-card {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-left: 5px solid #28a745;
+
+  h1 {
+    color: #343a40;
+    font-size: 2rem;
+  }
+
+  p {
+    color: #6c757d;
+    font-size: 1.2rem;
+  }
+}
+
+.footer {
+  background-color: #343a40;
+  color: white;
+  padding: 20px 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+
+  h5 {
+    color: #ffffff;
+    font-size: 1.1rem;
+  }
+
+  p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+  }
+
+  .text-danger {
+    color: #dc3545 !important;
+  }
+}

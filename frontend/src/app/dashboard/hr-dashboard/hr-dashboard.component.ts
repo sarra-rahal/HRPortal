@@ -1,11 +1,33 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {ApiService} from '../../services/api.service';
+
 
 @Component({
   selector: 'app-hr-dashboard',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './hr-dashboard.component.html',
-  styleUrl: './hr-dashboard.component.scss'
+  styleUrls: ['./hr-dashboard.component.scss']
 })
-export class HrDashboardComponent {
+export class HrDashboardComponent implements OnInit {
+  employees: any[] = [];
+  error: string | null = null;
 
+  constructor(private apiService: ApiService) {}
+
+  ngOnInit(): void {
+    this.loadEmployees();
+  }
+
+  loadEmployees(): void {
+    this.apiService.getEmployees().subscribe({
+      next: (data) => {
+        this.employees = data;
+      },
+      error: (err) => {
+        this.error = err.message;
+      }
+    });
+  }
 }

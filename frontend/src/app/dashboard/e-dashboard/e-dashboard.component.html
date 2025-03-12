@@ -1,1 +1,9 @@
-<p>e-dashboard works!</p>
+<div class="profile-container">
+  <h1>Employee Profile</h1>
+  <div class="error" *ngIf="error">{{ error }}</div>
+  <div *ngIf="profile">
+    <p>CIN: {{ profile.cin }}</p>
+    <p>Department: {{ profile.departement }}</p>
+    <p>Job Title: {{ profile.jobtitle }}</p>
+  </div>
+</div>
