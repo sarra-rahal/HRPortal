@@ -1,0 +1,21 @@
+<nav class="navbar navbar-dark bg-primary">
+  <div class="container-fluid">
+    <div class="navbar-brand profile-section">
+      <a class="nav-link text-white" routerLink="/profile">
+        <img src="/assets/profile-placeholder.png" alt="Profile Photo" class="profile-photo">
+        {{ firstname }} {{ lastname }}
+      </a>
+    </div>
+    <div class="navbar-actions">
+      <a class="nav-link" routerLink="/notifications">
+        <i class="bi bi-bell"></i>
+      </a>
+      <button class="home-btn" routerLink="/welcome">
+        <i class="bi bi-house-door"></i>
+      </button>
+      <button class="logout-btn" (click)="logout()">
+        <i class="bi bi-box-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</nav>

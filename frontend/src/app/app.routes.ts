@@ -2,9 +2,9 @@ import { Routes } from '@angular/router';
 import { SignUpComponent } from './auth/sign-up/sign-up.component';
 import { SignInComponent } from './auth/sign-in/sign-in.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
-import { WelcomeComponent } from './welcome/welcome.component';
-import { ProfileComponent } from './profile/profile.component';
-import { authGuard } from './auth.guard';
+import { WelcomeComponent } from './features/welcome/welcome.component';
+import { ProfileComponent } from './features/profile/profile.component';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   { path: 'sign-up', component: SignUpComponent },

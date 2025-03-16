@@ -1,0 +1,12 @@
+package com.HR.backend.repositories;
+
+import com.HR.backend.models.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User, String> {
+    boolean existsByCin(String cin);
+    boolean existsByEmail(String email);
+    Optional<User> findByEmail(String email);
+}

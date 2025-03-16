@@ -1,0 +1,33 @@
+.content {
+  margin-bottom: 100px;
+}
+
+.profile-card {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-left: 5px solid #ffc107;
+
+  h1 {
+    color: #343a40;
+    font-size: 2rem;
+  }
+
+  .profile-details {
+    p {
+      margin: 10px 0;
+      color: #6c757d;
+      font-size: 1.1rem;
+
+      strong {
+        color: #343a40;
+      }
+    }
+  }
+
+  .error {
+    color: red;
+    font-size: 1.1rem;
+  }
+}

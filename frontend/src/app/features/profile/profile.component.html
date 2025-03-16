@@ -1,0 +1,16 @@
+<app-navbar></app-navbar>
+<app-sidebar></app-sidebar>
+<div class="container mt-5 content">
+  <div class="profile-card">
+    <h1>Your Profile</h1>
+    <div class="error" *ngIf="error">{{ error }}</div>
+    <div *ngIf="profile" class="profile-details">
+      <p><strong>CIN:</strong> {{ profile.cin }}</p>
+      <p><strong>Name:</strong> {{ profile.firstname }} {{ profile.lastname }}</p>
+      <p><strong>Department:</strong> {{ profile.departement }}</p>
+      <p><strong>Job Title:</strong> {{ profile.jobtitle }}</p>
+      <p><strong>Role:</strong> {{ role === 'HR_MANAGER' ? 'HR Manager' : 'Employee' }}</p>
+    </div>
+  </div>
+</div>
+<app-footer></app-footer>

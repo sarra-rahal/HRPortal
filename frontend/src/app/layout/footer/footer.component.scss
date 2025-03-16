@@ -1,0 +1,25 @@
+.footer {
+  background-color: #343a40;
+  color: white;
+  padding: 20px 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+
+  h5 {
+    color: #ffffff;
+    font-size: 1.1rem;
+  }
+
+  p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+  }
+
+  .text-danger {
+    color: #dc3545 !important;
+  }
+}
