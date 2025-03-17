@@ -26,16 +26,19 @@ export class ApiService {
 
   // Employee endpoint: Fetch own profile
   getEmployeeProfile(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/employee/profile`, { headers: this.getAuthHeaders() })
+    return this.http.get(`${this.apiUrl}/profile`, { headers: this.getAuthHeaders() })
       .pipe(catchError(this.handleError));
   }
 
   private handleError(error: any): Observable<never> {
     console.error('API Error:', error);
+    let errorMessage = 'Something went wrong; please try again later.';
     if (error.status === 403) {
-      // Redirect to sign-in on invalid/expired token
+      errorMessage = 'Access denied. Insufficient permissions.';
+    } else if (error.status === 401) {
+      errorMessage = 'Session expired. Please sign in again.';
       window.location.href = '/sign-in';
     }
-    return throwError(() => new Error('Something went wrong; please try again later.'));
+    return throwError(() => new Error(errorMessage));
   }
 }

@@ -4,6 +4,22 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class AuthService {
+  setUserData(token: string, cin: string, firstname: string, lastname: string, role: string): void {
+    localStorage.setItem('token', token);
+    localStorage.setItem('cin', cin);
+    localStorage.setItem('firstname', firstname);
+    localStorage.setItem('lastname', lastname);
+    localStorage.setItem('role', role);
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
+
+  getCin(): string | null {
+    return localStorage.getItem('cin');
+  }
+
   getFirstname(): string | null {
     return localStorage.getItem('firstname');
   }
@@ -16,19 +32,15 @@ export class AuthService {
     return localStorage.getItem('role');
   }
 
-  setUserData(firstname: string, lastname: string, role: string): void {
-    localStorage.setItem('firstname', firstname);
-    localStorage.setItem('lastname', lastname);
-    localStorage.setItem('role', role);
-  }
-
   clearUserData(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('cin');
     localStorage.removeItem('firstname');
     localStorage.removeItem('lastname');
     localStorage.removeItem('role');
   }
 
   isLoggedIn(): boolean {
-    return !!this.getRole(); // True if role exists, false if cleared
+    return !!this.getToken(); // Check token instead of role for JWT
   }
 }

@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from '../../core/services/auth.service'; // Import AuthService
 
 interface SignInResponse {
   success: boolean;
   message: string;
   token?: string;
   role?: string;
+  cin?: string;
   firstname?: string;
   lastname?: string;
   errorCode?: string;
@@ -29,7 +31,8 @@ export class SignInComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private authService: AuthService // Inject AuthService
   ) {
     this.signInForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -50,10 +53,13 @@ export class SignInComponent implements OnInit {
       next: (response) => {
         this.loading = false;
         if (response.success && response.token) {
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('role', response.role || '');
-          localStorage.setItem('firstname', response.firstname || '');
-          localStorage.setItem('lastname', response.lastname || '');
+          this.authService.setUserData(
+            response.token,
+            response.cin || '',
+            response.firstname || '',
+            response.lastname || '',
+            response.role || ''
+          );
           this.redirectToDashboard(response.role);
         }
       },
@@ -65,9 +71,7 @@ export class SignInComponent implements OnInit {
   }
 
   private redirectToDashboard(role: string | undefined): void {
-    if (role === 'HR_MANAGER') {
-      this.router.navigate(['/welcome']);
-    } else if (role === 'EMPLOYEE') {
+    if (role === 'HR_MANAGER' || role === 'EMPLOYEE') {
       this.router.navigate(['/welcome']);
     } else {
       this.router.navigate(['/sign-in']);

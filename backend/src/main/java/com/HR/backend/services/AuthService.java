@@ -80,7 +80,8 @@ public class AuthService {
                 token,
                 user.getRole().name(),
                 employee.getFirstname(),
-                employee.getLastname()
+                employee.getLastname(),
+                user.getCin()
         );
     }
 }

@@ -5,45 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="84417b3a-da8d-4c40-ad47-5e2ea64ae2cf" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/core/services/auth.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/profile/profile.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/profile/profile.component.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/welcome/welcome.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/welcome/welcome.component.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/welcome/welcome.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/UserController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controller/EmployeeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/EmployeeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controller/HrController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/HrController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/dto/SignInRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/dtos/auth/SignInRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/dto/SignInResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/dtos/auth/SignInResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/dto/SignUpRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/dtos/auth/SignUpRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/dto/SignUpResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/dtos/auth/SignUpResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/model/Employee.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/models/Employee.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/model/LeaveRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/models/LeaveRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/models/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repository/EmployeeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repositories/EmployeeRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repository/LeaveRequestRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repositories/LeaveRequestRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repositories/UserRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/service/EmployeeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/EmployeeService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/service/LeaveRequestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/LeaveRequestService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.routes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/auth.guard.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/core/guards/auth.guard.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/dashboard/e-dashboard/e-dashboard.component.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/dashboard/e-dashboard/e-dashboard.component.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/dashboard/e-dashboard/e-dashboard.component.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/dashboard/hr-dashboard/hr-dashboard.component.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/dashboard/hr-dashboard/hr-dashboard.component.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/dashboard/hr-dashboard/hr-dashboard.component.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/profile/profile.component.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/profile/profile.component.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/profile/profile.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/profile/profile.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/services/api.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/core/services/api.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/welcome/welcome.component.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/welcome/welcome.component.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/welcome/welcome.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/EmployeeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/EmployeeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/dtos/auth/SignInResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/dtos/auth/SignInResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/auth/sign-in/sign-in.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/auth/sign-in/sign-in.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/core/services/api.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/core/services/api.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/core/services/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/core/services/auth.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/profile/profile.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/profile/profile.component.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,9 +24,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="HTML File" />
         <option value="TypeScript File" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -164,5 +135,17 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/frontend/src/app/features/welcome/welcome.component.ts</url>
+          <line>27</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
