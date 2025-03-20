@@ -5,6 +5,8 @@ import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.
 import { WelcomeComponent } from './features/welcome/welcome.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { authGuard } from './core/guards/auth.guard';
+import {LeaveComponent} from './features/leave/leave.component';
+import {ManageLeavesComponent} from './features/manage-leaves/manage-leaves.component';
 
 export const routes: Routes = [
   { path: 'sign-up', component: SignUpComponent },
@@ -12,12 +14,12 @@ export const routes: Routes = [
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'welcome', component: WelcomeComponent, canActivate: [authGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
+  { path: 'leave', component: LeaveComponent, canActivate: [authGuard] },
+  { path: 'manage-leaves', component: ManageLeavesComponent, canActivate: [authGuard] },
   // Placeholder routes for services
-  { path: 'leave', component: WelcomeComponent, canActivate: [authGuard] },
   { path: 'training', component: WelcomeComponent, canActivate: [authGuard] },
   { path: 'advance', component: WelcomeComponent, canActivate: [authGuard] },
   { path: 'documents', component: WelcomeComponent, canActivate: [authGuard] },
-  { path: 'manage-leaves', component: WelcomeComponent, canActivate: [authGuard] },
   { path: 'manage-training', component: WelcomeComponent, canActivate: [authGuard] },
   { path: 'manage-advance', component: WelcomeComponent, canActivate: [authGuard] },
   { path: 'manage-documents', component: WelcomeComponent, canActivate: [authGuard] },

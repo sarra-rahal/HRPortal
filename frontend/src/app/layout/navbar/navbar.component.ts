@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {RouterLink, Router, NavigationExtras} from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { WebsocketService } from '../../core/services/websocket.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -10,22 +12,43 @@ import { AuthService } from '../../core/services/auth.service';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent {
-  constructor(private authService: AuthService, private router: Router) {}
+export class NavbarComponent implements OnInit, OnDestroy {
+  notifications: string[] = [];
+  showNotifications = false;
+  private notificationSub?: Subscription;
 
-  get firstname(): string | null {
-    return this.authService.getFirstname();
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private websocketService: WebsocketService
+  ) {}
+
+  ngOnInit(): void {
+    this.notificationSub = this.websocketService.notifications$.subscribe(
+      (notifications) => this.notifications = notifications
+    );
   }
 
-  get lastname(): string | null {
-    return this.authService.getLastname();
+  ngOnDestroy(): void {
+    this.notificationSub?.unsubscribe();
+    this.websocketService.disconnect();
+  }
+
+  get firstname(): string | null { return this.authService.getFirstname(); }
+  get lastname(): string | null { return this.authService.getLastname(); }
+  get isHR(): boolean { return this.authService.getRole() === 'HR_MANAGER'; }
+
+  toggleNotifications(): void {
+    this.showNotifications = !this.showNotifications;
+  }
+
+  clearNotifications(): void {
+    this.websocketService.clearNotifications();
+    this.showNotifications = false;
   }
 
   logout(): void {
-    this.authService.clearUserData(); // Clears token and user data
-    const navigationExtras: NavigationExtras = {
-      replaceUrl: true // Replaces current history entry
-    };
-    this.router.navigate(['/sign-in'], navigationExtras);
+    this.authService.clearUserData();
+    this.router.navigate(['/sign-in'], { replaceUrl: true });
   }
 }

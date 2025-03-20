@@ -13,6 +13,7 @@ export class ApiService {
 
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
+    console.log('Token being sent:')
     return new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
@@ -27,6 +28,21 @@ export class ApiService {
   // Employee endpoint: Fetch own profile
   getEmployeeProfile(): Observable<any> {
     return this.http.get(`${this.apiUrl}/profile`, { headers: this.getAuthHeaders() })
+      .pipe(catchError(this.handleError));
+  }
+
+  submitLeaveRequest(request: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/leave/submit`, request, { headers: this.getAuthHeaders() })
+      .pipe(catchError(this.handleError));
+  }
+
+  cancelLeaveRequest(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/leave/cancel/${id}`, { headers: this.getAuthHeaders() })
+      .pipe(catchError(this.handleError));
+  }
+
+  getMyLeaveRequests(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/leave/my-requests`, { headers: this.getAuthHeaders() })
       .pipe(catchError(this.handleError));
   }
 

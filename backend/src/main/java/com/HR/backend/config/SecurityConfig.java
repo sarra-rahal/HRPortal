@@ -40,6 +40,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/hr/**").hasRole("HR_MANAGER")
                         .requestMatchers("/api/employee/**").hasRole("EMPLOYEE")
                         .requestMatchers("/api/profile").authenticated() // Only authenticated users
+                        .requestMatchers("/api/leave/submit", "/api/leave/my-requests", "/api/leave/cancel/**").authenticated()
+                        .requestMatchers("/api/leave/pending", "/api/leave/review/**").hasRole("HR_MANAGER")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

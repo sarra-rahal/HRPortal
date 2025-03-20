@@ -7,13 +7,28 @@
       </a>
     </div>
     <div class="navbar-actions">
-      <a class="nav-link" routerLink="/notifications">
-        <i class="bi bi-bell"></i>
-      </a>
-      <button class="home-btn" routerLink="/welcome">
+      <div class="notification-container">
+        <button class="notification-icon" (click)="toggleNotifications()">
+          <i class="bi bi-bell"></i>
+          <span *ngIf="notifications.length" class="badge">{{ notifications.length }}</span>
+        </button>
+        <div *ngIf="showNotifications" class="notification-dropdown">
+          <div class="notification-header">Notifications</div>
+          <div class="notification-list">
+            <div class="notification-item" *ngFor="let notification of notifications">
+              {{ notification }}
+            </div>
+            <div class="notification-item" *ngIf="!notifications.length">
+              No new notifications
+            </div>
+          </div>
+          <button class="btn btn-sm btn-secondary" (click)="clearNotifications()">Clear All</button>
+        </div>
+      </div>
+      <button class="home-btn" routerLink="/welcome" title="Home">
         <i class="bi bi-house-door"></i>
       </button>
-      <button class="logout-btn" (click)="logout()">
+      <button class="logout-btn" (click)="logout()" title="Logout">
         <i class="bi bi-box-arrow-right"></i>
       </button>
     </div>

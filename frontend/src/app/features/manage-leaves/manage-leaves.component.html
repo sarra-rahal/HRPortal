@@ -1,0 +1,35 @@
+<div class="container mt-5">
+  <h1>Manage Leave Requests</h1>
+  <table class="table" *ngIf="requests.length; else noRequests">
+    <thead>
+    <tr>
+      <th>Employee CIN</th>
+      <th>Type</th>
+      <th>Start Date</th>
+      <th>End Date</th>
+      <th>Reason</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let req of requests">
+      <td>{{ req.employeeCin }}</td>
+      <td>{{ req.leaveType }}</td>
+      <td>{{ req.startDate }}</td>
+      <td>{{ req.endDate }}</td>
+      <td>{{ req.reason || '-' }}</td>
+      <td>{{ req.status }}</td>
+      <td>
+        <input #comment type="text" placeholder="Add comment (optional)">
+        <button (click)="reviewRequest(req.id, 'APPROVED', comment.value)">Approve</button>
+        <button (click)="reviewRequest(req.id, 'DENIED', comment.value)">Deny</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <ng-template #noRequests>
+    <p>No pending leave requests.</p>
+  </ng-template>
+  <div class="error" *ngIf="error">{{ error }}</div>
+</div>

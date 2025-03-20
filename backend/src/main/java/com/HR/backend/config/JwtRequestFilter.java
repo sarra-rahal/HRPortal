@@ -17,6 +17,7 @@ import java.util.List;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
+
     private final JwtUtil jwtUtil;
 
     public JwtRequestFilter(JwtUtil jwtUtil) {
@@ -30,9 +31,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String jwt = null;
         String email = null;
 
+        System.out.println("Auth Header: " + authHeader);
+
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
             email = jwtUtil.extractEmail(jwt);
+            System.out.println("JWT: " + jwt + ", Email: " + email);
         }
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -42,6 +46,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         email, null, List.of(new SimpleGrantedAuthority("ROLE_" + role)));
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                System.out.println("Authentication set for: " + email + " with role: " + role);
             }
         }
         chain.doFilter(request, response);

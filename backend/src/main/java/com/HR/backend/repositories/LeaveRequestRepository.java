@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface LeaveRequestRepository extends JpaRepository<LeaveRequest, Long> {
     List<LeaveRequest> findByEmployeeCin(String employeeCin);
-    List<LeaveRequest> findByStatus(LeaveRequest.LeaveStatus status);
+    List<LeaveRequest> findByStatus(String status); // For HR dashboard
 }

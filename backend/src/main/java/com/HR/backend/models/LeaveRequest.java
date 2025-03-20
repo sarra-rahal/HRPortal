@@ -17,22 +17,30 @@ public class LeaveRequest {
     @Column(name = "employee_cin", nullable = false)
     private String employeeCin;
 
+    @Column(name = "leave_type", nullable = false)
+    private String leaveType; // e.g., "SICK", "VACATION", "PERSONAL"
+
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
-    @Enumerated(EnumType.STRING)
+    @Column(name = "duration")
+    private Integer duration; // in days
+
+    @Column(name = "reason")
+    private String reason;
+
     @Column(name = "status", nullable = false)
-    private LeaveStatus status = LeaveStatus.PENDING;
+    private String status = "PENDING"; // "PENDING", "APPROVED", "DENIED"
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Column(name = "hr_comment")
+    private String hrComment;
 
-    public enum LeaveStatus {
-        PENDING,
-        APPROVED,
-        REJECTED
-    }
+    @Column(name = "submitted_at")
+    private LocalDateTime submittedAt = LocalDateTime.now();
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt = LocalDateTime.now();
 }

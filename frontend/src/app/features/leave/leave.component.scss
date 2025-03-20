@@ -1,0 +1,103 @@
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Full viewport height */
+}
+
+.content-wrap {
+  flex: 1 0 auto; /* Grows to fill space, pushes footer down */
+  padding-bottom: 60px; /* Matches footer height to prevent overlap */
+}
+
+app-footer {
+  flex-shrink: 0; /* Footer stays fixed height */
+  height: 60px; /* Explicit height, adjust if your footer differs */
+}
+
+.accordion-section {
+  margin-bottom: 15px;
+}
+
+.accordion-btn {
+  width: 100%;
+  padding: 10px 15px;
+  background-color: #f8f9fa;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  text-align: left;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &:hover {
+    background-color: #e9ecef;
+  }
+}
+
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  border-top: none;
+  border-radius: 0 0 5px 5px;
+
+  &.expanded {
+    max-height: 500px; /* Adjust based on content; could use 'auto' with JS */
+    padding: 15px;
+  }
+}
+
+.card-body {
+  padding: 0;
+}
+
+.form-group {
+  margin-bottom: 15px;
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+  }
+
+  .error {
+    color: #dc3545;
+    font-size: 0.9rem;
+  }
+}
+
+.success {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.table {
+  width: 100%;
+  th, td {
+    padding: 10px;
+    text-align: left;
+  }
+  th {
+    background-color: #f8f9fa;
+  }
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  &:disabled {
+    background-color: #6c757d;
+  }
+}
