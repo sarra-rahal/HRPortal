@@ -1,35 +1,57 @@
-<div class="container mt-5">
-  <h1>Manage Leave Requests</h1>
-  <table class="table" *ngIf="requests.length; else noRequests">
-    <thead>
-    <tr>
-      <th>Employee CIN</th>
-      <th>Type</th>
-      <th>Start Date</th>
-      <th>End Date</th>
-      <th>Reason</th>
-      <th>Status</th>
-      <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let req of requests">
-      <td>{{ req.employeeCin }}</td>
-      <td>{{ req.leaveType }}</td>
-      <td>{{ req.startDate }}</td>
-      <td>{{ req.endDate }}</td>
-      <td>{{ req.reason || '-' }}</td>
-      <td>{{ req.status }}</td>
-      <td>
-        <input #comment type="text" placeholder="Add comment (optional)">
-        <button (click)="reviewRequest(req.id, 'APPROVED', comment.value)">Approve</button>
-        <button (click)="reviewRequest(req.id, 'DENIED', comment.value)">Deny</button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-  <ng-template #noRequests>
-    <p>No pending leave requests.</p>
-  </ng-template>
-  <div class="error" *ngIf="error">{{ error }}</div>
+<app-navbar></app-navbar>
+<app-sidebar></app-sidebar>
+<div class="page-container">
+  <div class="content-wrap">
+    <div class="container mt-5">
+      <h1>Manage Leave Requests</h1>
+
+      <!-- Error Message -->
+      <div *ngIf="error" class="error mt-2">{{ error }}</div>
+
+      <!-- Loading Spinner -->
+      <div *ngIf="loading" class="text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <!-- Leave Requests Table -->
+      <table class="table" *ngIf="!loading && requests.length; else noRequests">
+        <thead>
+        <tr>
+          <th>Employee CIN</th>
+          <th>Type</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Reason</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let req of requests">
+          <td>{{ req.employeeCin }}</td>
+          <td>{{ req.leaveType }}</td>
+          <td>{{ req.startDate | date }}</td>
+          <td>{{ req.endDate | date }}</td>
+          <td>{{ req.reason || '-' }}</td>
+          <td>{{ req.status }}</td>
+          <td>
+            <div class="action-group">
+              <input #comment type="text" placeholder="Add comment (optional)" class="form-control d-inline w-auto me-2">
+              <button class="btn btn-primary btn-sm me-2" (click)="confirmReview(req.id, 'APPROVED', comment.value)">Approve</button>
+              <button class="btn btn-danger btn-sm" (click)="confirmReview(req.id, 'REJECTED', comment.value)">Reject</button>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <!-- No Requests Message -->
+      <ng-template #noRequests>
+        <p class="text-muted">No pending leave requests.</p>
+      </ng-template>
+    </div>
+  </div>
+  <app-footer></app-footer>
 </div>

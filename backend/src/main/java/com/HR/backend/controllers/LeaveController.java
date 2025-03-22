@@ -1,5 +1,6 @@
 package com.HR.backend.controllers;
 
+import com.HR.backend.dtos.features.ReviewRequestDto;
 import com.HR.backend.models.LeaveRequest;
 import com.HR.backend.models.User;
 import com.HR.backend.repositories.UserRepository;
@@ -68,7 +69,7 @@ public class LeaveController {
     public ResponseEntity<LeaveRequest> reviewLeaveRequest(
             @PathVariable Long id,
             @RequestParam String status,
-            @RequestParam(required = false) String hrComment) {
-        return ResponseEntity.ok(leaveService.reviewLeaveRequest(id, status, hrComment));
+            @RequestBody ReviewRequestDto reviewData) {
+        return ResponseEntity.ok(leaveService.reviewLeaveRequest(id, reviewData.getStatus(), reviewData.getHrComment()));
     }
 }

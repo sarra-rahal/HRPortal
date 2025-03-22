@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { WebsocketService } from '../../core/services/websocket.service';
+import { ApiService } from '../../core/services/api.service';
 import { Subscription } from 'rxjs';
+import { Notification } from '../../core/models/notification.model';
 
 @Component({
   selector: 'app-navbar',
@@ -13,25 +15,39 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit, OnDestroy {
-  notifications: string[] = [];
+  notifications: Notification[] = [];
   showNotifications = false;
-  private notificationSub?: Subscription;
+  private wsSub?: Subscription;
+  private email = localStorage.getItem('email') || '';
 
   constructor(
     private authService: AuthService,
     private router: Router,
-    private websocketService: WebsocketService
+    private websocketService: WebsocketService,
+    private apiService: ApiService
   ) {}
 
   ngOnInit(): void {
-    this.notificationSub = this.websocketService.notifications$.subscribe(
-      (notifications) => this.notifications = notifications
-    );
+    this.loadNotifications();
+    this.setupWebSocket();
   }
 
   ngOnDestroy(): void {
-    this.notificationSub?.unsubscribe();
-    this.websocketService.disconnect();
+    this.wsSub?.unsubscribe();
+  }
+
+  loadNotifications(): void {
+    this.apiService.getMyNotifications(this.email).subscribe({
+      next: (notifications) => this.notifications = notifications,
+      error: (err) => console.error('Error fetching notifications:', err)
+    });
+  }
+
+  setupWebSocket(): void {
+    this.wsSub = this.websocketService.connect('/topic/notifications').subscribe({
+      next: () => this.loadNotifications(),
+      error: (err) => console.error('WebSocket error:', err)
+    });
   }
 
   get firstname(): string | null { return this.authService.getFirstname(); }
@@ -42,9 +58,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.showNotifications = !this.showNotifications;
   }
 
-  clearNotifications(): void {
-    this.websocketService.clearNotifications();
-    this.showNotifications = false;
+  deleteNotification(id: number): void {
+    this.apiService.deleteNotification(id).subscribe({
+      next: () => this.loadNotifications(),
+      error: (err) => console.error('Error deleting notification:', err)
+    });
   }
 
   logout(): void {

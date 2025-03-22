@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavbarComponent } from '../../layout/navbar/navbar.component';
@@ -6,6 +6,8 @@ import { SidebarComponent } from '../../layout/sidebar/sidebar.component';
 import { FooterComponent } from '../../layout/footer/footer.component';
 import { AuthService } from '../../core/services/auth.service';
 import { ApiService } from '../../core/services/api.service';
+import { WebsocketService } from '../../core/services/websocket.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-leave',
@@ -14,21 +16,19 @@ import { ApiService } from '../../core/services/api.service';
   templateUrl: './leave.component.html',
   styleUrls: ['./leave.component.scss']
 })
-export class LeaveComponent implements OnInit {
+export class LeaveComponent implements OnInit, OnDestroy {
   leaveForm: FormGroup;
   requests: any[] = [];
   error: string | null = null;
   success: string | null = null;
-  // Track which sections are open
-  expandedSections: { [key: string]: boolean } = {
-    submitRequest: false,
-    history: true
-  };
+  expandedSections: { [key: string]: boolean } = { submitRequest: false, history: true };
+  private wsSub?: Subscription;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private websocketService: WebsocketService
   ) {
     this.leaveForm = this.fb.group({
       leaveType: ['', Validators.required],
@@ -40,6 +40,11 @@ export class LeaveComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadRequests();
+    this.setupWebSocket();
+  }
+
+  ngOnDestroy(): void {
+    this.wsSub?.unsubscribe();
   }
 
   toggleSection(section: string): void {
@@ -60,7 +65,6 @@ export class LeaveComponent implements OnInit {
 
   onSubmit(): void {
     if (this.leaveForm.invalid) return;
-
     this.error = null;
     this.success = null;
 
@@ -71,9 +75,7 @@ export class LeaveComponent implements OnInit {
         this.leaveForm.reset();
         this.loadRequests();
       },
-      error: (err) => {
-        this.error = err.error?.error || 'Failed to submit leave request. Please try again.';
-      }
+      error: (err) => this.error = err.error?.error || 'Failed to submit leave request.'
     });
   }
 
@@ -90,5 +92,12 @@ export class LeaveComponent implements OnInit {
     const start = new Date(startDate);
     const end = new Date(endDate);
     return Math.ceil((end.getTime() - start.getTime()) / (1000 * 3600 * 24)) + 1;
+  }
+
+  private setupWebSocket(): void {
+    this.wsSub = this.websocketService.connect('/topic/leaves').subscribe({
+      next: () => this.loadRequests(),
+      error: (err) => console.error('WebSocket error:', err)
+    });
   }
 }

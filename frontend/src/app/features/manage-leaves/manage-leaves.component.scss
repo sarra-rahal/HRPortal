@@ -1,17 +1,121 @@
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Full viewport height */
+}
+
+.content-wrap {
+  flex: 1 0 auto; /* Grows to fill space, pushes footer down */
+  padding-bottom: 60px; /* Matches footer height */
+}
+
+app-footer {
+  flex-shrink: 0; /* Footer stays fixed height */
+  height: 60px; /* Adjust if your footer height differs */
+}
+
 .container {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 20px;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ced4da;
+  }
+
+  th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+  }
+
+  tbody tr {
+    transition: background-color 0.2s;
+  }
+
+  tbody tr:hover {
+    background-color: #f1f1f1;
+  }
 }
 
-th, td {
+.action-group {
+  display: flex;
+  align-items: center;
+}
+
+.form-control {
+  display: inline-block;
+  width: auto;
+  padding: 8px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 0.875rem;
+  border-radius: 5px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+  &:hover {
+    background-color: #0056b3;
+  }
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border: none;
+  &:hover {
+    background-color: #b02a37;
+  }
+}
+
+.error {
+  color: #dc3545;
+  font-size: 0.9rem;
   padding: 10px;
-  border: 1px solid #ddd;
+  background-color: #f8d7da;
+  border-radius: 5px;
+  margin-bottom: 15px;
 }
 
-button {
-  margin: 0 5px;
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+  margin: 20px auto;
+}
+
+.text-muted {
+  color: #6c757d;
+}
+
+@media (max-width: 768px) {
+  .table {
+    font-size: 0.9rem;
+  }
+  .action-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .form-control {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  .btn-sm {
+    width: 100%;
+    margin-bottom: 5px;
+  }
 }

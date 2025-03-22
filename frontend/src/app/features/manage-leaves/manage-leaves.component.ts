@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { AuthService } from '../../core/services/auth.service';
+import { ApiService } from '../../core/services/api.service';
+import {NavbarComponent} from '../../layout/navbar/navbar.component';
+import {SidebarComponent} from '../../layout/sidebar/sidebar.component';
+import {FooterComponent} from '../../layout/footer/footer.component';
 
 interface LeaveRequest {
   id: number;
@@ -11,42 +13,52 @@ interface LeaveRequest {
   endDate: string;
   reason: string;
   status: string;
-  hrComment?: string;
 }
 
 @Component({
   selector: 'app-manage-leaves',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NavbarComponent, SidebarComponent, FooterComponent],
   templateUrl: './manage-leaves.component.html',
   styleUrls: ['./manage-leaves.component.scss']
 })
 export class ManageLeavesComponent implements OnInit {
   requests: LeaveRequest[] = [];
   error: string | null = null;
+  loading: boolean = false;
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
     this.loadPendingRequests();
   }
 
   loadPendingRequests(): void {
-    this.http.get<LeaveRequest[]>('http://localhost:8080/api/leave/pending', {
-      headers: { Authorization: `Bearer ${this.authService.getToken()}` }
-    }).subscribe({
-      next: (data) => this.requests = data,
-      error: (err) => this.error = err.message
+    this.loading = true;
+    this.error = null;
+    this.apiService.getAllLeaveRequests().subscribe({
+      next: (data) => {
+        this.requests = data.filter(req => req.status === 'PENDING');
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = `Error fetching leave requests: ${err.message}`;
+        this.loading = false;
+      }
     });
   }
 
+  confirmReview(id: number, status: string, comment: string): void {
+    const action = status.toLowerCase();
+    if (confirm(`Are you sure you want to ${action} this request?`)) {
+      this.reviewRequest(id, status, comment);
+    }
+  }
+
   reviewRequest(id: number, status: string, comment: string): void {
-    this.http.put(`http://localhost:8080/api/leave/review/${id}`, null, {
-      headers: { Authorization: `Bearer ${this.authService.getToken()}` },
-      params: { status, hrComment: comment || '' }
-    }).subscribe({
+    this.apiService.reviewLeaveRequest(id, { status, hrComment: comment }).subscribe({
       next: () => this.loadPendingRequests(),
-      error: (err) => this.error = err.message
+      error: (err) => this.error = `Error reviewing request: ${err.message}`
     });
   }
 }

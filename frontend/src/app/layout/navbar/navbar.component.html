@@ -15,14 +15,12 @@
         <div *ngIf="showNotifications" class="notification-dropdown">
           <div class="notification-header">Notifications</div>
           <div class="notification-list">
-            <div class="notification-item" *ngFor="let notification of notifications">
-              {{ notification }}
+            <div *ngFor="let notification of notifications" class="notification-item">
+              {{ notification.message }}
+              <button class="btn btn-sm btn-danger" (click)="deleteNotification(notification.id)">Delete</button>
             </div>
-            <div class="notification-item" *ngIf="!notifications.length">
-              No new notifications
-            </div>
+            <div *ngIf="!notifications.length" class="notification-item">No new notifications</div>
           </div>
-          <button class="btn btn-sm btn-secondary" (click)="clearNotifications()">Clear All</button>
         </div>
       </div>
       <button class="home-btn" routerLink="/welcome" title="Home">

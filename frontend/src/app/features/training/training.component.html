@@ -1,0 +1,51 @@
+<app-navbar></app-navbar>
+<app-sidebar></app-sidebar>
+<div class="container mt-4">
+  <h2>Available Trainings</h2>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <table class="table table-striped" *ngIf="!errorMessage">
+    <thead>
+    <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Start Date</th>
+      <th>End Date</th>
+      <th>Capacity</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let training of trainings">
+      <td>{{ training.title }}</td>
+      <td>{{ training.description }}</td>
+      <td>{{ training.startDate | date }}</td>
+      <td>{{ training.endDate | date }}</td>
+      <td>{{ training.enrolledCount }} / {{ training.capacity }}</td>
+      <td>
+        <button class="btn btn-primary btn-sm" (click)="enroll(training.id)"
+                [disabled]="isEnrollButtonDisabled(training)">
+          Enroll
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <h3 class="mt-4">My Enrollments</h3>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Title</th>
+      <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let enrollment of enrollments">
+      <td>{{ enrollment.training.title }}</td>
+      <td>{{ enrollment.status }}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<app-footer></app-footer>

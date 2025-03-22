@@ -7,6 +7,8 @@ import { ProfileComponent } from './features/profile/profile.component';
 import { authGuard } from './core/guards/auth.guard';
 import {LeaveComponent} from './features/leave/leave.component';
 import {ManageLeavesComponent} from './features/manage-leaves/manage-leaves.component';
+import {TrainingComponent} from './features/training/training.component';
+import {ManageTrainingComponent} from './features/manage-training/manage-training.component';
 
 export const routes: Routes = [
   { path: 'sign-up', component: SignUpComponent },
@@ -16,10 +18,10 @@ export const routes: Routes = [
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
   { path: 'leave', component: LeaveComponent, canActivate: [authGuard] },
   { path: 'manage-leaves', component: ManageLeavesComponent, canActivate: [authGuard] },
+  { path: 'training', component: TrainingComponent, canActivate: [authGuard]},
+  { path: 'manage-training', component: ManageTrainingComponent, canActivate: [authGuard] },
   // Placeholder routes for services
-  { path: 'training', component: WelcomeComponent, canActivate: [authGuard] },
   { path: 'advance', component: WelcomeComponent, canActivate: [authGuard] },
-  { path: 'documents', component: WelcomeComponent, canActivate: [authGuard] },
   { path: 'manage-training', component: WelcomeComponent, canActivate: [authGuard] },
   { path: 'manage-advance', component: WelcomeComponent, canActivate: [authGuard] },
   { path: 'manage-documents', component: WelcomeComponent, canActivate: [authGuard] },
