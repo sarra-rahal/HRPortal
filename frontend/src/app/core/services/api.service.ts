@@ -51,11 +51,12 @@ export class ApiService {
     return this.http.post<Training>(`${this.apiUrl}/training/create`, training, { headers: this.getAuthHeaders() });
   }
 
-  enroll(trainingId: number, employeeEmail: string): Observable<TrainingEnrollment> {
+  enroll(trainingId: number): Observable<TrainingEnrollment> {
     return this.http.post<TrainingEnrollment>(`${this.apiUrl}/training/enroll/${trainingId}`, null, {
-      headers: this.getAuthHeaders(),
-      params: { employeeEmail }
-    });
+      headers: this.getAuthHeaders()
+    }).pipe(
+      catchError(this.handleError)
+    );
   }
 
   reviewEnrollment(enrollmentId: number, status: string): Observable<TrainingEnrollment> {

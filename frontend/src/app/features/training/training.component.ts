@@ -7,6 +7,7 @@ import { Training, TrainingEnrollment } from '../../core/models/training.model';
 import {NavbarComponent} from '../../layout/navbar/navbar.component';
 import {SidebarComponent} from '../../layout/sidebar/sidebar.component';
 import {FooterComponent} from '../../layout/footer/footer.component';
+import {AuthService} from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-training',
@@ -22,9 +23,16 @@ export class TrainingComponent implements OnInit, OnDestroy {
   errorMessage: string = '';
   private wsSub!: Subscription;
 
-  constructor(private apiService: ApiService, private websocketService: WebsocketService) {}
-
+  constructor(
+    private apiService: ApiService,
+    private websocketService: WebsocketService,
+    private authService: AuthService
+  ) {
+    this.employeeEmail = this.authService.getEmail() || '';
+  }
   ngOnInit(): void {
+    console.log('Employee Email:', this.employeeEmail);
+    if (!this.employeeEmail) return;
     this.fetchTrainings();
     this.fetchEnrollments();
     this.setupWebSocket();
@@ -49,7 +57,7 @@ export class TrainingComponent implements OnInit, OnDestroy {
   }
 
   enroll(trainingId: number): void {
-    this.apiService.enroll(trainingId, this.employeeEmail).subscribe({
+    this.apiService.enroll(trainingId).subscribe({
       next: () => this.fetchEnrollments(),
       error: (err) => this.errorMessage = 'Error enrolling: ' + err.message
     });
@@ -61,8 +69,8 @@ export class TrainingComponent implements OnInit, OnDestroy {
   }
 
   private setupWebSocket(): void {
-    this.wsSub = this.websocketService.connect('/topic/trainings').subscribe({
-      next: () => this.fetchTrainings(),
+    this.wsSub = this.websocketService.connect(`/topic/notifications/${this.employeeEmail}`).subscribe({
+      next: () => this.fetchEnrollments(),
       error: (err) => console.error('WebSocket error:', err)
     });
   }

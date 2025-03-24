@@ -5,31 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="84417b3a-da8d-4c40-ad47-5e2ea64ae2cf" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/NotificationController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/TrainingController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/dtos/features/ReviewRequestDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/models/Notification.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/models/Training.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/models/TrainingEnrollment.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repositories/NotificationRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repositories/TrainingEnrollmentRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repositories/TrainingRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/EmailService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/TrainingService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/core/models/notification.model.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/core/models/training.model.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/config/SecurityConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/config/WebSocketConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/config/WebSocketConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/LeaveController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/LeaveController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/TrainingController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/TrainingController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/dtos/auth/SignInResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/dtos/auth/SignInResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repositories/EmployeeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repositories/EmployeeRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/EmailService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/LeaveService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/LeaveService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/TrainingService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/TrainingService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/auth/sign-in/sign-in.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/auth/sign-in/sign-in.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/core/models/notification.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/core/models/notification.model.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/core/services/api.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/core/services/api.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/core/services/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/core/services/auth.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/core/services/websocket.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/core/services/websocket.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/manage-leaves/manage-leaves.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-leaves/manage-leaves.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/manage-leaves/manage-leaves.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-leaves/manage-leaves.component.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/manage-leaves/manage-leaves.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-leaves/manage-leaves.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/layout/navbar/navbar.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/layout/navbar/navbar.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/manage-training/manage-training.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-training/manage-training.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/training/training.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/training/training.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/layout/navbar/navbar.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/layout/navbar/navbar.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +57,7 @@
   }
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -141,6 +137,10 @@
       <workItem from="1742446795261" duration="5572000" />
       <workItem from="1742452624756" duration="190000" />
       <workItem from="1742452832408" duration="5486000" />
+      <workItem from="1742682884622" duration="2304000" />
+      <workItem from="1742690305291" duration="181000" />
+      <workItem from="1742699913942" duration="22360000" />
+      <workItem from="1742780355744" duration="1107000" />
     </task>
     <servers />
   </component>

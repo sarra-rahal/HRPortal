@@ -11,9 +11,10 @@ public class SignInResponse {
     private String firstname;
     private String lastname;
     private String cin;
+    private String email;
     private String errorCode;
 
-    public static SignInResponse success(String message, String token, String role, String firstname, String lastname, String cin) {
+    public static SignInResponse success(String message, String token, String role, String firstname, String lastname, String cin, String email) {
         SignInResponse response = new SignInResponse();
         response.success = true;
         response.message = message;
@@ -22,6 +23,7 @@ public class SignInResponse {
         response.cin = cin;
         response.firstname = firstname;
         response.lastname = lastname;
+        response.email = email;
         return response;
     }
 

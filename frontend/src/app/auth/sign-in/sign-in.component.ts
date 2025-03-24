@@ -8,8 +8,9 @@ import { AuthService } from '../../core/services/auth.service'; // Import AuthSe
 interface SignInResponse {
   success: boolean;
   message: string;
-  token?: string;
-  role?: string;
+  token: string;
+  email: string;
+  role: string;
   cin?: string;
   firstname?: string;
   lastname?: string;
@@ -58,7 +59,8 @@ export class SignInComponent implements OnInit {
             response.cin || '',
             response.firstname || '',
             response.lastname || '',
-            response.role || ''
+            response.role,
+            response.email,
           );
           this.redirectToDashboard(response.role);
         }

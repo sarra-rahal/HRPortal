@@ -68,7 +68,6 @@ public class LeaveController {
     @PreAuthorize("hasRole('HR_MANAGER')")
     public ResponseEntity<LeaveRequest> reviewLeaveRequest(
             @PathVariable Long id,
-            @RequestParam String status,
             @RequestBody ReviewRequestDto reviewData) {
         return ResponseEntity.ok(leaveService.reviewLeaveRequest(id, reviewData.getStatus(), reviewData.getHrComment()));
     }

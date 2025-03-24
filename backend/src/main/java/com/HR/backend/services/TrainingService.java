@@ -1,7 +1,9 @@
 package com.HR.backend.services;
 import com.HR.backend.config.JwtUtil;
+import com.HR.backend.models.Employee;
 import com.HR.backend.models.Notification;
 import com.HR.backend.models.TrainingEnrollment;
+import com.HR.backend.repositories.EmployeeRepository;
 import com.HR.backend.repositories.NotificationRepository;
 import com.HR.backend.repositories.TrainingEnrollmentRepository;
 import com.HR.backend.repositories.TrainingRepository;
@@ -20,9 +22,11 @@ public class TrainingService {
     private final TrainingRepository trainingRepository;
     private final TrainingEnrollmentRepository enrollmentRepository;
     private final NotificationRepository notificationRepository;
+    private final EmployeeRepository employeeRepository;
     private final SimpMessagingTemplate messagingTemplate;
     private final EmailService emailService;
     private final JwtUtil jwtUtil;
+    private static final String HR_EMAIL = "rahalsarra2@gmail.com";
 
     public List<Training> getAllTrainings() {
         return trainingRepository.findAll();
@@ -40,6 +44,7 @@ public class TrainingService {
     public TrainingEnrollment enroll(Long trainingId, String employeeEmail, String token) {
         Training training = trainingRepository.findById(trainingId)
                 .orElseThrow(() -> new RuntimeException("Training not found"));
+
         if (training.getEnrolledCount() >= training.getCapacity()) {
             throw new RuntimeException("Training capacity full");
         }
@@ -54,9 +59,20 @@ public class TrainingService {
         trainingRepository.save(training);
 
         String senderEmail = jwtUtil.extractEmail(token.split(" ")[1]);
+        Employee employee = employeeRepository.findByEmail(employeeEmail)
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+        if (employeeEmail == null || employeeEmail.isEmpty()) {
+            throw new IllegalArgumentException("Employee email cannot be null or empty");
+        }
+        String hrMessage = String.format(
+                "%s %s (%s) enrolled in training: %s",
+                employee.getFirstname(), employee.getLastname(), employee.getCin(), training.getTitle()
+        );
         notifyUser(employeeEmail, "You enrolled in " + training.getTitle());
-        messagingTemplate.convertAndSend("/topic/enrollments", saved);
-        emailService.sendEmail(senderEmail, employeeEmail, "Training Enrollment", "Your enrollment is pending review.");
+        notifyUser(HR_EMAIL, hrMessage); // Notify HR Manager
+        messagingTemplate.convertAndSend("/topic/notifications/" + employeeEmail, saved);
+        messagingTemplate.convertAndSend("/topic/notifications/" + HR_EMAIL, hrMessage);
+        emailService.sendEmail(senderEmail, HR_EMAIL, "Training Enrollment", hrMessage);
         return saved;
     }
 
@@ -67,9 +83,10 @@ public class TrainingService {
         enrollment.setStatus(status);
         TrainingEnrollment updated = enrollmentRepository.save(enrollment);
 
-        String hrEmail = jwtUtil.extractEmail(token);
-        notifyUser(enrollment.getEmployeeEmail(), "Your enrollment for " + enrollment.getTraining().getTitle() + " was " + status.toLowerCase());
-        messagingTemplate.convertAndSend("/topic/enrollments", updated);
+        String hrEmail = jwtUtil.extractEmail(token.split(" ")[1]);
+        String employeeMessage = "Your enrollment for " + enrollment.getTraining().getTitle() + " was " + status.toLowerCase();
+        notifyUser(enrollment.getEmployeeEmail(), employeeMessage);
+        messagingTemplate.convertAndSend("/topic/notifications/" + enrollment.getEmployeeEmail(), updated);
         emailService.sendEmail(hrEmail, enrollment.getEmployeeEmail(), "Enrollment Update",
                 "Your enrollment has been " + status.toLowerCase() + ".");
         return updated;

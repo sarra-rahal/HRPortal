@@ -44,7 +44,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   setupWebSocket(): void {
-    this.wsSub = this.websocketService.connect('/topic/notifications').subscribe({
+    this.wsSub = this.websocketService.connect('/topic/notifications/${this.email}').subscribe({
       next: () => this.loadNotifications(),
       error: (err) => console.error('WebSocket error:', err)
     });

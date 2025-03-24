@@ -95,7 +95,8 @@ export class LeaveComponent implements OnInit, OnDestroy {
   }
 
   private setupWebSocket(): void {
-    this.wsSub = this.websocketService.connect('/topic/leaves').subscribe({
+    const email = this.authService.getEmail() || '';
+    this.wsSub = this.websocketService.connect(`/topic/employee-notifications/${email}`).subscribe({
       next: () => this.loadRequests(),
       error: (err) => console.error('WebSocket error:', err)
     });

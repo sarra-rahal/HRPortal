@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import {NavbarComponent} from '../../layout/navbar/navbar.component';
 import {SidebarComponent} from '../../layout/sidebar/sidebar.component';
 import {FooterComponent} from '../../layout/footer/footer.component';
+import {AuthService} from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-manage-training',
@@ -26,6 +27,7 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
 
   constructor(
     private apiService: ApiService,
+    private authService: AuthService,
     private websocketService: WebsocketService,
     private router: Router
   ) {}
@@ -76,7 +78,8 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
   }
 
   private setupWebSocket(): void {
-    this.wsSub = this.websocketService.connect('/topic/enrollments').subscribe({
+    const hrEmail = this.authService.getEmail() || '';
+    this.wsSub = this.websocketService.connect(`/topic/notifications/${hrEmail}`).subscribe({
       next: () => this.fetchEnrollments(),
       error: (err) => console.error('WebSocket error:', err)
     });

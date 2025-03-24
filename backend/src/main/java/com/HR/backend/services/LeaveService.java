@@ -26,6 +26,8 @@ public class LeaveService {
     private final JavaMailSender mailSender;
     private final SimpMessagingTemplate messagingTemplate;
 
+    private static final String HR_EMAIL = "rahalsarra2@gmail.com";
+
     public LeaveRequest submitLeaveRequest(String employeeCin, LeaveRequest request) {
         Employee employee = employeeRepository.findByCin(employeeCin)
                 .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
@@ -49,16 +51,13 @@ public class LeaveService {
 
         LeaveRequest savedRequest = leaveRequestRepository.save(request);
 
-        // Notify HR Manager via WebSocket
+        //notify
         String hrMessage = String.format(
                 "New leave request from %s %s: %s (%s to %s)",
                 employee.getFirstname(), employee.getLastname(), request.getLeaveType(),
                 request.getStartDate(), request.getEndDate()
         );
-        System.out.println("Sending HR notification: " + hrMessage);
-        messagingTemplate.convertAndSend("/topic/hr-notifications", hrMessage);
-
-        // Existing email notification
+        messagingTemplate.convertAndSend("/topic/notifications/" + HR_EMAIL, hrMessage);
         notifyHrManager(employee, savedRequest);
 
         return savedRequest;
@@ -93,7 +92,6 @@ public class LeaveService {
         request.setUpdatedAt(LocalDateTime.now());
         LeaveRequest updatedRequest = leaveRequestRepository.save(request);
 
-        // Notify Employee via WebSocket
         Employee employee = employeeRepository.findByCin(request.getEmployeeCin()).orElse(null);
         if (employee != null) {
             String employeeMessage = String.format(
@@ -101,30 +99,32 @@ public class LeaveService {
                     request.getLeaveType(), request.getStartDate(), request.getEndDate(),
                     status.toLowerCase(), hrComment != null ? hrComment : "None"
             );
-            System.out.println("Sending employee notification: " + employeeMessage); // Debug log
-            messagingTemplate.convertAndSend("/topic/employee-notifications/" + request.getEmployeeCin(), employeeMessage);
+            messagingTemplate.convertAndSend("/topic/notifications/" + employee.getEmail(), employeeMessage);
+            notifyEmployee(updatedRequest);
         }
-
-        // Notify employee
-        notifyEmployee(updatedRequest);
 
         return updatedRequest;
     }
 
     private void notifyHrManager(Employee employee, LeaveRequest request) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo("rahalsarra2@gmail.com");
+        message.setFrom(employee.getEmail());
+        message.setTo(HR_EMAIL);
         message.setSubject("New Leave Request Submitted");
         message.setText(String.format(
-                "Employee %s %s (%s) has submitted a leave request:\n" +
-                        "Type: %s\nDates: %s to %s\nReason: %s\nPlease review in the HR Portal.",
+                """
+                        Employee %s %s (%s) has submitted a leave request:
+                        Type: %s
+                        Dates: %s to %s
+                        Reason: %s
+                        Please review in the HR Portal.""",
                 employee.getFirstname(), employee.getLastname(), employee.getCin(),
                 request.getLeaveType(), request.getStartDate(), request.getEndDate(), request.getReason()
         ));
         try {
             mailSender.send(message);
         } catch (MailException e) {
-            logger.error("Failed to send employee notification for leave request ID {}: {}", request.getId(), e.getMessage());
+            logger.error("Failed to send HR notification for leave request ID {}: {}", request.getId(), e.getMessage());
         }
     }
 
@@ -132,6 +132,7 @@ public class LeaveService {
         Employee employee = employeeRepository.findByCin(request.getEmployeeCin()).orElse(null);
         if (employee != null) {
             SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(HR_EMAIL);
             message.setTo(employee.getEmail());
             message.setSubject("Leave Request " + request.getStatus());
             message.setText(String.format(

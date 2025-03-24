@@ -37,15 +37,15 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/ws/**").permitAll() // Handled by interceptor
                         .requestMatchers("/api/hr/**").hasRole("HR_MANAGER")
                         .requestMatchers("/api/employee/**").hasRole("EMPLOYEE")
-                        .requestMatchers("/api/profile").authenticated() // Only authenticated users
+                        .requestMatchers("/api/profile").authenticated()
                         .requestMatchers("/api/leave/submit", "/api/leave/my-requests", "/api/leave/cancel/**").authenticated()
                         .requestMatchers("/api/leave/pending", "/api/leave/review/**").hasRole("HR_MANAGER")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 

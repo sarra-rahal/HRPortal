@@ -81,7 +81,8 @@ public class AuthService {
                 user.getRole().name(),
                 employee.getFirstname(),
                 employee.getLastname(),
-                user.getCin()
+                user.getCin(),
+                user.getEmail()
         );
     }
 }
