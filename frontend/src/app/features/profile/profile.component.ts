@@ -4,7 +4,7 @@ import { NavbarComponent } from '../../layout/navbar/navbar.component';
 import { SidebarComponent } from '../../layout/sidebar/sidebar.component';
 import { FooterComponent } from '../../layout/footer/footer.component';
 import { AuthService } from '../../core/services/auth.service';
-import { ApiService } from '../../core/services/api.service';
+import {ProfileService} from './profile.service';
 
 @Component({
   selector: 'app-profile',
@@ -17,7 +17,7 @@ export class ProfileComponent implements OnInit {
   profile: any = null;
   error: string | null = null;
 
-  constructor(private authService: AuthService, private apiService: ApiService) {}
+  constructor(private authService: AuthService, private apiService: ProfileService) {}
 
   ngOnInit(): void {
     if (this.authService.isLoggedIn()) {

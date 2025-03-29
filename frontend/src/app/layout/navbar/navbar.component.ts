@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { WebsocketService } from '../../core/services/websocket.service';
-import { ApiService } from '../../core/services/api.service';
 import { Subscription } from 'rxjs';
 import { Notification } from '../../core/models/notification.model';
+import {NavbarService} from './navbar.service';
 
 @Component({
   selector: 'app-navbar',
@@ -24,7 +24,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router,
     private websocketService: WebsocketService,
-    private apiService: ApiService
+    private apiService: NavbarService
   ) {}
 
   ngOnInit(): void {

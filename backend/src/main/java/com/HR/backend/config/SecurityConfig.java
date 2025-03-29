@@ -37,12 +37,15 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/ws/**").permitAll() // Handled by interceptor
+                        .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/api/hr/**").hasRole("HR_MANAGER")
                         .requestMatchers("/api/employee/**").hasRole("EMPLOYEE")
                         .requestMatchers("/api/profile").authenticated()
                         .requestMatchers("/api/leave/submit", "/api/leave/my-requests", "/api/leave/cancel/**").authenticated()
                         .requestMatchers("/api/leave/pending", "/api/leave/review/**").hasRole("HR_MANAGER")
+                        .requestMatchers("/api/training/all","/api/training/my-enrollments/**").authenticated()
+                        .requestMatchers("/api/training/create", "/api/training/review/**").hasRole("HR_MANAGER")
+                        .requestMatchers("/api/training/cancel/**","/api/training/enroll/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

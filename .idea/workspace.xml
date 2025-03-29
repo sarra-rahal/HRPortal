@@ -5,27 +5,46 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="84417b3a-da8d-4c40-ad47-5e2ea64ae2cf" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/models/VerificationCode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repositories/VerificationCodeRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-leaves/manage-leaves.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-training/manage-training.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/profile/profile.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/training/training.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/app/layout/navbar/navbar.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/config/WebSocketConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/config/WebSocketConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/LeaveController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/LeaveController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/AuthController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/TrainingController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/TrainingController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/dtos/auth/SignInResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/dtos/auth/SignInResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repositories/EmployeeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repositories/EmployeeRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/models/Training.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/models/Training.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repositories/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repositories/UserRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/EmailService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/LeaveService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/LeaveService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/TrainingService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/TrainingService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/auth/sign-in/sign-in.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/auth/sign-in/sign-in.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/core/models/notification.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/core/models/notification.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/auth/sign-up/sign-up.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/auth/sign-up/sign-up.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/auth/sign-up/sign-up.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/auth/sign-up/sign-up.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/core/guards/auth.guard.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/core/guards/auth.guard.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/core/models/training.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/core/models/training.model.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/core/services/api.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/core/services/api.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/core/services/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/core/services/auth.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/core/services/websocket.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/core/services/websocket.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.component.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/manage-leaves/manage-leaves.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-leaves/manage-leaves.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/manage-leaves/manage-leaves.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-leaves/manage-leaves.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/manage-training/manage-training.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-training/manage-training.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/manage-training/manage-training.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-training/manage-training.component.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/features/manage-training/manage-training.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-training/manage-training.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/profile/profile.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/profile/profile.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/training/training.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/training/training.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/training/training.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/training/training.component.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/features/training/training.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/training/training.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/welcome/welcome.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/welcome/welcome.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/welcome/welcome.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/welcome/welcome.component.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/welcome/welcome.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/welcome/welcome.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/layout/footer/footer.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/layout/footer/footer.component.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/layout/footer/footer.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/layout/footer/footer.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/layout/navbar/navbar.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/layout/navbar/navbar.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/styles.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/styles.scss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,8 +55,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="HTML File" />
-        <option value="TypeScript File" />
         <option value="Class" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
@@ -57,7 +76,7 @@
   }
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -118,6 +137,9 @@
     </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="StructureViewState">
+    <option name="selectedTab" value="Logical" />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="84417b3a-da8d-4c40-ad47-5e2ea64ae2cf" name="Changes" comment="" />
@@ -140,7 +162,13 @@
       <workItem from="1742682884622" duration="2304000" />
       <workItem from="1742690305291" duration="181000" />
       <workItem from="1742699913942" duration="22360000" />
-      <workItem from="1742780355744" duration="1107000" />
+      <workItem from="1742780355744" duration="8685000" />
+      <workItem from="1742845107280" duration="14842000" />
+      <workItem from="1742904899215" duration="32323000" />
+      <workItem from="1742994874235" duration="2864000" />
+      <workItem from="1743026758525" duration="5127000" />
+      <workItem from="1743121016781" duration="5203000" />
+      <workItem from="1743198020862" duration="8904000" />
     </task>
     <servers />
   </component>
@@ -157,16 +185,5 @@
         </entry>
       </map>
     </option>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/frontend/src/app/features/welcome/welcome.component.ts</url>
-          <line>27</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

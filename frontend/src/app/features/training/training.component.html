@@ -1,51 +1,125 @@
 <app-navbar></app-navbar>
 <app-sidebar></app-sidebar>
-<div class="container mt-4">
-  <h2>Available Trainings</h2>
-  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
 
-  <table class="table table-striped" *ngIf="!errorMessage">
-    <thead>
-    <tr>
-      <th>Title</th>
-      <th>Description</th>
-      <th>Start Date</th>
-      <th>End Date</th>
-      <th>Capacity</th>
-      <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let training of trainings">
-      <td>{{ training.title }}</td>
-      <td>{{ training.description }}</td>
-      <td>{{ training.startDate | date }}</td>
-      <td>{{ training.endDate | date }}</td>
-      <td>{{ training.enrolledCount }} / {{ training.capacity }}</td>
-      <td>
-        <button class="btn btn-primary btn-sm" (click)="enroll(training.id)"
-                [disabled]="isEnrollButtonDisabled(training)">
-          Enroll
-        </button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+<div class="main-container">
+  <div class="content-container container mt-4">
+    <!-- View Toggle Buttons -->
+    <div class="btn-group mb-4" role="group">
+      <button class="btn btn-primary"
+              [class.active]="currentView === 'available'"
+              (click)="currentView = 'available'">
+        Available Trainings
+      </button>
+      <button class="btn btn-primary"
+              [class.active]="currentView === 'enrollments'"
+              (click)="currentView = 'enrollments'">
+        My Enrollments
+      </button>
+    </div>
 
-  <h3 class="mt-4">My Enrollments</h3>
-  <table class="table table-striped">
-    <thead>
-    <tr>
-      <th>Title</th>
-      <th>Status</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let enrollment of enrollments">
-      <td>{{ enrollment.training.title }}</td>
-      <td>{{ enrollment.status }}</td>
-    </tr>
-    </tbody>
-  </table>
+    <!-- Available Trainings View -->
+    <div *ngIf="currentView === 'available'">
+      <!-- Search and Filter Controls -->
+      <div class="filter-section mb-4">
+        <div class="row">
+          <div class="col-md-4">
+            <input class="form-control" placeholder="Search trainings..."
+                   [(ngModel)]="searchTerm" (ngModelChange)="filterTrainings()">
+          </div>
+          <div class="col-md-4">
+            <select class="form-control" [(ngModel)]="selectedCategory" (ngModelChange)="filterTrainings()">
+              <option value="">All Categories</option>
+              <option *ngFor="let category of categories" [value]="category">{{category}}</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <select class="form-control" [(ngModel)]="selectedStatus" (ngModelChange)="filterTrainings()">
+              <option value="">All Status</option>
+              <option value="UPCOMING">Upcoming</option>
+              <option value="IN_PROGRESS">In Progress</option>
+              <option value="COMPLETED">Completed</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="isLoading" class="text-center my-4">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <!-- Available Trainings -->
+      <div *ngIf="!isLoading && errorMessage" class="alert alert-danger">{{errorMessage}}</div>
+
+      <div class="row" *ngIf="!isLoading && !errorMessage">
+        <div class="col-md-4 mb-3" *ngFor="let training of filteredTrainings">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">{{training.title}}</h5>
+              <span class="badge bg-secondary mb-2">{{training.category}}</span>
+              <p class="card-text">{{training.description}}</p>
+              <div class="training-details">
+                <div><strong>Status:</strong> {{getTrainingStatus(training)}}</div>
+                <div><strong>Dates:</strong> {{training.startDate | date}} - {{training.endDate | date}}</div>
+                <div><strong>Capacity:</strong> {{training.enrolledCount}}/{{training.capacity}}</div>
+                <div *ngIf="training.rating"><strong>Rating:</strong> {{training.rating}}/5</div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button class="btn btn-primary btn-sm me-2"
+                      (click)="enroll(training.id)"
+                      [disabled]="isEnrollButtonDisabled(training)">
+                Enroll
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- My Enrollments View -->
+    <div *ngIf="currentView === 'enrollments'">
+      <h3>My Enrollments</h3>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th>Enrollment Status</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let enrollment of enrollments">
+            <td>{{enrollment.training.title}}</td>
+            <td>{{enrollment.training.category}}</td>
+            <td>{{getTrainingStatus(enrollment.training)}}</td>
+            <td>
+                <span class="badge" [ngClass]="{
+                  'bg-success': enrollment.status === 'APPROVED',
+                  'bg-warning': enrollment.status === 'PENDING',
+                  'bg-danger': enrollment.status === 'REJECTED'
+                }">{{enrollment.status}}</span>
+            </td>
+            <td>
+              <button class="btn btn-outline-danger btn-sm"
+                      (click)="cancelEnrollment(enrollment.id)"
+                      [disabled]="enrollment.status !== 'PENDING' || cancellingEnrollment === enrollment.id"
+                      [class.btn-loading]="cancellingEnrollment === enrollment.id">
+                <span *ngIf="cancellingEnrollment !== enrollment.id">Cancel</span>
+                <span *ngIf="cancellingEnrollment === enrollment.id" class="spinner-border spinner-border-sm" role="status"></span>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
+
 <app-footer></app-footer>

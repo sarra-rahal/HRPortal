@@ -23,6 +23,15 @@ public class AuthController {
         return response.isSuccess() ? ResponseEntity.ok(response) : ResponseEntity.badRequest().body(response);
     }
 
+    @PostMapping("/verify")
+    public ResponseEntity<SignUpResponse> verifyCode(
+            @RequestParam String email,
+            @RequestParam String code,
+            @RequestBody SignUpRequest request) {
+        SignUpResponse response = authService.verifyCode(email, code, request);
+        return response.isSuccess() ? ResponseEntity.ok(response) : ResponseEntity.badRequest().body(response);
+    }
+
     @PostMapping("/signin")
     public ResponseEntity<SignInResponse> signIn(@RequestBody SignInRequest request) {
         SignInResponse response = authService.signIn(request);

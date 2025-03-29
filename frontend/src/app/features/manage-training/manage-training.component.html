@@ -1,75 +1,118 @@
 <app-navbar></app-navbar>
 <app-sidebar></app-sidebar>
-<div class="container mt-4">
-  <h2>Manage Trainings</h2>
-  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
 
-  <div class="card mb-4" *ngIf="!errorMessage">
-    <div class="card-body">
-      <h3>Create New Training</h3>
-      <form (submit)="createTraining()">
-        <div class="mb-3">
-          <input type="text" class="form-control" placeholder="Title" [(ngModel)]="newTraining.title" name="title" required>
-        </div>
-        <div class="mb-3">
-          <textarea class="form-control" placeholder="Description" [(ngModel)]="newTraining.description" name="description" required></textarea>
-        </div>
-        <div class="mb-3">
-          <input type="datetime-local" class="form-control" [(ngModel)]="newTraining.startDate" name="startDate" required>
-        </div>
-        <div class="mb-3">
-          <input type="datetime-local" class="form-control" [(ngModel)]="newTraining.endDate" name="endDate" required>
-        </div>
-        <div class="mb-3">
-          <input type="number" class="form-control" placeholder="Capacity" [(ngModel)]="newTraining.capacity" name="capacity" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Create</button>
-      </form>
+<div class="main-container">
+  <div class="content-container container mt-4">
+    <h2>Manage Trainings</h2>
+
+    <!-- View Toggle Buttons -->
+    <div class="btn-group mb-4" role="group">
+      <button class="btn btn-primary"
+              [class.active]="currentView === 'create'"
+              (click)="currentView = 'create'">
+        Create Training
+      </button>
+      <button class="btn btn-primary"
+              [class.active]="currentView === 'list'"
+              (click)="currentView = 'list'">
+        Training List
+      </button>
+      <button class="btn btn-primary"
+              [class.active]="currentView === 'enrollments'"
+              (click)="currentView = 'enrollments'">
+        Pending Enrollments
+      </button>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+    <!-- Create Training View -->
+    <div *ngIf="currentView === 'create' && !errorMessage" class="card mb-4">
+      <div class="card-body">
+        <h3>Create New Training</h3>
+        <form (submit)="createTraining()">
+          <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Title"
+                   [(ngModel)]="newTraining.title" name="title" required>
+          </div>
+          <div class="mb-3">
+            <textarea class="form-control" placeholder="Description"
+                      [(ngModel)]="newTraining.description" name="description" required></textarea>
+          </div>
+          <div class="mb-3">
+            <input type="datetime-local" class="form-control"
+                   [(ngModel)]="newTraining.startDate" name="startDate" required>
+          </div>
+          <div class="mb-3">
+            <input type="datetime-local" class="form-control"
+                   [(ngModel)]="newTraining.endDate" name="endDate" required>
+          </div>
+          <div class="mb-3">
+            <input type="number" class="form-control" placeholder="Capacity"
+                   [(ngModel)]="newTraining.capacity" name="capacity" required>
+          </div>
+          <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Category"
+                   [(ngModel)]="newTraining.category" name="category" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Training List View -->
+    <div *ngIf="currentView === 'list' && !errorMessage">
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>Title</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Capacity</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let training of trainings">
+          <td>{{ training.title }}</td>
+          <td>{{ training.startDate | date }}</td>
+          <td>{{ training.endDate | date }}</td>
+          <td>{{ training.enrolledCount }} / {{ training.capacity }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pending Enrollments View -->
+    <div *ngIf="currentView === 'enrollments' && !errorMessage">
+      <h3>Pending Enrollments</h3>
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>Training</th>
+          <th>Employee</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let enrollment of enrollments">
+          <td>{{ enrollment.training.title }}</td>
+          <td>{{ enrollment.employeeEmail }}</td>
+          <td>{{ enrollment.status }}</td>
+          <td>
+            <button class="btn btn-success btn-sm me-2"
+                    (click)="reviewEnrollment(enrollment.id, 'APPROVED')"
+                    [disabled]="enrollment.status !== 'PENDING'">Approve</button>
+            <button class="btn btn-danger btn-sm"
+                    (click)="reviewEnrollment(enrollment.id, 'REJECTED')"
+                    [disabled]="enrollment.status !== 'PENDING'">Reject</button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
     </div>
   </div>
-
-  <table class="table table-striped" *ngIf="!errorMessage">
-    <thead>
-    <tr>
-      <th>Title</th>
-      <th>Start Date</th>
-      <th>End Date</th>
-      <th>Capacity</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let training of trainings">
-      <td>{{ training.title }}</td>
-      <td>{{ training.startDate | date }}</td>
-      <td>{{ training.endDate | date }}</td>
-      <td>{{ training.enrolledCount }} / {{ training.capacity }}</td>
-    </tr>
-    </tbody>
-  </table>
-
-  <h3 class="mt-4">Pending Enrollments</h3>
-  <table class="table table-striped">
-    <thead>
-    <tr>
-      <th>Training</th>
-      <th>Employee</th>
-      <th>Status</th>
-      <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let enrollment of enrollments">
-      <td>{{ enrollment.training.title }}</td>
-      <td>{{ enrollment.employeeEmail }}</td>
-      <td>{{ enrollment.status }}</td>
-      <td>
-        <button class="btn btn-success btn-sm me-2" (click)="reviewEnrollment(enrollment.id, 'APPROVED')"
-                [disabled]="enrollment.status !== 'PENDING'">Approve</button>
-        <button class="btn btn-danger btn-sm" (click)="reviewEnrollment(enrollment.id, 'REJECTED')"
-                [disabled]="enrollment.status !== 'PENDING'">Reject</button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
 </div>
+
 <app-footer></app-footer>

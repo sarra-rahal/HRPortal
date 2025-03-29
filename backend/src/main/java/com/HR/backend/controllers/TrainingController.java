@@ -36,6 +36,14 @@ public class TrainingController {
         return trainingService.enroll(trainingId, email, token);
     }
 
+    @DeleteMapping("/cancel/{enrollmentId}")
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    public ResponseEntity<Void> cancelEnrollment(@PathVariable Long enrollmentId) {
+        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        trainingService.cancelEnrollment(enrollmentId, email);
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("/review/{enrollmentId}")
     @PreAuthorize("hasRole('HR_MANAGER')")
     public TrainingEnrollment reviewEnrollment(@PathVariable Long enrollmentId,

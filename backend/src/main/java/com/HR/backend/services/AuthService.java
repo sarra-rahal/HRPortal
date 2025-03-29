@@ -7,13 +7,18 @@ import com.HR.backend.dtos.auth.SignUpRequest;
 import com.HR.backend.dtos.auth.SignUpResponse;
 import com.HR.backend.models.Employee;
 import com.HR.backend.models.User;
+import com.HR.backend.models.VerificationCode;
 import com.HR.backend.repositories.EmployeeRepository;
 import com.HR.backend.repositories.UserRepository;
+import com.HR.backend.repositories.VerificationCodeRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -23,28 +28,67 @@ public class AuthService {
 
     private final EmployeeRepository employeeRepository;
     private final UserRepository userRepository;
+    private final VerificationCodeRepository verificationCodeRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final EmailService emailService;
 
     public SignUpResponse signUp(SignUpRequest request) {
         logger.info("Processing signup for CIN: {}", request.getCin());
 
         if (!request.getPassword().equals(request.getConfirmPassword())) {
-            logger.warn("Passwords do not match for CIN: {}", request.getCin());
+            logger.warn("Passwords are not matching for the cin : {}", request.getCin());
             return SignUpResponse.error("Passwords do not match", "PASSWORD_MISMATCH");
         }
 
         Employee employee = employeeRepository.findByCin(request.getCin())
-                .orElseThrow(() -> new IllegalArgumentException("CIN not found"));
+                .orElseThrow(() -> new IllegalArgumentException("No employee with this CIN"));
 
         if (userRepository.existsByCin(request.getCin())) {
-            logger.warn("Account already exists for CIN: {}", request.getCin());
-            return SignUpResponse.error("Account already exists for this CIN", "CIN_EXISTS");
+            logger.warn("Account already exists for the employee with the CIN: {}", request.getCin());
+            return SignUpResponse.error("Account already exists for the employee with this CIN", "CIN_EXISTS");
         }
         if (userRepository.existsByEmail(request.getEmail())) {
             logger.warn("Email {} already in use", request.getEmail());
-            return SignUpResponse.error("Email already in use", "EMAIL_EXISTS");
+            return SignUpResponse.error("Already exists an account with this email", "EMAIL_EXISTS");
         }
+
+        // Generate and send verification code
+        String code = generateVerificationCode();
+        VerificationCode verificationCode = new VerificationCode();
+        verificationCode.setEmail(request.getEmail());
+        verificationCode.setCode(code);
+        verificationCode.setExpiresAt(LocalDateTime.now().plusMinutes(15));
+        verificationCodeRepository.save(verificationCode);
+
+        // Send email with verification code
+        String maskedEmail = maskEmail(request.getEmail());
+        emailService.sendEmail(
+                "noreply@hrportal.com",
+                request.getEmail(),
+                "Verify Your HR Portal Account",
+                "Your verification code is: " + code + "\nThis code expires in 15 minutes."
+        );
+
+        return SignUpResponse.success("Verification code sent to " + maskedEmail + ". Please check your email.");
+    }
+
+    public SignUpResponse verifyCode(String email, String code, SignUpRequest request) {
+        VerificationCode verificationCode = verificationCodeRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("No verification code found for this email"));
+
+        if (LocalDateTime.now().isAfter(verificationCode.getExpiresAt())) {
+            verificationCodeRepository.delete(verificationCode);
+            return SignUpResponse.error("Verification code expired", "CODE_EXPIRED");
+        }
+
+        if (!verificationCode.getCode().equals(code)) {
+            return SignUpResponse.error("Invalid verification code", "INVALID_CODE");
+        }
+
+        // Code is valid, proceed with user creation
+        Employee employee = employeeRepository.findByCin(request.getCin())
+                .orElseThrow(() -> new IllegalArgumentException("CIN not found"));
 
         User user = new User();
         user.setCin(request.getCin());
@@ -55,8 +99,21 @@ public class AuthService {
                 : User.UserRole.EMPLOYEE);
 
         userRepository.save(user);
+        verificationCodeRepository.delete(verificationCode); // Clean up
         logger.info("User created with role: {}", user.getRole());
         return SignUpResponse.success("Account created successfully.");
+    }
+
+    private String generateVerificationCode() {
+        Random random = new Random();
+        return String.format("%06d", random.nextInt(1000000));
+    }
+
+    private String maskEmail(String email) {
+        String[] parts = email.split("@");
+        String localPart = parts[0];
+        String domain = parts[1];
+        return "*****" + localPart.charAt(localPart.length() - 1) + "@" + domain;
     }
 
     public SignInResponse signIn(SignInRequest request) {

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 interface SignUpResponse {
   success: boolean;
@@ -19,10 +19,14 @@ interface SignUpResponse {
 })
 export class SignUpComponent implements OnInit {
   signUpForm!: FormGroup;
+  verifyForm!: FormGroup;
   loading = false;
-  isSuccess: boolean = false;
+  isSuccess = false;
   successMessage: string | null = null;
   errorMessage: string | null = null;
+  showVerifyForm = false;
+  signupData: any = null;
+  maskedEmail: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -37,6 +41,10 @@ export class SignUpComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$')]],
       confirmPassword: ['', Validators.required]
     }, { validator: this.passwordMatchValidator });
+
+    this.verifyForm = this.fb.group({
+      code: ['', [Validators.required, Validators.pattern('^[0-9]{6}$')]]
+    });
   }
 
   passwordMatchValidator(form: FormGroup) {
@@ -51,26 +59,53 @@ export class SignUpComponent implements OnInit {
     this.successMessage = null;
     this.errorMessage = null;
 
-    const signUpData = this.signUpForm.value;
-    this.http.post<SignUpResponse>('http://localhost:8080/api/auth/signup', signUpData).subscribe({
+    this.signupData = this.signUpForm.value;
+    this.http.post<SignUpResponse>('http://localhost:8080/api/auth/signup', this.signupData).subscribe({
       next: (response) => {
         this.loading = false;
         if (response.success) {
           this.successMessage = response.message;
-          setTimeout(() => this.router.navigate(['/sign-in']), 2000); // Redirect after 2s
+          this.maskedEmail = response.message.split("to ")[1]?.replace(".", "") || '';
+          this.showVerifyForm = true;
         }
       },
       error: (error: HttpErrorResponse) => {
         this.loading = false;
         this.errorMessage = error.error?.message || 'An error occurred. Please try again.';
-        console.error('Signup error:', error); // Debug log
       }
     });
   }
-  ggoToSignIn() {
-    const backdrop = document.querySelector('.modal-backdrop');
-    if (backdrop) backdrop.remove();
-    document.body.classList.remove('modal-open');
+
+  onVerifySubmit() {
+    if (this.verifyForm.invalid || !this.signupData) return;
+
+    this.loading = true;
+    this.successMessage = null;
+    this.errorMessage = null;
+
+    const verifyData = {
+      email: this.signupData.email,
+      code: this.verifyForm.value.code
+    };
+
+    this.http.post<SignUpResponse>('http://localhost:8080/api/auth/verify', this.signupData, {
+      params: verifyData
+    }).subscribe({
+      next: (response) => {
+        this.loading = false;
+        if (response.success) {
+          this.successMessage = response.message;
+          setTimeout(() => this.router.navigate(['/sign-in']), 2000);
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.loading = false;
+        this.errorMessage = error.error?.message || 'Invalid or expired code.';
+      }
+    });
+  }
+
+  goToSignIn() {
     this.router.navigate(['/sign-in']);
   }
 }

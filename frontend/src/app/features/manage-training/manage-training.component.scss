@@ -1,34 +1,21 @@
-.container {
-  max-width: 1200px;
+.main-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.table, .card {
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.content-container {
+  flex: 1 0 auto;
 }
 
-.btn-primary {
-  background-color: #007bff;
-  border: none;
-}
-
-.btn-success {
-  background-color: #28a745;
-}
-
-.btn-danger {
-  background-color: #dc3545;
-}
-
-.btn-sm {
-  padding: 0.25rem 0.5rem;
-  &:disabled {
-    background-color: #6c757d;
-    cursor: not-allowed;
+.btn-group .btn {
+  border-radius: 0;
+  &:first-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
   }
-}
-
-.form-control {
-  border-radius: 4px;
+  &:last-child {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
 }

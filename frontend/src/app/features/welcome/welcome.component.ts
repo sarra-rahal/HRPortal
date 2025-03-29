@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../../layout/navbar/navbar.component';
 import { SidebarComponent } from '../../layout/sidebar/sidebar.component';
 import { FooterComponent } from '../../layout/footer/footer.component';
-import {AuthService} from '../../core/services/auth.service';
+import { AuthService } from '../../core/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-welcome',
@@ -13,7 +14,7 @@ import {AuthService} from '../../core/services/auth.service';
   styleUrls: ['./welcome.component.scss']
 })
 export class WelcomeComponent {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   get role(): string | null {
     return this.authService.getRole();
@@ -25,5 +26,9 @@ export class WelcomeComponent {
 
   get lastname(): string | null {
     return this.authService.getLastname();
+  }
+
+  navigateTo(path: string): void {
+    this.router.navigate([path]);
   }
 }

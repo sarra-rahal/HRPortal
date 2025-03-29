@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ApiService } from '../../core/services/api.service';
-import {NavbarComponent} from '../../layout/navbar/navbar.component';
-import {SidebarComponent} from '../../layout/sidebar/sidebar.component';
-import {FooterComponent} from '../../layout/footer/footer.component';
+import { NavbarComponent } from '../../layout/navbar/navbar.component';
+import { SidebarComponent } from '../../layout/sidebar/sidebar.component';
+import { FooterComponent } from '../../layout/footer/footer.component';
+import {ManageLeavesService} from './manage-leaves.service';
 
 interface LeaveRequest {
   id: number;
@@ -11,6 +11,7 @@ interface LeaveRequest {
   leaveType: string;
   startDate: string;
   endDate: string;
+  duration: number;
   reason: string;
   status: string;
 }
@@ -27,7 +28,7 @@ export class ManageLeavesComponent implements OnInit {
   error: string | null = null;
   loading: boolean = false;
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ManageLeavesService) {}
 
   ngOnInit(): void {
     this.loadPendingRequests();

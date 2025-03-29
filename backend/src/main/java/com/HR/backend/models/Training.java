@@ -29,4 +29,10 @@ public class Training {
 
     @Column(name = "enrolled_count", nullable = false)
     private int enrolledCount = 0;
+
+    @Column(nullable = false)
+    private String category;
+
+    @Column
+    private Double rating;
 }

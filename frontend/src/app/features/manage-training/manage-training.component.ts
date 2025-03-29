@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ApiService } from '../../core/services/api.service';
 import { WebsocketService } from '../../core/services/websocket.service';
 import { Subscription } from 'rxjs';
 import { Training, TrainingEnrollment } from '../../core/models/training.model';
@@ -10,6 +9,7 @@ import {NavbarComponent} from '../../layout/navbar/navbar.component';
 import {SidebarComponent} from '../../layout/sidebar/sidebar.component';
 import {FooterComponent} from '../../layout/footer/footer.component';
 import {AuthService} from '../../core/services/auth.service';
+import {ManageTrainingService} from './manage-training.service';
 
 @Component({
   selector: 'app-manage-training',
@@ -21,12 +21,23 @@ import {AuthService} from '../../core/services/auth.service';
 export class ManageTrainingComponent implements OnInit, OnDestroy {
   trainings: Training[] = [];
   enrollments: TrainingEnrollment[] = [];
-  newTraining: Training = { id: 0, title: '', description: '', startDate: '', endDate: '', capacity: 0, enrolledCount: 0 };
+  newTraining: Training = {
+    id: 0,
+    title: '',
+    description: '',
+    startDate: '',
+    endDate: '',
+    capacity: 0,
+    enrolledCount: 0,
+    category: '',
+    rating: 0
+  };
   errorMessage: string = '';
+  currentView: 'create' | 'list' | 'enrollments' = 'create';
   private wsSub!: Subscription;
 
   constructor(
-    private apiService: ApiService,
+    private apiService: ManageTrainingService,
     private authService: AuthService,
     private websocketService: WebsocketService,
     private router: Router
@@ -37,6 +48,7 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
       this.router.navigate(['/unauthorized']);
       return;
     }
+    this.currentView = 'create';
     this.fetchTrainings();
     this.fetchEnrollments();
     this.setupWebSocket();
@@ -64,7 +76,17 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
     this.apiService.createTraining(this.newTraining).subscribe({
       next: () => {
         this.fetchTrainings();
-        this.newTraining = { id: 0, title: '', description: '', startDate: '', endDate: '', capacity: 0, enrolledCount: 0 };
+        this.newTraining = {
+          id: 0,
+          title: '',
+          description: '',
+          startDate: '',
+          endDate: '',
+          capacity: 0,
+          enrolledCount: 0,
+          category: '',
+          rating: 0
+        };
       },
       error: (err) => this.errorMessage = 'Error creating training: ' + err.message
     });
@@ -80,7 +102,10 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
   private setupWebSocket(): void {
     const hrEmail = this.authService.getEmail() || '';
     this.wsSub = this.websocketService.connect(`/topic/notifications/${hrEmail}`).subscribe({
-      next: () => this.fetchEnrollments(),
+      next: (message) => {
+        console.log('WebSocket Notification:', message); // For debugging
+        this.fetchEnrollments(); // Refresh enrollments on notification
+      },
       error: (err) => console.error('WebSocket error:', err)
     });
   }

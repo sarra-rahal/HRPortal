@@ -51,7 +51,6 @@ public class LeaveService {
 
         LeaveRequest savedRequest = leaveRequestRepository.save(request);
 
-        //notify
         String hrMessage = String.format(
                 "New leave request from %s %s: %s (%s to %s)",
                 employee.getFirstname(), employee.getLastname(), request.getLeaveType(),

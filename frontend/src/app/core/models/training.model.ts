@@ -6,6 +6,8 @@ export interface Training {
   endDate: string;
   capacity: number;
   enrolledCount: number;
+  category : string ;
+  rating : number ;
 }
 
 export interface TrainingEnrollment {
