@@ -23,13 +23,12 @@ public class TrainingController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('HR_MANAGER')")
+    @PreAuthorize("hasAuthority('HR_MANAGER')")
     public Training createTraining(@RequestBody Training training, @RequestHeader("Authorization") String token) {
         return trainingService.createTraining(training, token);
     }
 
     @PostMapping("/enroll/{trainingId}")
-    @PreAuthorize("hasRole('EMPLOYEE')")
     public TrainingEnrollment enroll(@PathVariable Long trainingId,
                                      @RequestHeader("Authorization") String token) {
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -37,7 +36,6 @@ public class TrainingController {
     }
 
     @DeleteMapping("/cancel/{enrollmentId}")
-    @PreAuthorize("hasRole('EMPLOYEE')")
     public ResponseEntity<Void> cancelEnrollment(@PathVariable Long enrollmentId) {
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         trainingService.cancelEnrollment(enrollmentId, email);
@@ -45,7 +43,7 @@ public class TrainingController {
     }
 
     @PutMapping("/review/{enrollmentId}")
-    @PreAuthorize("hasRole('HR_MANAGER')")
+    @PreAuthorize("hasAuthority('HR_MANAGER')")
     public TrainingEnrollment reviewEnrollment(@PathVariable Long enrollmentId,
                                                @RequestParam String status,
                                                @RequestHeader("Authorization") String token) {
@@ -53,7 +51,15 @@ public class TrainingController {
     }
 
     @GetMapping("/my-enrollments")
-    public List<TrainingEnrollment> getMyEnrollments(@RequestParam String employeeEmail) {
-        return trainingService.getEmployeeEnrollments(employeeEmail);
+    public List<TrainingEnrollment> getMyEnrollments() {
+        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("Fetching enrollments for user: " + email);
+        return trainingService.getEmployeeEnrollments(email);
+    }
+
+    @GetMapping("/pending-enrollments")
+    @PreAuthorize("hasAuthority('HR_MANAGER')")
+    public List<TrainingEnrollment> getPendingEnrollments() {
+        return trainingService.getPendingEnrollments();
     }
 }

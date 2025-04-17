@@ -1,14 +1,14 @@
-import {Component, OnInit, OnDestroy, Injectable} from '@angular/core';
+import { Component, OnInit, OnDestroy, Injectable } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { WebsocketService } from '../../core/services/websocket.service';
 import { Subscription } from 'rxjs';
 import { Training, TrainingEnrollment } from '../../core/models/training.model';
-import {NavbarComponent} from '../../layout/navbar/navbar.component';
-import {SidebarComponent} from '../../layout/sidebar/sidebar.component';
-import {FooterComponent} from '../../layout/footer/footer.component';
-import {AuthService} from '../../core/services/auth.service';
-import {TrainingService} from './training.service';
+import { NavbarComponent } from '../../layout/navbar/navbar.component';
+import { SidebarComponent } from '../../layout/sidebar/sidebar.component';
+import { FooterComponent } from '../../layout/footer/footer.component';
+import { AuthService } from '../../core/services/auth.service';
+import { TrainingService } from './training.service';
 
 @Injectable({ providedIn: 'root' })
 export class ToastService {
@@ -27,7 +27,7 @@ export class ToastService {
   imports: [CommonModule, FormsModule, NavbarComponent, SidebarComponent, FooterComponent],
   templateUrl: './training.component.html',
   styleUrls: ['./training.component.scss'],
-  providers: [ToastService] // Provide ToastService at component level
+  providers: [ToastService]
 })
 export class TrainingComponent implements OnInit, OnDestroy {
   trainings: Training[] = [];
@@ -42,7 +42,7 @@ export class TrainingComponent implements OnInit, OnDestroy {
   categories: string[] = [];
   private wsSub!: Subscription;
   currentView: 'available' | 'enrollments' = 'available';
-  cancellingEnrollment: number | null = null; // Track which enrollment is being cancelled
+  cancellingEnrollment: number | null = null;
 
   constructor(
     private apiService: TrainingService,
@@ -54,7 +54,10 @@ export class TrainingComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (!this.employeeEmail) return;
+    if (!this.employeeEmail) {
+      this.toastService.show('Please sign in to view trainings', 'error');
+      return;
+    }
     this.isLoading = true;
     this.currentView = 'available';
     this.fetchTrainings();
@@ -76,15 +79,23 @@ export class TrainingComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.errorMessage = 'Error fetching trainings: ' + err.message;
+        this.toastService.show(this.errorMessage, 'error');
         this.isLoading = false;
       }
     });
   }
 
   fetchEnrollments(): void {
-    this.apiService.getMyEnrollments(this.employeeEmail).subscribe({
-      next: (enrollments) => this.enrollments = enrollments,
-      error: (err) => this.errorMessage = 'Error fetching enrollments: ' + err.message
+    this.apiService.getMyEnrollments().subscribe({
+      next: (enrollments) => {
+        this.enrollments = enrollments;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.errorMessage = 'Error fetching enrollments: ' + err.message;
+        this.toastService.show(this.errorMessage, 'error');
+        this.isLoading = false;
+      }
     });
   }
 
@@ -96,8 +107,8 @@ export class TrainingComponent implements OnInit, OnDestroy {
         this.fetchTrainings();
       },
       error: (err) => {
-        this.toastService.show('Error enrolling: ' + err.message, 'error');
         this.errorMessage = 'Error enrolling: ' + err.message;
+        this.toastService.show(this.errorMessage, 'error');
       }
     });
   }
@@ -113,8 +124,8 @@ export class TrainingComponent implements OnInit, OnDestroy {
           this.cancellingEnrollment = null;
         },
         error: (err) => {
-          this.toastService.show('Error cancelling enrollment: ' + err.message, 'error');
           this.errorMessage = 'Error cancelling enrollment: ' + err.message;
+          this.toastService.show(this.errorMessage, 'error');
           this.cancellingEnrollment = null;
         }
       });

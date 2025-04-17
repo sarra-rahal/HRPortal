@@ -44,4 +44,9 @@ export class ManageTrainingService {
       params: { employeeEmail }
     });
   }
+  getPendingEnrollments(): Observable<TrainingEnrollment[]> {
+    return this.http.get<TrainingEnrollment[]>(`${this.apiUrl}/training/pending-enrollments`, {
+      headers: this.getAuthHeaders()
+    });
+  }
 }

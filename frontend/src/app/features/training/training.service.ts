@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import {Training, TrainingEnrollment} from '../../core/models/training.model';
+import { Training, TrainingEnrollment } from '../../core/models/training.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,14 +16,13 @@ export class TrainingService {
     const token = localStorage.getItem('token');
     console.log('Token being sent for request:', token);
     if (!token) {
-      console.error('No token found in localStorage - redirecting to sign-in');
+      console.error('No token found in localStorage');
     }
     return new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
   }
 
-  // Training
   getAllTrainings(): Observable<Training[]> {
     return this.http.get<Training[]>(`${this.apiUrl}/training/all`, { headers: this.getAuthHeaders() });
   }
@@ -36,11 +35,12 @@ export class TrainingService {
     );
   }
 
-  getMyEnrollments(employeeEmail: string): Observable<TrainingEnrollment[]> {
+  getMyEnrollments(): Observable<TrainingEnrollment[]> {
     return this.http.get<TrainingEnrollment[]>(`${this.apiUrl}/training/my-enrollments`, {
-      headers: this.getAuthHeaders(),
-      params: { employeeEmail }
-    });
+      headers: this.getAuthHeaders()
+    }).pipe(
+      catchError(this.handleError)
+    );
   }
 
   cancelEnrollment(enrollmentId: number): Observable<void> {

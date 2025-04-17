@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../../layout/navbar/navbar.component';
 import { SidebarComponent } from '../../layout/sidebar/sidebar.component';
 import { FooterComponent } from '../../layout/footer/footer.component';
-import {ManageLeavesService} from './manage-leaves.service';
+import { ManageLeavesService } from './manage-leaves.service';
 
 interface LeaveRequest {
   id: number;

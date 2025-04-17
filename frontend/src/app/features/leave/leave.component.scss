@@ -1,58 +1,18 @@
-.page-container {
+.main-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Full viewport height */
+  min-height: 100vh;
 }
 
-.content-wrap {
-  flex: 1 0 auto; /* Grows to fill space, pushes footer down */
-  padding-bottom: 60px; /* Matches footer height to prevent overlap */
+.content-container {
+  flex: 1 0 auto;
+  padding-bottom: 20px;
 }
 
-app-footer {
-  flex-shrink: 0; /* Footer stays fixed height */
-  height: 60px; /* Explicit height, adjust if your footer differs */
-}
-
-.accordion-section {
-  margin-bottom: 15px;
-}
-
-.accordion-btn {
-  width: 100%;
-  padding: 10px 15px;
-  background-color: #f8f9fa;
-  border: 1px solid #ced4da;
+.filter-section {
+  padding: 15px;
+  background: #f8f9fa;
   border-radius: 5px;
-  text-align: left;
-  font-size: 1.1rem;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  &:hover {
-    background-color: #e9ecef;
-  }
-}
-
-.accordion-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease-out;
-  background-color: #fff;
-  border: 1px solid #ced4da;
-  border-top: none;
-  border-radius: 0 0 5px 5px;
-
-  &.expanded {
-    max-height: 500px; /* Adjust based on content; could use 'auto' with JS */
-    padding: 15px;
-  }
-}
-
-.card-body {
-  padding: 0;
 }
 
 .form-group {
@@ -76,11 +36,6 @@ app-footer {
   }
 }
 
-.success {
-  color: #28a745;
-  font-weight: bold;
-}
-
 .table {
   width: 100%;
   th, td {
@@ -92,6 +47,18 @@ app-footer {
   }
 }
 
+.btn-group .btn {
+  border-radius: 0;
+  &:first-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+  &:last-child {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+}
+
 .btn-primary {
   background-color: #007bff;
   border: none;
@@ -99,5 +66,52 @@ app-footer {
   border-radius: 5px;
   &:disabled {
     background-color: #6c757d;
+  }
+}
+
+.btn-outline-primary {
+  border-color: #007bff;
+  color: #007bff;
+  &:hover {
+    background-color: #007bff;
+    color: white;
+  }
+  &:disabled {
+    border-color: #6c757d;
+    color: #6c757d;
+  }
+}
+
+.btn-outline-danger {
+  position: relative;
+  &.btn-loading {
+    padding-right: 2.5rem;
+    .spinner-border {
+      position: absolute;
+      right: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+}
+
+.badge {
+  font-size: 0.8rem;
+}
+
+.toast-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 25px;
+  border-radius: 5px;
+  color: white;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  &.success {
+    background-color: #28a745;
+  }
+  &.error {
+    background-color: #dc3545;
   }
 }

@@ -1,0 +1,164 @@
+<!-- src/app/manage-document/manage-document.component.html -->
+<app-navbar></app-navbar>
+<app-sidebar></app-sidebar>
+
+<div class="main-container">
+  <div class="content-container container mt-4">
+    <h2>Manage Documents</h2>
+
+    <!-- Toast Notification -->
+    <div *ngIf="toastService.toast$ | async as toast" class="toast-notification" [ngClass]="toast.type">
+      {{ toast.message }}
+    </div>
+
+    <!-- View Toggle Buttons -->
+    <div class="btn-group mb-4" role="group">
+      <button class="btn btn-primary"
+              [class.active]="currentView === 'upload'"
+              (click)="currentView = 'upload'">
+        Upload Document
+      </button>
+      <button class="btn btn-primary"
+              [class.active]="currentView === 'generate'"
+              (click)="currentView = 'generate'">
+        Generate Document
+      </button>
+      <button class="btn btn-primary"
+              [class.active]="currentView === 'list'"
+              (click)="currentView = 'list'">
+        Document List
+      </button>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="text-center my-4">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <!-- Upload Document View -->
+    <div *ngIf="currentView === 'upload' && !isLoading && !errorMessage" class="card mb-4">
+      <div class="card-body">
+        <h3>Upload Document</h3>
+        <form>
+          <div class="mb-3">
+            <label for="fileInput" class="form-label">Select File</label>
+            <input type="file" class="form-control" id="fileInput" (change)="onFileChange($event)">
+          </div>
+          <div class="mb-3">
+            <label for="accessibleByType" class="form-label">Access Type</label>
+            <select class="form-control" id="accessibleByType" [(ngModel)]="accessibleByType" name="accessibleByType"
+                    (ngModelChange)="onAccessibleByTypeChange()">
+              <option value="all_departments">All Departments</option>
+              <option value="department">Specific Department</option>
+              <option value="employees">Specific Employees</option>
+            </select>
+          </div>
+          <div class="mb-3" *ngIf="accessibleByType === 'department'">
+            <label for="department" class="form-label">Department</label>
+            <select class="form-control" id="department" [(ngModel)]="departmentValue" name="department"
+                    (ngModelChange)="fetchEmployees(departmentValue)">
+              <option value="">Select Department</option>
+              <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+            </select>
+          </div>
+          <div class="mb-3" *ngIf="accessibleByType === 'employees'">
+            <label for="employees" class="form-label">Employees (Select Multiple)</label>
+            <select class="form-control" id="employees" [(ngModel)]="employeeCins" name="employees" multiple>
+              <option *ngFor="let emp of employees" [value]="emp.cin">{{ emp.name }} (CIN: {{ emp.cin }})</option>
+            </select>
+          </div>
+          <button type="button" class="btn btn-primary" (click)="uploadDocument()" [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm"></span>
+            Upload
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Generate Document View -->
+    <div *ngIf="currentView === 'generate' && !isLoading && !errorMessage" class="card mb-4">
+      <div class="card-body">
+        <h3>Generate Document</h3>
+        <form>
+          <div class="mb-3">
+            <label for="templateType" class="form-label">Certificate Type</label>
+            <select class="form-control" id="templateType" [(ngModel)]="newDocument.templateType" name="templateType">
+              <option *ngFor="let type of templateTypes" [value]="type">{{ type | titlecase }}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Document Name"
+                   [(ngModel)]="newDocument.name" name="name" required>
+          </div>
+          <div class="mb-3">
+            <textarea class="form-control" placeholder="Document Content"
+                      [(ngModel)]="newDocument.content" name="content" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="accessibleByTypeGen" class="form-label">Access Type</label>
+            <select class="form-control" id="accessibleByTypeGen" [(ngModel)]="accessibleByType" name="accessibleByTypeGen"
+                    (ngModelChange)="onAccessibleByTypeChange()">
+              <option value="all_departments">All Departments</option>
+              <option value="department">Specific Department</option>
+              <option value="employees">Specific Employees</option>
+            </select>
+          </div>
+          <div class="mb-3" *ngIf="accessibleByType === 'department'">
+            <label for="departmentGen" class="form-label">Department</label>
+            <select class="form-control" id="departmentGen" [(ngModel)]="departmentValue" name="departmentGen"
+                    (ngModelChange)="fetchEmployees(departmentValue)">
+              <option value="">Select Department</option>
+              <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+            </select>
+          </div>
+          <div class="mb-3" *ngIf="accessibleByType === 'employees'">
+            <label for="employeesGen" class="form-label">Employees (Select Multiple)</label>
+            <select class="form-control" id="employeesGen" [(ngModel)]="employeeCins" name="employeesGen" multiple>
+              <option *ngFor="let emp of employees" [value]="emp.cin">{{ emp.name }} (CIN: {{ emp.cin }})</option>
+            </select>
+          </div>
+          <button type="button" class="btn btn-primary" (click)="generateDocument()" [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm"></span>
+            Generate
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Document List View -->
+    <div *ngIf="currentView === 'list' && !isLoading && !errorMessage">
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Uploaded By</th>
+          <th>Accessible By</th>
+          <th>Upload Date</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let doc of documents">
+          <td>{{ doc.name }}</td>
+          <td>{{ doc.uploadedBy }}</td>
+          <td>{{ formatAccessibleBy(doc.accessibleBy) }}</td>
+          <td>{{ doc.uploadDate | date }}</td>
+          <td>
+            <button class="btn btn-primary btn-sm" (click)="downloadDocument(doc.id, doc.name)" [disabled]="isLoading">
+              Download
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <p *ngIf="!documents.length" class="text-muted">No documents found.</p>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

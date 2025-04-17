@@ -1,9 +1,12 @@
 package com.HR.backend.services;
 
+import com.HR.backend.config.JwtUtil;
 import com.HR.backend.models.Employee;
 import com.HR.backend.models.LeaveRequest;
+import com.HR.backend.models.Notification;
 import com.HR.backend.repositories.EmployeeRepository;
 import com.HR.backend.repositories.LeaveRequestRepository;
+import com.HR.backend.repositories.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,24 +28,18 @@ public class LeaveService {
     private final EmployeeRepository employeeRepository;
     private final JavaMailSender mailSender;
     private final SimpMessagingTemplate messagingTemplate;
+    private final EmailService emailService;
+    private final JwtUtil jwtUtil;
+    private final NotificationRepository notificationRepository;
 
     private static final String HR_EMAIL = "rahalsarra2@gmail.com";
 
-    public LeaveRequest submitLeaveRequest(String employeeCin, LeaveRequest request) {
+    public LeaveRequest submitLeaveRequest(String employeeCin, LeaveRequest request, String token) {
         Employee employee = employeeRepository.findByCin(employeeCin)
-                .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Employee with this cin not found"));
 
         if (request.getStartDate().isAfter(request.getEndDate())) {
             throw new IllegalArgumentException("Start date must be before end date");
-        }
-
-        List<LeaveRequest> existingRequests = leaveRequestRepository.findByEmployeeCin(employeeCin);
-        for (LeaveRequest existing : existingRequests) {
-            if (request.getStartDate().isBefore(existing.getEndDate()) &&
-                    request.getEndDate().isAfter(existing.getStartDate()) &&
-                    !existing.getStatus().equals("DENIED")) {
-                throw new IllegalArgumentException("Leave request overlaps with an existing request");
-            }
         }
 
         request.setDuration((int) ChronoUnit.DAYS.between(request.getStartDate(), request.getEndDate()) + 1);
@@ -51,20 +48,34 @@ public class LeaveService {
 
         LeaveRequest savedRequest = leaveRequestRepository.save(request);
 
-        String hrMessage = String.format(
-                "New leave request from %s %s: %s (%s to %s)",
-                employee.getFirstname(), employee.getLastname(), request.getLeaveType(),
-                request.getStartDate(), request.getEndDate()
+        // Notify HR Manager
+        String senderEmail = jwtUtil.extractEmail(token.split(" ")[1]);
+        String hrNotification = String.format(
+                "New leave request from the employee %s %s with the cin %s ",
+                employee.getFirstname(), employee.getLastname(), employee.getCin()
         );
-        messagingTemplate.convertAndSend("/topic/notifications/" + HR_EMAIL, hrMessage);
-        notifyHrManager(employee, savedRequest);
+        String hrEmail = String.format(
+                """
+                        Employee %s %s (%s) has submitted a leave request:
+                        Type: %s
+                        Dates: %s to %s
+                        Reason: %s
+                        Please review in the HR Portal.""",
+                employee.getFirstname(), employee.getLastname(), employee.getCin(),
+                request.getLeaveType(), request.getStartDate(), request.getEndDate(), request.getReason()
+        );
+        notifyUser(HR_EMAIL, hrNotification);
+        messagingTemplate.convertAndSend("/topic/notifications/" + HR_EMAIL, hrNotification);
+        emailService.sendEmail(senderEmail, HR_EMAIL, "Leave request", hrEmail);
 
+        /*notifyHrManager(employee, savedRequest);*/
         return savedRequest;
     }
 
     public LeaveRequest cancelLeaveRequest(Long requestId, String employeeCin) {
         LeaveRequest request = leaveRequestRepository.findById(requestId)
                 .orElseThrow(() -> new IllegalArgumentException("Leave request not found"));
+
         if (!request.getEmployeeCin().equals(employeeCin)) {
             throw new IllegalArgumentException("You can only cancel your own requests");
         }
@@ -72,6 +83,15 @@ public class LeaveService {
             throw new IllegalArgumentException("Only pending requests can be canceled");
         }
         leaveRequestRepository.delete(request);
+
+        Employee employee = employeeRepository.findByCin(employeeCin)
+                .orElseThrow(() -> new IllegalArgumentException("Employee with this cin not found"));
+        String hrNotification = String.format(
+                "The leave request from the employee %s %s with the cin %s is canceled ",
+                employee.getFirstname(), employee.getLastname(), employee.getCin()
+        );
+        notifyUser(HR_EMAIL, hrNotification);
+        messagingTemplate.convertAndSend("/topic/notifications/" + HR_EMAIL, hrNotification);
         return request;
     }
 
@@ -91,18 +111,65 @@ public class LeaveService {
         request.setUpdatedAt(LocalDateTime.now());
         LeaveRequest updatedRequest = leaveRequestRepository.save(request);
 
-        Employee employee = employeeRepository.findByCin(request.getEmployeeCin()).orElse(null);
-        if (employee != null) {
-            String employeeMessage = String.format(
-                    "Your leave request (%s, %s to %s) was %s. HR Comment: %s",
-                    request.getLeaveType(), request.getStartDate(), request.getEndDate(),
-                    status.toLowerCase(), hrComment != null ? hrComment : "None"
-            );
-            messagingTemplate.convertAndSend("/topic/notifications/" + employee.getEmail(), employeeMessage);
-            notifyEmployee(updatedRequest);
-        }
+        Employee employee = employeeRepository.findByCin(request.getEmployeeCin())
+                .orElseThrow(() -> new IllegalArgumentException("Employee with this cin not found"));
+
+        String employeeMessage = String.format(
+                "Your leave request (%s, %s to %s) was %s. HR Comment: %s",
+                request.getLeaveType(), request.getStartDate(), request.getEndDate(),
+                status.toLowerCase(), hrComment != null ? hrComment : "None"
+        );
+        messagingTemplate.convertAndSend("/topic/notifications/" + employee.getEmail(), employeeMessage);
+        notifyEmployee(updatedRequest);
+
 
         return updatedRequest;
+    }
+
+    public LeaveRequest updateLeaveRequest(Long requestId, String employeeCin, LeaveRequest updatedRequest) {
+        LeaveRequest existingRequest = leaveRequestRepository.findById(requestId)
+                .orElseThrow(() -> new IllegalArgumentException("Leave request not found"));
+
+        if (!existingRequest.getEmployeeCin().equals(employeeCin)) {
+            throw new IllegalArgumentException("You can only update your own requests");
+        }
+        if (!"PENDING".equals(existingRequest.getStatus())) {
+            throw new IllegalArgumentException("Only pending requests can be updated");
+        }
+
+        Employee employee = employeeRepository.findByCin(employeeCin)
+                .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
+
+        if (updatedRequest.getStartDate().isAfter(updatedRequest.getEndDate())) {
+            throw new IllegalArgumentException("Start date must be before end date");
+        }
+
+        // Update fields
+        existingRequest.setLeaveType(updatedRequest.getLeaveType());
+        existingRequest.setStartDate(updatedRequest.getStartDate());
+        existingRequest.setEndDate(updatedRequest.getEndDate());
+        existingRequest.setDuration((int) ChronoUnit.DAYS.between(updatedRequest.getStartDate(), updatedRequest.getEndDate()) + 1);
+        existingRequest.setReason(updatedRequest.getReason());
+        existingRequest.setUpdatedAt(LocalDateTime.now());
+
+        LeaveRequest savedRequest = leaveRequestRepository.save(existingRequest);
+
+        // Notify HR of the update
+        String hrMessage = String.format(
+                "the employee %s %s with cin %s updated his leave request",
+                employee.getCin(), employee.getFirstname(), employee.getLastname()
+        );
+        messagingTemplate.convertAndSend("/topic/notifications/" + HR_EMAIL, hrMessage);
+        notifyHrManager(employee, savedRequest);
+
+        return savedRequest;
+    }
+
+    private void notifyUser(String email, String message) {
+        Notification notification = new Notification();
+        notification.setUserEmail(email);
+        notification.setMessage(message);
+        notificationRepository.save(notification);
     }
 
     private void notifyHrManager(Employee employee, LeaveRequest request) {

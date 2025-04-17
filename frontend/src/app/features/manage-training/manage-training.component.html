@@ -27,8 +27,15 @@
     <!-- Error Message -->
     <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
 
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="text-center my-4">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
     <!-- Create Training View -->
-    <div *ngIf="currentView === 'create' && !errorMessage" class="card mb-4">
+    <div *ngIf="currentView === 'create' && !isLoading && !errorMessage" class="card mb-4">
       <div class="card-body">
         <h3>Create New Training</h3>
         <form (submit)="createTraining()">
@@ -56,13 +63,16 @@
             <input type="text" class="form-control" placeholder="Category"
                    [(ngModel)]="newTraining.category" name="category" required>
           </div>
-          <button type="submit" class="btn btn-primary">Create</button>
+          <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm"></span>
+            Create
+          </button>
         </form>
       </div>
     </div>
 
     <!-- Training List View -->
-    <div *ngIf="currentView === 'list' && !errorMessage">
+    <div *ngIf="currentView === 'list' && !isLoading && !errorMessage">
       <table class="table table-striped">
         <thead>
         <tr>
@@ -81,36 +91,50 @@
         </tr>
         </tbody>
       </table>
+      <p *ngIf="!trainings.length" class="text-muted">No trainings found.</p>
     </div>
 
     <!-- Pending Enrollments View -->
-    <div *ngIf="currentView === 'enrollments' && !errorMessage">
+    <div *ngIf="currentView === 'enrollments' && !isLoading && !errorMessage">
       <h3>Pending Enrollments</h3>
-      <table class="table table-striped">
-        <thead>
-        <tr>
-          <th>Training</th>
-          <th>Employee</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let enrollment of enrollments">
-          <td>{{ enrollment.training.title }}</td>
-          <td>{{ enrollment.employeeEmail }}</td>
-          <td>{{ enrollment.status }}</td>
-          <td>
-            <button class="btn btn-success btn-sm me-2"
-                    (click)="reviewEnrollment(enrollment.id, 'APPROVED')"
-                    [disabled]="enrollment.status !== 'PENDING'">Approve</button>
-            <button class="btn btn-danger btn-sm"
-                    (click)="reviewEnrollment(enrollment.id, 'REJECTED')"
-                    [disabled]="enrollment.status !== 'PENDING'">Reject</button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th>Training</th>
+            <th>Employee Email</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let enrollment of enrollments">
+            <td>{{ enrollment.training.title }}</td>
+            <td>{{ enrollment.employeeEmail }}</td>
+            <td>
+              <span class="badge" [ngClass]="{
+                'bg-warning': enrollment.status === 'PENDING',
+                'bg-success': enrollment.status === 'APPROVED',
+                'bg-danger': enrollment.status === 'REJECTED'
+              }">{{ enrollment.status }}</span>
+            </td>
+            <td>
+              <button class="btn btn-success btn-sm me-2"
+                      (click)="reviewEnrollment(enrollment.id, 'APPROVED')"
+                      [disabled]="enrollment.status !== 'PENDING' || isLoading">
+                Approve
+              </button>
+              <button class="btn btn-danger btn-sm"
+                      (click)="reviewEnrollment(enrollment.id, 'REJECTED')"
+                      [disabled]="enrollment.status !== 'PENDING' || isLoading">
+                Reject
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <p *ngIf="!enrollments.length" class="text-muted">No pending enrollments found.</p>
+      </div>
     </div>
   </div>
 </div>

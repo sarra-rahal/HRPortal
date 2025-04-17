@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -27,20 +28,25 @@ public class TrainingService {
     public List<Training> getAllTrainings() {
         return trainingRepository.findAll();
     }
+    public List<TrainingEnrollment> getPendingEnrollments() {
+        return enrollmentRepository.findByStatus("PENDING");
+    }
 
     @Transactional
     public Training createTraining(Training training, String token) {
         validateTraining(training);
         Training saved = trainingRepository.save(training);
-        String hrEmail = jwtUtil.extractEmail(token.split(" ")[1]);
+        /*String hrEmail = jwtUtil.extractEmail(token.split(" ")[1]);
         notifyUser(hrEmail, "New training created: " + saved.getTitle());
-        messagingTemplate.convertAndSend("/topic/trainings", saved);
+        messagingTemplate.convertAndSend("/topic/trainings", saved);*/
 
         List<User> Users = userRepository.findAllByRoleNot(User.UserRole.HR_MANAGER);
         for (User user : Users) {
-            String message = "New training available: " + saved.getTitle();
-            notifyUser(user.getEmail(), message);
-            messagingTemplate.convertAndSend("/topic/notifications/" + user.getEmail(), message);
+            if (!Objects.equals(String.valueOf(user.getRole()), "HR_Manager")){
+                String message = "New training available: " + saved.getTitle();
+                notifyUser(user.getEmail(), message);
+                messagingTemplate.convertAndSend("/topic/notifications/" + user.getEmail(), message);
+            }
         }
         return saved;
     }
@@ -67,17 +73,19 @@ public class TrainingService {
         trainingRepository.save(training);
 
         String senderEmail = jwtUtil.extractEmail(token.split(" ")[1]);
-        Employee employee = employeeRepository.findByEmail(employeeEmail)
+        User user = userRepository.findByEmail(employeeEmail)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Employee employee = employeeRepository.findByCin(user.getCin())
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
         if (employeeEmail == null || employeeEmail.isEmpty()) {
             throw new IllegalArgumentException("Employee email cannot be null or empty");
         }
 
         // Notify employee
-        String employeeMessage = "You have submitted an enrollment request for " + training.getTitle();
+/*      String employeeMessage = "You have submitted an enrollment request for " + training.getTitle();
         notifyUser(employeeEmail, employeeMessage);
         messagingTemplate.convertAndSend("/topic/notifications/" + employeeEmail, saved);
-
+*/
         // Notify HR Manager
         String hrMessage = String.format(
                 "%s %s has submitted an enrollment request for %s",
@@ -102,7 +110,7 @@ public class TrainingService {
                 "Your enrollment for %s has been %s%s",
                 trainingTitle,
                 status.toLowerCase(),
-                status.equals("APPROVED") ? ". You are now enrolled in the training named " + trainingTitle : ""
+                status.equals("APPROVED") ? ". You are now enrolled in the training named " + trainingTitle : "."
         );
         notifyUser(enrollment.getEmployeeEmail(), employeeMessage);
         messagingTemplate.convertAndSend("/topic/notifications/" + enrollment.getEmployeeEmail(), updated);
@@ -136,20 +144,22 @@ public class TrainingService {
         TrainingEnrollment enrollment = enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new RuntimeException("Enrollment not found"));
 
-        if (!enrollment.getEmployeeEmail().equals(employeeEmail)) {
-            throw new RuntimeException("Unauthorized cancellation attempt");
-        }
+//        if (!enrollment.getEmployeeEmail().equals(employeeEmail)) {
+//            throw new RuntimeException("Unauthorized cancellation attempt");
+//        }
         if (!enrollment.getStatus().equals("PENDING")) {
             throw new RuntimeException("Can only cancel pending enrollments");
         }
 
         Training training = enrollment.getTraining();
-        training.setEnrolledCount(training.getEnrolledCount() - 1);
+        if (training.getEnrolledCount() > 0) {
+            training.setEnrolledCount(training.getEnrolledCount() - 1);
+        }
         trainingRepository.save(training);
 
         enrollmentRepository.delete(enrollment);
-        notifyUser(employeeEmail, "Enrollment cancelled for " + training.getTitle());
-        messagingTemplate.convertAndSend("/topic/notifications/" + employeeEmail,
+        notifyUser(HR_EMAIL, "Enrollment cancelled for " + training.getTitle());
+        messagingTemplate.convertAndSend("/topic/notifications/" + HR_EMAIL,
                 "Enrollment cancelled for " + training.getTitle());
     }
 

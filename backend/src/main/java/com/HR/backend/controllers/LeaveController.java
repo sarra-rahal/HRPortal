@@ -25,14 +25,31 @@ public class LeaveController {
     private final UserRepository userRepository;
 
     @PostMapping("/submit")
-    public ResponseEntity<?> submitLeaveRequest(@RequestBody LeaveRequest request) {
+    public ResponseEntity<?> submitLeaveRequest(@RequestBody LeaveRequest request,
+                                                @RequestHeader("Authorization") String token) {
         try {
             String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new IllegalArgumentException("User not found"));
             String cin = user.getCin();
-            LeaveRequest savedRequest = leaveService.submitLeaveRequest(cin, request);
+            LeaveRequest savedRequest = leaveService.submitLeaveRequest(cin, request, token);
             return ResponseEntity.ok(savedRequest);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateLeaveRequest(@PathVariable Long id, @RequestBody LeaveRequest updatedRequest) {
+        try {
+            String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+            String cin = user.getCin();
+            LeaveRequest updated = leaveService.updateLeaveRequest(id, cin, updatedRequest);
+            return ResponseEntity.ok(updated);
         } catch (IllegalArgumentException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
@@ -59,13 +76,13 @@ public class LeaveController {
     }
 
     @GetMapping("/pending")
-    @PreAuthorize("hasRole('HR_MANAGER')")
+    @PreAuthorize("hasAuthority('HR_MANAGER')")
     public ResponseEntity<List<LeaveRequest>> getPendingLeaveRequests() {
         return ResponseEntity.ok(leaveService.getPendingLeaveRequests());
     }
 
     @PutMapping("/review/{id}")
-    @PreAuthorize("hasRole('HR_MANAGER')")
+    @PreAuthorize("hasAuthority('HR_MANAGER')")
     public ResponseEntity<LeaveRequest> reviewLeaveRequest(
             @PathVariable Long id,
             @RequestBody ReviewRequestDto reviewData) {

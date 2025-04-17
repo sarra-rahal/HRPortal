@@ -1,7 +1,9 @@
 package com.HR.backend.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -38,17 +40,28 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
-                        .requestMatchers("/api/hr/**").hasRole("HR_MANAGER")
-                        .requestMatchers("/api/employee/**").hasRole("EMPLOYEE")
+                        .requestMatchers("/api/departments").authenticated()
+                        .requestMatchers("/api/employees").authenticated()
+                        .requestMatchers("/api/hr/**").hasAuthority("HR_MANAGER")
+                        .requestMatchers("/api/employee/**").hasAuthority("EMPLOYEE")
                         .requestMatchers("/api/profile").authenticated()
                         .requestMatchers("/api/leave/submit", "/api/leave/my-requests", "/api/leave/cancel/**").authenticated()
-                        .requestMatchers("/api/leave/pending", "/api/leave/review/**").hasRole("HR_MANAGER")
-                        .requestMatchers("/api/training/all","/api/training/my-enrollments/**").authenticated()
-                        .requestMatchers("/api/training/create", "/api/training/review/**").hasRole("HR_MANAGER")
-                        .requestMatchers("/api/training/cancel/**","/api/training/enroll/**").authenticated()
+                        .requestMatchers("/api/leave/pending", "/api/leave/review/**").hasAuthority("HR_MANAGER")
+                        .requestMatchers("/api/training/all", "/api/training/my-enrollments", "/api/training/enroll/**", "/api/training/cancel/**").authenticated()
+                        .requestMatchers("/api/training/create", "/api/training/review/**", "/api/training/pending-enrollments").hasAuthority("HR_MANAGER")
+                        .requestMatchers("/api/documents/upload", "/api/documents/generate").hasAuthority("HR_MANAGER")
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(ex -> ex
+                .authenticationEntryPoint((req, res, e) -> {
+                    res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    res.getWriter().write("{\"message\": \"Unauthorized\"}");
+                })
+                .accessDeniedHandler((req, res, e) -> {
+                    res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    res.getWriter().write("{\"message\": \"You do not have permission to perform this action\"}");
+                }));
         return http.build();
     }
 

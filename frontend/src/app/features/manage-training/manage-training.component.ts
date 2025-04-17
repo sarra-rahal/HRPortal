@@ -1,22 +1,24 @@
+// src/app/manage-training/manage-training.component.ts
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { WebsocketService } from '../../core/services/websocket.service';
 import { Subscription } from 'rxjs';
 import { Training, TrainingEnrollment } from '../../core/models/training.model';
-import { Router } from '@angular/router';
-import {NavbarComponent} from '../../layout/navbar/navbar.component';
-import {SidebarComponent} from '../../layout/sidebar/sidebar.component';
-import {FooterComponent} from '../../layout/footer/footer.component';
-import {AuthService} from '../../core/services/auth.service';
-import {ManageTrainingService} from './manage-training.service';
+import { NavbarComponent } from '../../layout/navbar/navbar.component';
+import { SidebarComponent } from '../../layout/sidebar/sidebar.component';
+import { FooterComponent } from '../../layout/footer/footer.component';
+import { AuthService } from '../../core/services/auth.service';
+import { ManageTrainingService } from './manage-training.service';
+import { ToastService } from '../training/training.component';
 
 @Component({
   selector: 'app-manage-training',
   standalone: true,
   imports: [CommonModule, FormsModule, NavbarComponent, SidebarComponent, FooterComponent],
   templateUrl: './manage-training.component.html',
-  styleUrls: ['./manage-training.component.scss']
+  styleUrls: ['./manage-training.component.scss'],
+  providers: [ToastService]
 })
 export class ManageTrainingComponent implements OnInit, OnDestroy {
   trainings: Training[] = [];
@@ -33,6 +35,7 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
     rating: 0
   };
   errorMessage: string = '';
+  isLoading: boolean = false;
   currentView: 'create' | 'list' | 'enrollments' = 'create';
   private wsSub!: Subscription;
 
@@ -40,14 +43,10 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
     private apiService: ManageTrainingService,
     private authService: AuthService,
     private websocketService: WebsocketService,
-    private router: Router
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
-    if (localStorage.getItem('role') !== 'HR_MANAGER') {
-      this.router.navigate(['/unauthorized']);
-      return;
-    }
     this.currentView = 'create';
     this.fetchTrainings();
     this.fetchEnrollments();
@@ -59,22 +58,40 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
   }
 
   fetchTrainings(): void {
+    this.isLoading = true;
     this.apiService.getAllTrainings().subscribe({
-      next: (trainings) => this.trainings = trainings,
-      error: (err) => this.errorMessage = 'Error fetching trainings: ' + err.message
+      next: (trainings) => {
+        this.trainings = trainings;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+        this.toastService.show('Error fetching trainings: ' + err.message, 'error');
+        this.isLoading = false;
+      }
     });
   }
 
   fetchEnrollments(): void {
-    this.apiService.getMyEnrollments('').subscribe({
-      next: (enrollments) => this.enrollments = enrollments,
-      error: (err) => this.errorMessage = 'Error fetching enrollments: ' + err.message
+    this.isLoading = true;
+    this.apiService.getPendingEnrollments().subscribe({
+      next: (enrollments) => {
+        this.enrollments = enrollments;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+        this.toastService.show('Error fetching enrollments: ' + err.message, 'error');
+        this.isLoading = false;
+      }
     });
   }
 
   createTraining(): void {
+    this.isLoading = true;
     this.apiService.createTraining(this.newTraining).subscribe({
       next: () => {
+        this.toastService.show('Training created successfully', 'success');
         this.fetchTrainings();
         this.newTraining = {
           id: 0,
@@ -87,15 +104,29 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
           category: '',
           rating: 0
         };
+        this.isLoading = false;
       },
-      error: (err) => this.errorMessage = 'Error creating training: ' + err.message
+      error: (err) => {
+        this.errorMessage = err.message;
+        this.toastService.show(err.message, 'error');
+        this.isLoading = false;
+      }
     });
   }
 
   reviewEnrollment(enrollmentId: number, status: string): void {
+    this.isLoading = true;
     this.apiService.reviewEnrollment(enrollmentId, status).subscribe({
-      next: () => this.fetchEnrollments(),
-      error: (err) => this.errorMessage = 'Error reviewing enrollment: ' + err.message
+      next: () => {
+        this.toastService.show(`Enrollment ${status.toLowerCase()} successfully`, 'success');
+        this.fetchEnrollments();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+        this.toastService.show(err.message, 'error');
+        this.isLoading = false;
+      }
     });
   }
 
@@ -103,8 +134,8 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
     const hrEmail = this.authService.getEmail() || '';
     this.wsSub = this.websocketService.connect(`/topic/notifications/${hrEmail}`).subscribe({
       next: (message) => {
-        console.log('WebSocket Notification:', message); // For debugging
-        this.fetchEnrollments(); // Refresh enrollments on notification
+        console.log('WebSocket Notification:', message);
+        this.fetchEnrollments();
       },
       error: (err) => console.error('WebSocket error:', err)
     });

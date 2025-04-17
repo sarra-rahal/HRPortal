@@ -11,7 +11,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/hr")
-@PreAuthorize("hasRole('HR_MANAGER')")
+@PreAuthorize("hasAuthority('HR_MANAGER')")
 public class HrController {
 
     @GetMapping("/employees")

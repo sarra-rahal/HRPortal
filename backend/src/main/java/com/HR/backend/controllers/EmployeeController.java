@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/employee")
-@PreAuthorize("hasRole('EMPLOYEE')")
+@PreAuthorize("hasAuthority('EMPLOYEE')")
 @CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 public class EmployeeController {

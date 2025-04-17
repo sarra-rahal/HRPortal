@@ -1,44 +1,37 @@
+// src/main/java/com/HR/backend/services/EmployeeService.java
 package com.HR.backend.services;
 
-import com.HR.backend.models.Employee;
-import com.HR.backend.repositories.EmployeeRepository;
+import com.HR.backend.models.Department;
+import com.HR.backend.repositories.DepartmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class EmployeeService {
-    private final EmployeeRepository employeeRepository;
+    private final DepartmentRepository departmentRepository;
 
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+    public List<String> getDepartments() {
+        return departmentRepository.findAll().stream().map(Department::getName).toList();
     }
 
-    public Employee addEmployee(Employee employee) {
-        if (employeeRepository.existsByCin(employee.getCin())) {
-            throw new IllegalArgumentException("Employee with CIN already exists");
-        }
-        return employeeRepository.save(employee);
+    public List<Map<String, String>> getEmployees(String department) {
+        // Mock data (replace with EmployeeRepository)
+        List<Map<String, String>> employees = List.of(
+                Map.of("cin", "123", "name", "John Doe"),
+                Map.of("cin", "456", "name", "Jane Smith")
+        );
+        return employees;
     }
 
-    public Employee updateEmployee(String cin, Employee updatedEmployee) {
-        Employee existing = employeeRepository.findByCin(cin)
-                .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
-        existing.setDepartement(updatedEmployee.getDepartement());
-        existing.setJobtitle(updatedEmployee.getJobtitle());
-        existing.setEmail(updatedEmployee.getEmail());
-        existing.setPhonenumber(updatedEmployee.getPhonenumber());
-        existing.setSalary(updatedEmployee.getSalary());
-        existing.setManagernum(updatedEmployee.getManagernum());
-        return employeeRepository.save(existing);
+    public String getUserDepartment(String email) {
+        return "IT"; // Query Employee table
     }
 
-    public void deleteEmployee(String cin) {
-        if (!employeeRepository.existsByCin(cin)) {
-            throw new IllegalArgumentException("Employee not found");
-        }
-        employeeRepository.deleteById(cin);
+    public String getUserCin(String email) {
+        return "123"; // Query Employee table
     }
 }
