@@ -11,11 +11,13 @@ import {TrainingComponent} from './features/training/training.component';
 import {ManageTrainingComponent} from './features/manage-training/manage-training.component';
 import {ManageDocumentComponent} from './features/manage-document/manage-document.component';
 import {DocumentComponent} from './features/document/document.component';
+import {ResetPasswordComponent} from './auth/reset-password/reset-password.component';
 
 export const routes: Routes = [
   { path: 'sign-up', component: SignUpComponent },
   { path: 'sign-in', component: SignInComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'welcome', component: WelcomeComponent, canActivate: [authGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
   { path: 'leave', component: LeaveComponent, canActivate: [authGuard] },

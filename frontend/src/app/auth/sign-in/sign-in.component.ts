@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { AuthService } from '../../core/services/auth.service'; // Import AuthService
+import { AuthService } from '../../core/services/auth.service';
 
 interface SignInResponse {
   success: boolean;
@@ -28,12 +28,13 @@ export class SignInComponent implements OnInit {
   signInForm: FormGroup;
   loading = false;
   errorMessage: string | null = null;
+  showPassword = false;
 
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private router: Router,
-    private authService: AuthService // Inject AuthService
+    private authService: AuthService
   ) {
     this.signInForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -42,6 +43,10 @@ export class SignInComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
 
   onSubmit(): void {
     if (this.signInForm.invalid) return;

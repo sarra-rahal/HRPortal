@@ -104,18 +104,6 @@ public class AuthService {
         return SignUpResponse.success("Account created successfully.");
     }
 
-    private String generateVerificationCode() {
-        Random random = new Random();
-        return String.format("%06d", random.nextInt(1000000));
-    }
-
-    private String maskEmail(String email) {
-        String[] parts = email.split("@");
-        String localPart = parts[0];
-        String domain = parts[1];
-        return "*****" + localPart.charAt(localPart.length() - 1) + "@" + domain;
-    }
-
     public SignInResponse signIn(SignInRequest request) {
         logger.info("Processing sign-in for email: {}", request.getEmail());
 
@@ -141,5 +129,74 @@ public class AuthService {
                 user.getCin(),
                 user.getEmail()
         );
+    }
+
+    public SignUpResponse forgotPassword(String employeeNumber, String email) {
+        logger.info("Processing forgot password for email: {} and employee number: {}", email, employeeNumber);
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("No user found with this email"));
+
+        Employee employee = employeeRepository.findByCin(employeeNumber)
+                .orElseThrow(() -> new IllegalArgumentException("No employee found with this employee number"));
+
+        if (!user.getCin().equals(employee.getCin())) {
+            logger.warn("Employee number and email do not match for email: {}", email);
+            return SignUpResponse.error("Employee number and email do not match", "INVALID_CREDENTIALS");
+        }
+
+        // Generate a reset token
+        String resetToken = jwtUtil.generateResetToken(email);
+        VerificationCode resetCode = new VerificationCode();
+        resetCode.setEmail(email);
+        resetCode.setCode(resetToken);
+        resetCode.setExpiresAt(LocalDateTime.now().plusHours(1));
+        verificationCodeRepository.save(resetCode);
+
+        // Send reset link via email
+        String resetLink = "http://localhost:4200/reset-password?token=" + resetToken;
+        emailService.sendEmail(
+                "noreply@hrportal.com",
+                email,
+                "Reset Your HR Portal Password",
+                "Click the following link to reset your password: " + resetLink + "\nThis link expires in 1 hour."
+        );
+
+        String maskedEmail = maskEmail(email);
+        return SignUpResponse.success("Password reset link sent to " + maskedEmail);
+    }
+
+    public SignUpResponse resetPassword(String token, String newPassword) {
+        logger.info("Processing password reset for token");
+
+        VerificationCode resetCode = verificationCodeRepository.findByCode(token)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid or expired reset token"));
+
+        if (LocalDateTime.now().isAfter(resetCode.getExpiresAt())) {
+            verificationCodeRepository.delete(resetCode);
+            return SignUpResponse.error("Reset token expired", "TOKEN_EXPIRED");
+        }
+
+        User user = userRepository.findByEmail(resetCode.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        verificationCodeRepository.delete(resetCode); // Clean up
+
+        logger.info("Password reset successful for email: {}", resetCode.getEmail());
+        return SignUpResponse.success("Password reset successfully");
+    }
+
+    private String generateVerificationCode() {
+        Random random = new Random();
+        return String.format("%06d", random.nextInt(1000000));
+    }
+
+    private String maskEmail(String email) {
+        String[] parts = email.split("@");
+        String localPart = parts[0];
+        String domain = parts[1];
+        return "*****" + localPart.charAt(localPart.length() - 1) + "@" + domain;
     }
 }

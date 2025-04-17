@@ -1,10 +1,28 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+interface ForgotPasswordResponse {
+  success: boolean;
+  message: string;
+  errorCode?: string;
+}
+
+interface ResetPasswordResponse {
+  success: boolean;
+  message: string;
+  errorCode?: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  setUserData(token: string, cin: string, firstname: string, lastname: string, role: string, email: string ): void {
+  private apiUrl = 'http://localhost:8080/api/auth';
+
+  constructor(private http: HttpClient) {}
+
+  setUserData(token: string, cin: string, firstname: string, lastname: string, role: string, email: string): void {
     localStorage.setItem('token', token);
     localStorage.setItem('cin', cin);
     localStorage.setItem('firstname', firstname);
@@ -47,6 +65,14 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!this.getToken(); // Check token instead of role for JWT
+    return !!this.getToken();
+  }
+
+  forgotPassword(employeeNumber: string, email: string): Observable<ForgotPasswordResponse> {
+    return this.http.post<ForgotPasswordResponse>(`${this.apiUrl}/forgot-password`, { employeeNumber, email });
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<ResetPasswordResponse> {
+    return this.http.post<ResetPasswordResponse>(`${this.apiUrl}/reset-password`, { newPassword }, { params: { token } });
   }
 }

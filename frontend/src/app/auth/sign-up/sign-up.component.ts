@@ -27,6 +27,8 @@ export class SignUpComponent implements OnInit {
   showVerifyForm = false;
   signupData: any = null;
   maskedEmail: string | null = null;
+  showPassword = false;
+  showConfirmPassword = false;
 
   constructor(
     private fb: FormBuilder,
@@ -50,6 +52,14 @@ export class SignUpComponent implements OnInit {
   passwordMatchValidator(form: FormGroup) {
     return form.get('password')?.value === form.get('confirmPassword')?.value
       ? null : { mismatch: true };
+  }
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPassword(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 
   onSubmit() {
