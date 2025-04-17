@@ -1,0 +1,4 @@
+<div *ngIf="toast" class="toast" [class.success]="toast.type === 'success'" [class.error]="toast.type === 'error'">
+  <i class="fas" [class.fa-check-circle]="toast.type === 'success'" [class.fa-exclamation-circle]="toast.type === 'error'"></i>
+  {{ toast.message }}
+</div>

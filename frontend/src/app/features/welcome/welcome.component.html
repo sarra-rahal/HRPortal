@@ -1,50 +1,61 @@
 <app-navbar></app-navbar>
 <app-sidebar></app-sidebar>
-<div class="container mt-5 content">
-  <div class="welcome-card text-center">
-        <h1>Welcome!</h1>
-  </div>
-  <div class="services-container">
-    <!-- Employee Services -->
-    <div *ngIf="role === 'EMPLOYEE'" class="services-row">
-      <div class="service-card" (click)="navigateTo('/leave')">
-        <h3>Leave Requests</h3>
-        <p>Submit and track your leave requests.</p>
-      </div>
-      <div class="service-card" (click)="navigateTo('/training')">
-        <h3>Training</h3>
-        <p>Enroll in available training sessions.</p>
-      </div>
-      <div class="service-card" (click)="navigateTo('/advance')">
-        <h3>Advance on Salary</h3>
-        <p>Request an advance on your salary.</p>
-      </div>
-      <div class="service-card" (click)="navigateTo('/documents')">
-        <h3>Documents</h3>
-        <p>Access your HR documents.</p>
-      </div>
+<div class="main-container">
+  <div class="content-container">
+    <div class="welcome-card text-center">
+      <h1><i class="fas fa-home"></i> Welcome, {{ firstname }} {{ lastname }}!</h1>
     </div>
-    <!-- HR Manager Services -->
-    <div *ngIf="role === 'HR_MANAGER'" class="services-row">
-      <div class="service-card" (click)="navigateTo('/manage-leaves')">
-        <h3>Manage Leave Requests</h3>
-        <p>Review and approve employee leave requests.</p>
+    <div class="services-container">
+      <!-- Employee Services -->
+      <div *ngIf="role === 'EMPLOYEE'" class="services-grid">
+        <div class="service-card" (click)="navigateTo('/leave')">
+          <i class="fas fa-calendar-times service-icon"></i>
+          <h3>Leave Requests</h3>
+          <p>Submit and track your leave requests.</p>
+        </div>
+        <div class="service-card" (click)="navigateTo('/training')">
+          <i class="fas fa-chalkboard-teacher service-icon"></i>
+          <h3>Training</h3>
+          <p>Enroll in available training sessions.</p>
+        </div>
+        <div class="service-card" (click)="navigateTo('/advance')">
+          <i class="fas fa-wallet service-icon"></i>
+          <h3>Advance on Salary</h3>
+          <p>Request an advance on your salary.</p>
+        </div>
+        <div class="service-card" (click)="navigateTo('/documents')">
+          <i class="fas fa-folder-open service-icon"></i>
+          <h3>Documents</h3>
+          <p>Access your HR documents.</p>
+        </div>
       </div>
-      <div class="service-card" (click)="navigateTo('/manage-training')">
-        <h3>Manage Training</h3>
-        <p>Create and manage training programs.</p>
-      </div>
-      <div class="service-card" (click)="navigateTo('/manage-advance')">
-        <h3>Manage Salary Advances</h3>
-        <p>Handle employee salary advance requests.</p>
-      </div>
-      <div class="service-card" (click)="navigateTo('/manage-documents')">
-        <h3>Manage Documents</h3>
-        <p>Upload and manage employee documents.</p>
-      </div>
-      <div class="service-card" (click)="navigateTo('/manage-employees')">
-        <h3>Manage Employees</h3>
-        <p>View and update employee records.</p>
+      <!-- HR Manager Services -->
+      <div *ngIf="role === 'HR_MANAGER'" class="services-grid">
+        <div class="service-card" (click)="navigateTo('/manage-leaves')">
+          <i class="fas fa-calendar-times service-icon"></i>
+          <h3>Manage Leave Requests</h3>
+          <p>Review and approve employee leave requests.</p>
+        </div>
+        <div class="service-card" (click)="navigateTo('/manage-training')">
+          <i class="fas fa-chalkboard-teacher service-icon"></i>
+          <h3>Manage Training</h3>
+          <p>Create and manage training programs.</p>
+        </div>
+        <div class="service-card" (click)="navigateTo('/manage-advance')">
+          <i class="fas fa-wallet service-icon"></i>
+          <h3>Manage Salary Advances</h3>
+          <p>Handle employee salary advance requests.</p>
+        </div>
+        <div class="service-card" (click)="navigateTo('/manage-documents')">
+          <i class="fas fa-folder-open service-icon"></i>
+          <h3>Manage Documents</h3>
+          <p>Upload and manage employee documents.</p>
+        </div>
+        <div class="service-card" (click)="navigateTo('/manage-employees')">
+          <i class="fas fa-users service-icon"></i>
+          <h3>Manage Employees</h3>
+          <p>View and update employee records.</p>
+        </div>
       </div>
     </div>
   </div>

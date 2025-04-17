@@ -1,22 +1,22 @@
-<nav class="navbar navbar-dark bg-primary">
+<nav class="navbar">
   <div class="container-fluid">
     <div class="navbar-brand profile-section">
-      <a class="nav-link text-white" routerLink="/profile">
+      <a class="nav-link" routerLink="/profile">
         <img src="/assets/profile-placeholder.png" alt="Profile Photo" class="profile-photo">
-        {{ firstname }} {{ lastname }}
+        <span>{{ firstname }} {{ lastname }}</span>
       </a>
     </div>
     <div class="navbar-actions">
       <div class="notification-container">
-        <button class="notification-icon" (click)="toggleNotifications()">
-          <i class="bi bi-bell"></i>
+        <button class="notification-icon" (click)="toggleNotifications()" title="Notifications">
+          <i class="fas fa-bell"></i>
           <span *ngIf="notifications.length" class="badge">{{ notifications.length }}</span>
         </button>
         <div *ngIf="showNotifications" class="notification-dropdown">
           <div class="notification-header">Notifications</div>
           <div class="notification-list">
-            <div *ngFor="let notification of notifications" class="notification-item">
-              {{ notification.message }}
+            <div *ngFor="let notification of notifications" class="notification-item" [class.read]="notification.isRead">
+              <span>{{ notification.message }}</span>
               <button class="btn btn-sm btn-danger" (click)="deleteNotification(notification.id)">Delete</button>
             </div>
             <div *ngIf="!notifications.length" class="notification-item">No new notifications</div>
@@ -24,10 +24,10 @@
         </div>
       </div>
       <button class="home-btn" routerLink="/welcome" title="Home">
-        <i class="bi bi-house-door"></i>
+        <i class="fas fa-home"></i>
       </button>
       <button class="logout-btn" (click)="logout()" title="Logout">
-        <i class="bi bi-box-arrow-right"></i>
+        <i class="fas fa-sign-out-alt"></i>
       </button>
     </div>
   </div>

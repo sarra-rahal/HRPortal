@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 export class WelcomeComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
+
   get role(): string | null {
     return this.authService.getRole();
   }

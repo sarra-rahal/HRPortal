@@ -1,34 +1,34 @@
 <div class="sidebar" [class.open]="isSidebarOpen">
   <button class="sidebar-btn" (click)="toggleSidebar()">
-    <i class="bi" [class.bi-list]="!isSidebarOpen" [class.bi-x]="isSidebarOpen"></i>
+    <i class="fas" [class.fa-bars]="!isSidebarOpen" [class.fa-times]="isSidebarOpen"></i>
   </button>
   <ul class="sidebar-menu">
     <li *ngIf="role === 'EMPLOYEE'">
-      <a routerLink="/leave" (click)="toggleSidebar()">Leave</a>
+      <a routerLink="/leave" (click)="toggleSidebar()"><i class="fas fa-calendar-times"></i> Leave</a>
     </li>
     <li *ngIf="role === 'EMPLOYEE'">
-      <a routerLink="/training" (click)="toggleSidebar()">Training</a>
+      <a routerLink="/training" (click)="toggleSidebar()"><i class="fas fa-chalkboard-teacher"></i> Training</a>
     </li>
     <li *ngIf="role === 'EMPLOYEE'">
-      <a routerLink="/advance" (click)="toggleSidebar()">Advance on Salary</a>
+      <a routerLink="/advance" (click)="toggleSidebar()"><i class="fas fa-wallet"></i> Advance on Salary</a>
     </li>
     <li *ngIf="role === 'EMPLOYEE'">
-      <a routerLink="/documents" (click)="toggleSidebar()">Documents</a>
+      <a routerLink="/documents" (click)="toggleSidebar()"><i class="fas fa-folder-open"></i> Documents</a>
     </li>
     <li *ngIf="role === 'HR_MANAGER'">
-      <a routerLink="/manage-leaves" (click)="toggleSidebar()">Manage Leave Requests</a>
+      <a routerLink="/manage-leaves" (click)="toggleSidebar()"><i class="fas fa-calendar-times"></i> Manage Leave Requests</a>
     </li>
     <li *ngIf="role === 'HR_MANAGER'">
-      <a routerLink="/manage-training" (click)="toggleSidebar()">Manage Training</a>
+      <a routerLink="/manage-training" (click)="toggleSidebar()"><i class="fas fa-chalkboard-teacher"></i> Manage Training</a>
     </li>
     <li *ngIf="role === 'HR_MANAGER'">
-      <a routerLink="/manage-advance" (click)="toggleSidebar()">Manage Advance on Salary</a>
+      <a routerLink="/manage-advance" (click)="toggleSidebar()"><i class="fas fa-wallet"></i> Manage Advance on Salary</a>
     </li>
     <li *ngIf="role === 'HR_MANAGER'">
-      <a routerLink="/manage-documents" (click)="toggleSidebar()">Manage Documents</a>
+      <a routerLink="/manage-documents" (click)="toggleSidebar()"><i class="fas fa-folder-open"></i> Manage Documents</a>
     </li>
     <li *ngIf="role === 'HR_MANAGER'">
-      <a routerLink="/manage-employees" (click)="toggleSidebar()">Manage Employees</a>
+      <a routerLink="/manage-employees" (click)="toggleSidebar()"><i class="fas fa-users"></i> Manage Employees</a>
     </li>
   </ul>
 </div>
