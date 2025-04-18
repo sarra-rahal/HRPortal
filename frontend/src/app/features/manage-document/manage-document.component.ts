@@ -15,11 +15,11 @@ import { ManageDocumentService } from './manage-document.service';
   standalone: true,
   imports: [CommonModule, FormsModule, NavbarComponent, SidebarComponent, FooterComponent],
   templateUrl: './manage-document.component.html',
-  styleUrls: ['./manage-document.component.scss'],
-  providers: [ToastService]
+  styleUrls: ['./manage-document.component.scss']
 })
 export class ManageDocumentComponent implements OnInit {
   documents: Document[] = [];
+  filteredDocuments: Document[] = [];
   fileToUpload: File | null = null;
   accessibleByType: 'department' | 'employees' | 'all_departments' = 'all_departments';
   departmentValue: string = '';
@@ -31,17 +31,39 @@ export class ManageDocumentComponent implements OnInit {
   errorMessage: string = '';
   isLoading: boolean = false;
   currentView: 'upload' | 'generate' | 'list' = 'upload';
+  searchTerm: string = '';
+  startDate: string = '';
+  endDate: string = '';
+
+  // Mock data
+  private mockDocuments: Document[] = [
+    { id: 1, name: 'Employee Handbook.pdf', uploadedBy: 'admin@example.com', accessibleBy: JSON.stringify({ type: 'all_departments', value: null }), uploadDate: '2025-04-01' },
+    { id: 2, name: 'Training Certificate.pdf', uploadedBy: 'hr@example.com', accessibleBy: JSON.stringify({ type: 'department', value: 'HR' }), uploadDate: '2025-04-10' },
+    { id: 3, name: 'Leave Policy.docx', uploadedBy: 'manager@example.com', accessibleBy: JSON.stringify({ type: 'employees', value: ['E123', 'E456'] }), uploadDate: '2025-04-15' }
+  ];
+  private mockDepartments: string[] = ['HR', 'IT', 'Finance'];
+  private mockEmployees: { cin: string, name: string }[] = [
+    { cin: 'E123', name: 'John Doe' },
+    { cin: 'E456', name: 'Jane Smith' },
+    { cin: 'E789', name: 'Alice Johnson' }
+  ];
 
   constructor(
     private documentService: DocumentService,
     private manageDocumentService: ManageDocumentService,
-    protected toastService: ToastService
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
-    this.fetchDocuments();
-    this.fetchDepartments();
-    this.fetchEmployees('');
+    this.documents = this.mockDocuments;
+    this.filteredDocuments = this.documents;
+    this.departments = this.mockDepartments;
+    this.employees = this.mockEmployees;
+    this.filterDocuments();
+    // Uncomment when backend is ready
+    // this.fetchDocuments();
+    // this.fetchDepartments();
+    // this.fetchEmployees('');
   }
 
   fetchDocuments(): void {
@@ -50,7 +72,9 @@ export class ManageDocumentComponent implements OnInit {
     this.documentService.getAllDocuments().subscribe({
       next: (docs) => {
         this.documents = docs;
+        this.filteredDocuments = docs;
         this.isLoading = false;
+        this.filterDocuments();
       },
       error: (err) => {
         this.errorMessage = err.message;
@@ -106,6 +130,25 @@ export class ManageDocumentComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
     const accessibleBy = this.buildAccessibleBy();
+    // Mock upload
+    const newDoc: Document = {
+      id: this.documents.length + 1,
+      name: this.fileToUpload.name,
+      uploadedBy: 'user@example.com',
+      accessibleBy: JSON.stringify(accessibleBy),
+      uploadDate: new Date().toISOString()
+    };
+    this.documents.push(newDoc);
+    this.filteredDocuments = this.documents;
+    this.filterDocuments();
+    this.toastService.show(`Uploaded "${newDoc.name}" successfully`, 'success');
+    this.fileToUpload = null;
+    this.accessibleByType = 'all_departments';
+    this.departmentValue = '';
+    this.employeeCins = [];
+    this.isLoading = false;
+    // Uncomment when backend is ready
+    /*
     this.manageDocumentService.uploadDocument(this.fileToUpload, accessibleBy).subscribe({
       next: (doc) => {
         this.toastService.show(`Uploaded "${doc.name}" successfully`, 'success');
@@ -122,6 +165,7 @@ export class ManageDocumentComponent implements OnInit {
         this.isLoading = false;
       }
     });
+    */
   }
 
   generateDocument(): void {
@@ -133,6 +177,25 @@ export class ManageDocumentComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
     const accessibleBy = this.buildAccessibleBy();
+    // Mock generate
+    const newDoc: Document = {
+      id: this.documents.length + 1,
+      name: this.newDocument.name,
+      uploadedBy: 'user@example.com',
+      accessibleBy: JSON.stringify(accessibleBy),
+      uploadDate: new Date().toISOString()
+    };
+    this.documents.push(newDoc);
+    this.filteredDocuments = this.documents;
+    this.filterDocuments();
+    this.toastService.show(`Generated "${newDoc.name}" successfully`, 'success');
+    this.newDocument = { name: '', content: '', templateType: 'work_certificate' };
+    this.accessibleByType = 'all_departments';
+    this.departmentValue = '';
+    this.employeeCins = [];
+    this.isLoading = false;
+    // Uncomment when backend is ready
+    /*
     this.manageDocumentService.generateDocument(
       this.newDocument.name,
       this.newDocument.content,
@@ -154,11 +217,18 @@ export class ManageDocumentComponent implements OnInit {
         this.isLoading = false;
       }
     });
+    */
   }
 
   downloadDocument(id: number, name: string): void {
     this.isLoading = true;
     this.errorMessage = '';
+    // Mock download
+    const blob = new Blob(['Mock document content'], { type: 'text/plain' });
+    saveAs(blob, name);
+    this.isLoading = false;
+    // Uncomment when backend is ready
+    /*
     this.documentService.downloadDocument(id).subscribe({
       next: (blob) => {
         saveAs(blob, name);
@@ -169,6 +239,19 @@ export class ManageDocumentComponent implements OnInit {
         this.toastService.show(err.message, 'error');
         this.isLoading = false;
       }
+    });
+    */
+  }
+
+  filterDocuments(): void {
+    this.filteredDocuments = this.documents.filter(doc => {
+      const matchesSearch = !this.searchTerm ||
+        doc.name.toLowerCase().includes(this.searchTerm.toLowerCase());
+      const uploadDate = new Date(doc.uploadDate);
+      const start = this.startDate ? new Date(this.startDate) : null;
+      const end = this.endDate ? new Date(this.endDate) : null;
+      const matchesDate = (!start || uploadDate >= start) && (!end || uploadDate <= end);
+      return matchesSearch && matchesDate;
     });
   }
 

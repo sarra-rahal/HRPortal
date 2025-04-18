@@ -1,4 +1,3 @@
-// src/app/manage-training/manage-training.component.ts
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,15 +9,14 @@ import { SidebarComponent } from '../../layout/sidebar/sidebar.component';
 import { FooterComponent } from '../../layout/footer/footer.component';
 import { AuthService } from '../../core/services/auth.service';
 import { ManageTrainingService } from './manage-training.service';
-import { ToastService } from '../training/training.component';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-manage-training',
   standalone: true,
   imports: [CommonModule, FormsModule, NavbarComponent, SidebarComponent, FooterComponent],
   templateUrl: './manage-training.component.html',
-  styleUrls: ['./manage-training.component.scss'],
-  providers: [ToastService]
+  styleUrls: ['./manage-training.component.scss']
 })
 export class ManageTrainingComponent implements OnInit, OnDestroy {
   trainings: Training[] = [];

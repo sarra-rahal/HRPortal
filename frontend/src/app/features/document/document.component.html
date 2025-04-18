@@ -1,55 +1,161 @@
-<!-- src/app/document/document.component.html -->
 <app-navbar></app-navbar>
 <app-sidebar></app-sidebar>
-
 <div class="main-container">
-  <div class="content-container container mt-4">
-    <h2>My Documents</h2>
-
-    <!-- Toast Notification -->
-    <div *ngIf="toastService.toast$ | async as toast" class="toast-notification" [ngClass]="toast.type">
-      {{ toast.message }}
+  <div class="content-container">
+    <!-- View Toggle Buttons -->
+    <div class="view-toggle">
+      <button class="toggle-btn" [class.active]="currentView === 'documents'" (click)="currentView = 'documents'">
+        <i class="fas fa-file-alt"></i> My Documents
+      </button>
+      <button class="toggle-btn" [class.active]="currentView === 'requests'" (click)="currentView = 'requests'">
+        <i class="fas fa-file-signature"></i> Document Requests
+      </button>
     </div>
 
     <!-- Error Message -->
-    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 
     <!-- Loading State -->
-    <div *ngIf="isLoading" class="text-center my-4">
-      <div class="spinner-border" role="status">
-        <span class="visually-hidden">Loading...</span>
+    <div *ngIf="isLoading" class="loading">
+      <i class="fas fa-spinner fa-spin"></i> Loading...
+    </div>
+
+    <!-- My Documents View -->
+    <div *ngIf="currentView === 'documents' && !isLoading && !errorMessage" class="documents-card">
+      <h3><i class="fas fa-file-alt"></i> My Documents</h3>
+      <!-- Filter Section -->
+      <div class="filter-section">
+        <div class="filter-grid">
+          <div class="filter-group">
+            <input class="form-control" placeholder="Search by name..." [(ngModel)]="searchTerm" (ngModelChange)="filterDocuments()">
+          </div>
+          <div class="filter-group">
+            <input type="date" class="form-control" placeholder="Start Date" [(ngModel)]="startDate" (ngModelChange)="filterDocuments()">
+          </div>
+          <div class="filter-group">
+            <input type="date" class="form-control" placeholder="End Date" [(ngModel)]="endDate" (ngModelChange)="filterDocuments()">
+          </div>
+        </div>
+      </div>
+      <!-- Document List -->
+      <div class="table-container">
+        <table class="documents-table" *ngIf="filteredDocuments.length; else noDocuments">
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Uploaded By</th>
+            <th>Accessible By</th>
+            <th>Upload Date</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let doc of filteredDocuments">
+            <td>{{ doc.name }}</td>
+            <td>{{ doc.uploadedBy }}</td>
+            <td>{{ formatAccessibleBy(doc.accessibleBy) }}</td>
+            <td>{{ doc.uploadDate | date }}</td>
+            <td>
+              <button class="btn btn-primary" (click)="downloadDocument(doc.id, doc.name)" [disabled]="isLoading">
+                <i class="fas fa-download"></i> Download
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <ng-template #noDocuments>
+          <p class="no-data"><i class="fas fa-info-circle"></i> No documents found.</p>
+        </ng-template>
       </div>
     </div>
 
-    <!-- Document List -->
-    <div *ngIf="!isLoading && !errorMessage">
-      <table class="table table-striped">
-        <thead>
-        <tr>
-          <th>Name</th>
-          <th>Uploaded By</th>
-          <th>Accessible By</th>
-          <th>Upload Date</th>
-          <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let doc of documents">
-          <td>{{ doc.name }}</td>
-          <td>{{ doc.uploadedBy }}</td>
-          <td>{{ formatAccessibleBy(doc.accessibleBy) }}</td>
-          <td>{{ doc.uploadDate | date }}</td>
-          <td>
-            <button class="btn btn-primary btn-sm" (click)="downloadDocument(doc.id, doc.name)" [disabled]="isLoading">
-              Download
+    <!-- Document Requests View -->
+    <div *ngIf="currentView === 'requests' && !isLoading && !errorMessage" class="requests-card">
+      <h3><i class="fas fa-file-signature"></i> Document Requests</h3>
+      <!-- Request Form -->
+      <div class="request-form">
+        <h4><i class="fas fa-plus-circle"></i> Request a Document</h4>
+        <form class="form-grid">
+          <div class="form-group">
+            <label for="requestType"><i class="fas fa-file"></i> Document Type</label>
+            <select id="requestType" class="form-control" [(ngModel)]="newRequest.type" name="requestType">
+              <option *ngFor="let type of requestTypes" [value]="type">{{ type | titlecase }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="description"><i class="fas fa-comment"></i> Description</label>
+            <textarea id="description" class="form-control" placeholder="Describe the document needed"
+                      [(ngModel)]="newRequest.description" name="description"></textarea>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-exclamation-circle"></i> Urgent</label>
+            <input type="checkbox" [(ngModel)]="newRequest.urgency" name="urgency">
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" (click)="requestDocument()" [disabled]="isLoading">
+              <i class="fas" [class.fa-paper-plane]="!isLoading" [class.fa-spinner]="isLoading" [class.fa-spin]="isLoading"></i>
+              Request
             </button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-      <p *ngIf="!documents.length" class="text-muted">No documents found.</p>
+          </div>
+        </form>
+      </div>
+      <!-- Filter Section -->
+      <div class="filter-section">
+        <div class="filter-grid">
+          <div class="filter-group">
+            <input class="form-control" placeholder="Search by type or description..." [(ngModel)]="searchTerm" (ngModelChange)="filterRequests()">
+          </div>
+          <div class="filter-group">
+            <input type="date" class="form-control" placeholder="Start Date" [(ngModel)]="startDate" (ngModelChange)="filterRequests()">
+          </div>
+          <div class="filter-group">
+            <input type="date" class="form-control" placeholder="End Date" [(ngModel)]="endDate" (ngModelChange)="filterRequests()">
+          </div>
+        </div>
+      </div>
+      <!-- Requests List -->
+      <div class="table-container">
+        <table class="requests-table" *ngIf="filteredRequests.length; else noRequests">
+          <thead>
+          <tr>
+            <th>Document Type</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Request Date</th>
+            <th>Urgency</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let req of filteredRequests">
+            <td>{{ req.type | titlecase }}</td>
+            <td>{{ req.description }}</td>
+            <td>
+                <span class="status-badge" [ngClass]="{
+                  'pending': req.status === 'PENDING',
+                  'approved': req.status === 'APPROVED',
+                  'rejected': req.status === 'REJECTED'
+                }">{{ req.status }}</span>
+            </td>
+            <td>{{ req.requestDate | date }}</td>
+            <td>
+              <i class="fas" [ngClass]="req.urgency ? 'fa-exclamation-circle text-danger' : 'fa-circle'"></i>
+            </td>
+            <td>
+              <button class="btn btn-outline-danger" (click)="cancelRequest(req.id)"
+                      [disabled]="req.status !== 'PENDING' || isLoading">
+                <i class="fas" [class.fa-trash]="!isLoading" [class.fa-spinner]="isLoading" [class.fa-spin]="isLoading"></i>
+                Cancel
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <ng-template #noRequests>
+          <p class="no-data"><i class="fas fa-info-circle"></i> No document requests found.</p>
+        </ng-template>
+      </div>
     </div>
   </div>
 </div>
-
 <app-footer></app-footer>

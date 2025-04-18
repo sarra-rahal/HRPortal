@@ -1,32 +1,21 @@
-import { Component, OnInit, OnDestroy, Injectable } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule} from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../../layout/navbar/navbar.component';
 import { SidebarComponent } from '../../layout/sidebar/sidebar.component';
 import { FooterComponent } from '../../layout/footer/footer.component';
 import { AuthService } from '../../core/services/auth.service';
 import { WebsocketService } from '../../core/services/websocket.service';
+import { ToastService } from '../../core/services/toast.service';
 import { Subscription } from 'rxjs';
 import { LeaveService } from './leave.service';
-
-@Injectable({ providedIn: 'root' })
-export class ToastService {
-  show(message: string, type: 'success' | 'error' = 'success'): void {
-    const toast = document.createElement('div');
-    toast.className = `toast-notification ${type}`;
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-  }
-}
 
 @Component({
   selector: 'app-leave',
   standalone: true,
-  imports: [CommonModule,FormsModule, ReactiveFormsModule, NavbarComponent, SidebarComponent, FooterComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NavbarComponent, SidebarComponent, FooterComponent],
   templateUrl: './leave.component.html',
-  styleUrls: ['./leave.component.scss'],
-  providers: [ToastService]
+  styleUrls: ['./leave.component.scss']
 })
 export class LeaveComponent implements OnInit, OnDestroy {
   leaveForm: FormGroup;
@@ -123,6 +112,7 @@ export class LeaveComponent implements OnInit, OnDestroy {
       });
     }
   }
+
   cancelRequest(id: number): void {
     if (confirm('Are you sure you want to cancel this request?')) {
       this.cancellingRequest = id;

@@ -69,8 +69,7 @@ public class TrainingService {
         enrollment.setStatus("PENDING");
         TrainingEnrollment saved = enrollmentRepository.save(enrollment);
 
-        training.setEnrolledCount(training.getEnrolledCount() + 1);
-        trainingRepository.save(training);
+
 
         String senderEmail = jwtUtil.extractEmail(token.split(" ")[1]);
         User user = userRepository.findByEmail(employeeEmail)
@@ -103,6 +102,13 @@ public class TrainingService {
                 .orElseThrow(() -> new RuntimeException("Enrollment not found"));
         enrollment.setStatus(status);
         TrainingEnrollment updated = enrollmentRepository.save(enrollment);
+
+        if (status.equals("APPROVED")) {
+            Training training = enrollment.getTraining();
+            training.setEnrolledCount(training.getEnrolledCount() + 1);
+            trainingRepository.save(training);
+        }
+
 
         String hrEmail = jwtUtil.extractEmail(token.split(" ")[1]);
         String trainingTitle = enrollment.getTraining().getTitle();
@@ -152,10 +158,6 @@ public class TrainingService {
         }
 
         Training training = enrollment.getTraining();
-        if (training.getEnrolledCount() > 0) {
-            training.setEnrolledCount(training.getEnrolledCount() - 1);
-        }
-        trainingRepository.save(training);
 
         enrollmentRepository.delete(enrollment);
         notifyUser(HR_EMAIL, "Enrollment cancelled for " + training.getTitle());

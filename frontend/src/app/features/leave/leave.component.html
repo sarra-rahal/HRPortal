@@ -1,86 +1,77 @@
 <app-navbar></app-navbar>
 <app-sidebar></app-sidebar>
-
 <div class="main-container">
-  <div class="content-container container mt-4">
+  <div class="content-container">
     <!-- View Toggle Buttons -->
-    <div class="btn-group mb-4" role="group">
-      <button class="btn btn-primary"
-              [class.active]="currentView === 'submit'"
-              (click)="currentView = 'submit'">
-        {{ isEditing ? 'Edit Leave Request' : 'Submit Leave Request' }}
+    <div class="view-toggle">
+      <button class="toggle-btn" [class.active]="currentView === 'submit'" (click)="currentView = 'submit'">
+        <i class="fas fa-plus-circle"></i> {{ isEditing ? 'Edit Leave Request' : 'Submit Leave Request' }}
       </button>
-      <button class="btn btn-primary"
-              [class.active]="currentView === 'history'"
-              (click)="currentView = 'history'">
-        Leave History
+      <button class="toggle-btn" [class.active]="currentView === 'history'" (click)="currentView = 'history'">
+        <i class="fas fa-history"></i> Leave History
       </button>
     </div>
 
     <!-- Submit/Edit Leave Request View -->
-    <div *ngIf="currentView === 'submit'">
-      <h3>{{ isEditing ? 'Edit Leave Request' : 'Submit a Leave Request' }}</h3>
-      <div class="card mb-4">
-        <div class="card-body">
-          <form [formGroup]="leaveForm" (ngSubmit)="onSubmit()">
-            <div class="form-group">
-              <label for="leaveType">Leave Type</label>
-              <select id="leaveType" formControlName="leaveType" class="form-control">
-                <option value="">Select a leave type</option>
-                <option value="VACATION">Vacation</option>
-                <option value="SICK">Sick</option>
-                <option value="PERSONAL">Personal</option>
-              </select>
-              <div class="error" *ngIf="leaveForm.get('leaveType')?.touched && leaveForm.get('leaveType')?.hasError('required')">
-                Leave type is required.
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="startDate">Start Date</label>
-              <input type="date" id="startDate" formControlName="startDate" class="form-control">
-              <div class="error" *ngIf="leaveForm.get('startDate')?.touched && leaveForm.get('startDate')?.hasError('required')">
-                Start date is required.
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="endDate">End Date</label>
-              <input type="date" id="endDate" formControlName="endDate" class="form-control">
-              <div class="error" *ngIf="leaveForm.get('endDate')?.touched && leaveForm.get('endDate')?.hasError('required')">
-                End date is required.
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="reason">Reason (Optional)</label>
-              <textarea id="reason" formControlName="reason" class="form-control"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary" [disabled]="leaveForm.invalid || isSubmitting">
-              <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm"></span>
-              {{ isEditing ? 'Update' : 'Submit' }}
-            </button>
-            <button type="button" class="btn btn-secondary ms-2" *ngIf="isEditing" (click)="isEditing = false; editingRequestId = null; leaveForm.reset()">
-              Cancel Edit
-            </button>
-          </form>
-          <div *ngIf="error" class="alert alert-danger mt-3">{{ error }}</div>
+    <div *ngIf="currentView === 'submit'" class="leave-form-card">
+      <h3><i class="fas fa-calendar-alt"></i> {{ isEditing ? 'Edit Leave Request' : 'Submit a Leave Request' }}</h3>
+      <form [formGroup]="leaveForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="leaveType"><i class="fas fa-list"></i> Leave Type</label>
+          <select id="leaveType" formControlName="leaveType" class="form-control">
+            <option value="">Select a leave type</option>
+            <option value="VACATION">Vacation</option>
+            <option value="SICK">Sick</option>
+            <option value="PERSONAL">Personal</option>
+          </select>
+          <div class="error" *ngIf="leaveForm.get('leaveType')?.touched && leaveForm.get('leaveType')?.hasError('required')">
+            Leave type is required.
+          </div>
         </div>
-      </div>
+        <div class="form-group">
+          <label for="startDate"><i class="fas fa-calendar-day"></i> Start Date</label>
+          <input type="date" id="startDate" formControlName="startDate" class="form-control">
+          <div class="error" *ngIf="leaveForm.get('startDate')?.touched && leaveForm.get('startDate')?.hasError('required')">
+            Start date is required.
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="endDate"><i class="fas fa-calendar-day"></i> End Date</label>
+          <input type="date" id="endDate" formControlName="endDate" class="form-control">
+          <div class="error" *ngIf="leaveForm.get('endDate')?.touched && leaveForm.get('endDate')?.hasError('required')">
+            End date is required.
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="reason"> <i class="fas fa-comment"></i> Reason (Optional)</label>
+          <textarea id="reason" formControlName="reason" class="form-control"></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="leaveForm.invalid || isSubmitting">
+            <i class="fas" [class.fa-save]="!isSubmitting" [class.fa-spinner]="isSubmitting" [class.fa-spin]="isSubmitting"></i>
+            {{ isEditing ? 'Update' : 'Submit' }}
+          </button>
+          <button type="button" class="btn btn-secondary" *ngIf="isEditing" (click)="isEditing = false; editingRequestId = null; leaveForm.reset()">
+            <i class="fas fa-times"></i> Cancel Edit
+          </button>
+        </div>
+      </form>
+      <div *ngIf="error" class="error-message">{{ error }}</div>
     </div>
 
     <!-- Leave History View -->
-    <div *ngIf="currentView === 'history'">
-      <h3>Leave History</h3>
-      <!-- Search and Filter Controls -->
-      <div class="filter-section mb-4">
-        <div class="row">
-          <div class="col-md-4">
-            <input class="form-control" placeholder="Search by start date (YYYY-MM-DD)..."
-                   [(ngModel)]="startDateFilter" (ngModelChange)="filterRequests()">
+    <div *ngIf="currentView === 'history'" class="history-card">
+      <h3><i class="fas fa-history"></i> Leave History</h3>
+      <!-- Filter Controls -->
+      <div class="filter-section">
+        <div class="filter-grid">
+          <div class="filter-group">
+            <input class="form-control" placeholder="Search by start date (YYYY-MM-DD)..." [(ngModel)]="startDateFilter" (ngModelChange)="filterRequests()">
           </div>
-          <div class="col-md-4">
-            <input class="form-control" placeholder="Search by end date (YYYY-MM-DD)..."
-                   [(ngModel)]="endDateFilter" (ngModelChange)="filterRequests()">
+          <div class="filter-group">
+            <input class="form-control" placeholder="Search by end date (YYYY-MM-DD)..." [(ngModel)]="endDateFilter" (ngModelChange)="filterRequests()">
           </div>
-          <div class="col-md-4">
+          <div class="filter-group">
             <select class="form-control" [(ngModel)]="statusFilter" (ngModelChange)="filterRequests()">
               <option value="">All Status</option>
               <option value="PENDING">Pending</option>
@@ -92,16 +83,14 @@
       </div>
 
       <!-- Loading State -->
-      <div *ngIf="isLoading" class="text-center my-4">
-        <div class="spinner-border" role="status">
-          <span class="visually-hidden">Loading...</span>
-        </div>
+      <div *ngIf="isLoading" class="loading">
+        <i class="fas fa-spinner fa-spin"></i> Loading...
       </div>
 
       <!-- Leave Requests Table -->
-      <div *ngIf="!isLoading && error" class="alert alert-danger">{{ error }}</div>
-      <div class="table-responsive" *ngIf="!isLoading && !error">
-        <table class="table table-striped" *ngIf="filteredRequests.length; else noRequests">
+      <div *ngIf="!isLoading && error" class="error-message">{{ error }}</div>
+      <div class="table-container" *ngIf="!isLoading && !error">
+        <table class="leave-table" *ngIf="filteredRequests.length; else noRequests">
           <thead>
           <tr>
             <th>Type</th>
@@ -123,41 +112,35 @@
             <td>{{ req.duration }}</td>
             <td>{{ req.reason || '-' }}</td>
             <td>
-                <span class="badge" [ngClass]="{
-                  'bg-warning': req.status === 'PENDING',
-                  'bg-success': req.status === 'APPROVED',
-                  'bg-danger': req.status === 'DENIED'
+                <span class="status-badge" [ngClass]="{
+                  'pending': req.status === 'PENDING',
+                  'approved': req.status === 'APPROVED',
+                  'denied': req.status === 'DENIED'
                 }">{{ req.status }}</span>
             </td>
             <td>{{ req.submittedAt | date }}</td>
             <td>{{ req.hrComment || '-' }}</td>
-            <td>
-              <button class="btn btn-outline-primary btn-sm me-2"
-                      (click)="editRequest(req)"
-                      [disabled]="req.status !== 'PENDING'">
-                Edit
+            <td class="actions">
+              <button class="btn btn-outline-primary" (click)="editRequest(req)" [disabled]="req.status !== 'PENDING'">
+                <i class="fas fa-edit"></i> Edit
               </button>
-              <button class="btn btn-outline-danger btn-sm"
-                      (click)="cancelRequest(req.id)"
-                      [disabled]="req.status !== 'PENDING' || cancellingRequest === req.id"
-                      [class.btn-loading]="cancellingRequest === req.id">
-                <span *ngIf="cancellingRequest !== req.id">Cancel</span>
-                <span *ngIf="cancellingRequest === req.id" class="spinner-border spinner-border-sm" role="status"></span>
+              <button class="btn btn-outline-danger" (click)="cancelRequest(req.id)" [disabled]="req.status !== 'PENDING' || cancellingRequest === req.id">
+                <i class="fas" [class.fa-trash]="cancellingRequest !== req.id" [class.fa-spinner]="cancellingRequest === req.id" [class.fa-spin]="cancellingRequest === req.id"></i>
+                Cancel
               </button>
             </td>
           </tr>
           </tbody>
         </table>
         <ng-template #noRequests>
-          <p class="text-muted">No leave requests found.</p>
+          <p class="no-data">No leave requests found.</p>
         </ng-template>
       </div>
     </div>
 
-    <p class="mt-3">
-      Need help? <a href="/assets/FAKE LEAVE POLICY.pdf" target="_blank">Check our leave policy</a>
+    <p class="policy-link">
+      <i class="fas fa-info-circle"></i> Need help? <a href="/assets/FAKE LEAVE POLICY.pdf" target="_blank">Check our leave policy</a>
     </p>
   </div>
 </div>
-
 <app-footer></app-footer>

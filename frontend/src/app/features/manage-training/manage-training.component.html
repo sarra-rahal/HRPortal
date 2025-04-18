@@ -1,104 +1,104 @@
 <app-navbar></app-navbar>
 <app-sidebar></app-sidebar>
-
 <div class="main-container">
-  <div class="content-container container mt-4">
-    <h2>Manage Trainings</h2>
-
+  <div class="content-container">
     <!-- View Toggle Buttons -->
-    <div class="btn-group mb-4" role="group">
-      <button class="btn btn-primary"
-              [class.active]="currentView === 'create'"
-              (click)="currentView = 'create'">
-        Create Training
+    <div class="view-toggle">
+      <button class="toggle-btn" [class.active]="currentView === 'create'" (click)="currentView = 'create'">
+        <i class="fas fa-plus-circle"></i> Create Training
       </button>
-      <button class="btn btn-primary"
-              [class.active]="currentView === 'list'"
-              (click)="currentView = 'list'">
-        Training List
+      <button class="toggle-btn" [class.active]="currentView === 'list'" (click)="currentView = 'list'">
+        <i class="fas fa-list"></i> Training List
       </button>
-      <button class="btn btn-primary"
-              [class.active]="currentView === 'enrollments'"
-              (click)="currentView = 'enrollments'">
-        Pending Enrollments
+      <button class="toggle-btn" [class.active]="currentView === 'enrollments'" (click)="currentView = 'enrollments'">
+        <i class="fas fa-user-clock"></i> Pending Enrollments
       </button>
     </div>
 
     <!-- Error Message -->
-    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 
     <!-- Loading State -->
-    <div *ngIf="isLoading" class="text-center my-4">
-      <div class="spinner-border" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
+    <div *ngIf="isLoading" class="loading">
+      <i class="fas fa-spinner fa-spin"></i> Loading...
     </div>
 
     <!-- Create Training View -->
-    <div *ngIf="currentView === 'create' && !isLoading && !errorMessage" class="card mb-4">
-      <div class="card-body">
-        <h3>Create New Training</h3>
-        <form (submit)="createTraining()">
-          <div class="mb-3">
-            <input type="text" class="form-control" placeholder="Title"
-                   [(ngModel)]="newTraining.title" name="title" required>
-          </div>
-          <div class="mb-3">
-            <textarea class="form-control" placeholder="Description"
-                      [(ngModel)]="newTraining.description" name="description" required></textarea>
-          </div>
-          <div class="mb-3">
-            <input type="datetime-local" class="form-control"
-                   [(ngModel)]="newTraining.startDate" name="startDate" required>
-          </div>
-          <div class="mb-3">
-            <input type="datetime-local" class="form-control"
-                   [(ngModel)]="newTraining.endDate" name="endDate" required>
-          </div>
-          <div class="mb-3">
-            <input type="number" class="form-control" placeholder="Capacity"
-                   [(ngModel)]="newTraining.capacity" name="capacity" required>
-          </div>
-          <div class="mb-3">
-            <input type="text" class="form-control" placeholder="Category"
-                   [(ngModel)]="newTraining.category" name="category" required>
-          </div>
+    <div *ngIf="currentView === 'create' && !isLoading && !errorMessage" class="training-form-card">
+      <h3><i class="fas fa-chalkboard-teacher"></i> Create New Training</h3>
+      <form (submit)="createTraining()" class="form-grid">
+        <div class="form-group">
+          <label for="title"><i class="fas fa-heading"></i> Title</label>
+          <input type="text" id="title" class="form-control" placeholder="Enter training title"
+                 [(ngModel)]="newTraining.title" name="title" required>
+        </div>
+        <div class="form-group">
+          <label for="description"><i class="fas fa-file-alt"></i> Description</label>
+          <textarea id="description" class="form-control" placeholder="Enter training description"
+                    [(ngModel)]="newTraining.description" name="description" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="startDate"><i class="fas fa-calendar-day"></i> Start Date</label>
+          <input type="datetime-local" id="startDate" class="form-control"
+                 [(ngModel)]="newTraining.startDate" name="startDate" required>
+        </div>
+        <div class="form-group">
+          <label for="endDate"><i class="fas fa-calendar-day"></i> End Date</label>
+          <input type="datetime-local" id="endDate" class="form-control"
+                 [(ngModel)]="newTraining.endDate" name="endDate" required>
+        </div>
+        <div class="form-group">
+          <label for="capacity"><i class="fas fa-users"></i> Capacity</label>
+          <input type="number" id="capacity" class="form-control" placeholder="Enter capacity"
+                 [(ngModel)]="newTraining.capacity" name="capacity" required>
+        </div>
+        <div class="form-group">
+          <label for="category"><i class="fas fa-tag"></i> Category</label>
+          <input type="text" id="category" class="form-control" placeholder="Enter category"
+                 [(ngModel)]="newTraining.category" name="category" required>
+        </div>
+        <div class="form-actions">
           <button type="submit" class="btn btn-primary" [disabled]="isLoading">
-            <span *ngIf="isLoading" class="spinner-border spinner-border-sm"></span>
+            <i class="fas" [class.fa-save]="!isLoading" [class.fa-spinner]="isLoading" [class.fa-spin]="isLoading"></i>
             Create
           </button>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
 
     <!-- Training List View -->
-    <div *ngIf="currentView === 'list' && !isLoading && !errorMessage">
-      <table class="table table-striped">
-        <thead>
-        <tr>
-          <th>Title</th>
-          <th>Start Date</th>
-          <th>End Date</th>
-          <th>Capacity</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let training of trainings">
-          <td>{{ training.title }}</td>
-          <td>{{ training.startDate | date }}</td>
-          <td>{{ training.endDate | date }}</td>
-          <td>{{ training.enrolledCount }} / {{ training.capacity }}</td>
-        </tr>
-        </tbody>
-      </table>
-      <p *ngIf="!trainings.length" class="text-muted">No trainings found.</p>
+    <div *ngIf="currentView === 'list' && !isLoading && !errorMessage" class="trainings-card">
+      <h3><i class="fas fa-list"></i> Training List</h3>
+      <div class="table-container">
+        <table class="trainings-table" *ngIf="trainings.length; else noTrainings">
+          <thead>
+          <tr>
+            <th>Title</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Capacity</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let training of trainings">
+            <td>{{ training.title }}</td>
+            <td>{{ training.startDate | date }}</td>
+            <td>{{ training.endDate | date }}</td>
+            <td>{{ training.enrolledCount }} / {{ training.capacity }}</td>
+          </tr>
+          </tbody>
+        </table>
+        <ng-template #noTrainings>
+          <p class="no-data"><i class="fas fa-info-circle"></i> No trainings found.</p>
+        </ng-template>
+      </div>
     </div>
 
     <!-- Pending Enrollments View -->
-    <div *ngIf="currentView === 'enrollments' && !isLoading && !errorMessage">
-      <h3>Pending Enrollments</h3>
-      <div class="table-responsive">
-        <table class="table table-striped">
+    <div *ngIf="currentView === 'enrollments' && !isLoading && !errorMessage" class="enrollments-card">
+      <h3><i class="fas fa-user-clock"></i> Pending Enrollments</h3>
+      <div class="table-container">
+        <table class="enrollments-table" *ngIf="enrollments.length; else noEnrollments">
           <thead>
           <tr>
             <th>Training</th>
@@ -112,31 +112,30 @@
             <td>{{ enrollment.training.title }}</td>
             <td>{{ enrollment.employeeEmail }}</td>
             <td>
-              <span class="badge" [ngClass]="{
-                'bg-warning': enrollment.status === 'PENDING',
-                'bg-success': enrollment.status === 'APPROVED',
-                'bg-danger': enrollment.status === 'REJECTED'
-              }">{{ enrollment.status }}</span>
+                <span class="status-badge" [ngClass]="{
+                  'pending': enrollment.status === 'PENDING',
+                  'approved': enrollment.status === 'APPROVED',
+                  'rejected': enrollment.status === 'REJECTED'
+                }">{{ enrollment.status }}</span>
             </td>
-            <td>
-              <button class="btn btn-success btn-sm me-2"
-                      (click)="reviewEnrollment(enrollment.id, 'APPROVED')"
+            <td class="actions">
+              <button class="btn btn-outline-success" (click)="reviewEnrollment(enrollment.id, 'APPROVED')"
                       [disabled]="enrollment.status !== 'PENDING' || isLoading">
-                Approve
+                <i class="fas fa-check"></i> Approve
               </button>
-              <button class="btn btn-danger btn-sm"
-                      (click)="reviewEnrollment(enrollment.id, 'REJECTED')"
+              <button class="btn btn-outline-danger" (click)="reviewEnrollment(enrollment.id, 'REJECTED')"
                       [disabled]="enrollment.status !== 'PENDING' || isLoading">
-                Reject
+                <i class="fas fa-times"></i> Reject
               </button>
             </td>
           </tr>
           </tbody>
         </table>
-        <p *ngIf="!enrollments.length" class="text-muted">No pending enrollments found.</p>
+        <ng-template #noEnrollments>
+          <p class="no-data"><i class="fas fa-info-circle"></i> No pending enrollments found.</p>
+        </ng-template>
       </div>
     </div>
   </div>
 </div>
-
 <app-footer></app-footer>

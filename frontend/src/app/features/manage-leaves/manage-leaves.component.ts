@@ -4,6 +4,7 @@ import { NavbarComponent } from '../../layout/navbar/navbar.component';
 import { SidebarComponent } from '../../layout/sidebar/sidebar.component';
 import { FooterComponent } from '../../layout/footer/footer.component';
 import { ManageLeavesService } from './manage-leaves.service';
+import { ToastService } from '../../core/services/toast.service';
 
 interface LeaveRequest {
   id: number;
@@ -28,7 +29,7 @@ export class ManageLeavesComponent implements OnInit {
   error: string | null = null;
   loading: boolean = false;
 
-  constructor(private apiService: ManageLeavesService) {}
+  constructor(private apiService: ManageLeavesService, private toastService: ToastService) {}
 
   ngOnInit(): void {
     this.loadPendingRequests();
@@ -45,6 +46,7 @@ export class ManageLeavesComponent implements OnInit {
       error: (err) => {
         this.error = `Error fetching leave requests: ${err.message}`;
         this.loading = false;
+        this.toastService.show(`Error fetching leave requests: ${err.message}`, 'error');
       }
     });
   }
@@ -58,8 +60,14 @@ export class ManageLeavesComponent implements OnInit {
 
   reviewRequest(id: number, status: string, comment: string): void {
     this.apiService.reviewLeaveRequest(id, { status, hrComment: comment }).subscribe({
-      next: () => this.loadPendingRequests(),
-      error: (err) => this.error = `Error reviewing request: ${err.message}`
+      next: () => {
+        this.loadPendingRequests();
+        this.toastService.show(`Leave request ${status.toLowerCase()} successfully`, 'success');
+      },
+      error: (err) => {
+        this.error = `Error reviewing request: ${err.message}`;
+        this.toastService.show(`Error reviewing request: ${err.message}`, 'error');
+      }
     });
   }
 }

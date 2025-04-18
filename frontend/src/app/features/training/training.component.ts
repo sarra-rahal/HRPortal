@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Injectable } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { WebsocketService } from '../../core/services/websocket.service';
@@ -9,25 +9,14 @@ import { SidebarComponent } from '../../layout/sidebar/sidebar.component';
 import { FooterComponent } from '../../layout/footer/footer.component';
 import { AuthService } from '../../core/services/auth.service';
 import { TrainingService } from './training.service';
-
-@Injectable({ providedIn: 'root' })
-export class ToastService {
-  show(message: string, type: 'success' | 'error' = 'success'): void {
-    const toast = document.createElement('div');
-    toast.className = `toast-notification ${type}`;
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-  }
-}
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-training',
   standalone: true,
   imports: [CommonModule, FormsModule, NavbarComponent, SidebarComponent, FooterComponent],
   templateUrl: './training.component.html',
-  styleUrls: ['./training.component.scss'],
-  providers: [ToastService]
+  styleUrls: ['./training.component.scss']
 })
 export class TrainingComponent implements OnInit, OnDestroy {
   trainings: Training[] = [];
