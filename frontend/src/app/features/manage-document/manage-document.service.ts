@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { Document } from '../../core/models/document.model';
+import { Document, DocumentRequest } from '../../core/models/document.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,11 +14,11 @@ export class ManageDocumentService {
 
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
-    console.log('Token being sent for request:', token);
     if (!token) {
       console.error('No token found in localStorage');
       throw new Error('No authentication token');
     }
+    console.log('Sending token:', token);
     return new HttpHeaders({
       'Authorization': `Bearer ${token.trim()}`
     });
@@ -28,40 +28,55 @@ export class ManageDocumentService {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('accessibleBy', JSON.stringify(accessibleBy));
-    console.log('Upload FormData:', { file: file.name, accessibleBy });
-
-    const headers = this.getAuthHeaders();
-    console.log('Upload Headers:', headers.get('Authorization')); // Debug header
-
-    return this.http.post<Document>(`${this.apiUrl}/documents/upload`, formData, { headers })
+    return this.http.post<Document>(`${this.apiUrl}/documents/upload`, formData, { headers: this.getAuthHeaders() })
       .pipe(
         tap(() => console.log('Document uploaded successfully')),
         catchError(this.handleError)
       );
   }
 
-  generateDocument(name: string, content: string, accessibleBy: any, templateType: string): Observable<Document> {
-    const params = { name, content, accessibleBy: JSON.stringify(accessibleBy), templateType };
-    return this.http.post<Document>(`${this.apiUrl}/documents/generate`, null, { headers: this.getAuthHeaders(), params })
+  generateDocument(name: string, parameters: any, accessibleBy: any, templateType: string): Observable<Document> {
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('parameters', JSON.stringify(parameters));
+    formData.append('accessibleBy', JSON.stringify(accessibleBy));
+    formData.append('templateType', templateType);
+    return this.http.post<Document>(`${this.apiUrl}/documents/generate`, formData, { headers: this.getAuthHeaders() })
       .pipe(
         tap(() => console.log('Document generated successfully')),
         catchError(this.handleError)
       );
   }
 
-  getDepartments(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.apiUrl}/departments`, { headers: this.getAuthHeaders() })
+  previewDocument(name: string, parameters: any, accessibleBy: any, templateType: string): Observable<Blob> {
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('parameters', JSON.stringify(parameters));
+    formData.append('accessibleBy', JSON.stringify(accessibleBy));
+    formData.append('templateType', templateType);
+    return this.http.post(`${this.apiUrl}/documents/preview`, formData, {
+      headers: this.getAuthHeaders(),
+      responseType: 'blob'
+    }).pipe(
+      tap(() => console.log('Document preview downloaded successfully')),
+      catchError(this.handleError)
+    );
+  }
+
+  getPendingRequests(): Observable<DocumentRequest[]> {
+    return this.http.get<DocumentRequest[]>(`${this.apiUrl}/documents/pending-requests`, { headers: this.getAuthHeaders() })
       .pipe(
-        tap(depts => console.log('Fetched departments:', depts)),
+        tap(requests => console.log('Fetched pending requests:', requests)),
         catchError(this.handleError)
       );
   }
 
-  getEmployees(department: string): Observable<{ cin: string, name: string }[]> {
-    const url = department ? `${this.apiUrl}/employees?department=${department}` : `${this.apiUrl}/employees`;
-    return this.http.get<{ cin: string, name: string }[]>(url, { headers: this.getAuthHeaders() })
+  reviewRequest(id: number, status: string): Observable<DocumentRequest> {
+    const formData = new FormData();
+    formData.append('status', status);
+    return this.http.post<DocumentRequest>(`${this.apiUrl}/documents/review-request/${id}`, formData, { headers: this.getAuthHeaders() })
       .pipe(
-        tap(emps => console.log('Fetched employees:', emps)),
+        tap(() => console.log(`Request ${id} reviewed as ${status}`)),
         catchError(this.handleError)
       );
   }
@@ -72,11 +87,7 @@ export class ManageDocumentService {
       errorMessage = error.error.message;
     } else {
       errorMessage = error.error?.message || error.message || `Error ${error.status}`;
-      if (error.status === 400) {
-        errorMessage = error.error.message || 'Invalid request';
-      } else if (error.status === 403) {
-        errorMessage = 'You do not have permission to perform this action';
-      } else if (error.status === 401) {
+      if (error.status === 401) {
         errorMessage = 'Authentication failed, please sign in again';
       }
     }

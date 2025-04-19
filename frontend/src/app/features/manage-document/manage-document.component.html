@@ -13,6 +13,9 @@
       <button class="toggle-btn" [class.active]="currentView === 'list'" (click)="currentView = 'list'">
         <i class="fas fa-list"></i> Document List
       </button>
+      <button class="toggle-btn" [class.active]="currentView === 'requests'" (click)="currentView = 'requests'">
+        <i class="fas fa-file-signature"></i> Document Requests
+      </button>
     </div>
 
     <!-- Error Message -->
@@ -28,34 +31,16 @@
       <h3><i class="fas fa-upload"></i> Upload Document</h3>
       <form class="form-grid">
         <div class="form-group">
-          <label for="fileInput"><i class="fas fa-file"></i> Select File</label>
-          <input type="file" id="fileInput" class="form-control" (change)="onFileChange($event)">
+          <label for="upload-fileInput"><i class="fas fa-file"></i> Select File</label>
+          <input type="file" id="upload-fileInput" class="form-control" (change)="onFileChange($event)">
         </div>
         <div class="form-group">
-          <label for="accessibleByType"><i class="fas fa-lock"></i> Access Type</label>
-          <select id="accessibleByType" class="form-control" [(ngModel)]="accessibleByType" name="accessibleByType"
-                  (ngModelChange)="onAccessibleByTypeChange()">
-            <option value="all_departments">All Departments</option>
-            <option value="department">Specific Department</option>
-            <option value="employees">Specific Employees</option>
-          </select>
+          <label for="upload-cin"><i class="fas fa-id-card"></i> Employee CIN</label>
+          <input type="text" id="upload-cin" class="form-control" placeholder="Enter 8-digit CIN"
+                 [(ngModel)]="employeeCin" name="cin" pattern="[0-9]{8}" required>
         </div>
-        <div class="form-group" *ngIf="accessibleByType === 'department'">
-          <label for="department"><i class="fas fa-building"></i> Department</label>
-          <select id="department" class="form-control" [(ngModel)]="departmentValue" name="department"
-                  (ngModelChange)="fetchEmployees(departmentValue)">
-            <option value="">Select Department</option>
-            <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
-          </select>
-        </div>
-        <div class="form-group" *ngIf="accessibleByType === 'employees'">
-          <label for="employees"><i class="fas fa-users"></i> Employees (Select Multiple)</label>
-          <select id="employees" class="form-control" [(ngModel)]="employeeCins" name="employees" multiple>
-            <option *ngFor="let emp of employees" [value]="emp.cin">{{ emp.name }} (CIN: {{ emp.cin }})</option>
-          </select>
-        </div><br>
         <div class="form-actions">
-          <button type="button" class="btn btn-primary" (click)="uploadDocument()" [disabled]="isLoading">
+          <button type="button" class="btn btn-primary" (click)="uploadDocument()" [disabled]="isLoading || !isValidCin()">
             <i class="fas" [class.fa-upload]="!isLoading" [class.fa-spinner]="isLoading" [class.fa-spin]="isLoading"></i>
             Upload
           </button>
@@ -68,46 +53,22 @@
       <h3><i class="fas fa-file-medical"></i> Generate Document</h3>
       <form class="form-grid">
         <div class="form-group">
-          <label for="templateType"><i class="fas fa-file"></i> Certificate Type</label>
-          <select id="templateType" class="form-control" [(ngModel)]="newDocument.templateType" name="templateType">
+          <label for="generate-templateType"><i class="fas fa-file"></i> Certificate Type</label>
+          <select id="generate-templateType" class="form-control" [(ngModel)]="newDocument.templateType" name="templateType">
             <option *ngFor="let type of templateTypes" [value]="type">{{ type | titlecase }}</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="name"><i class="fas fa-heading"></i> Document Name</label>
-          <input type="text" id="name" class="form-control" placeholder="Enter document name"
-                 [(ngModel)]="newDocument.name" name="name" required>
-        </div>
-        <div class="form-group">
-          <label for="content"><i class="fas fa-file-alt"></i> Document Content</label>
-          <textarea id="content" class="form-control" placeholder="Enter document content"
-                    [(ngModel)]="newDocument.content" name="content" required></textarea>
-        </div>
-        <div class="form-group">
-          <label for="accessibleByTypeGen"><i class="fas fa-lock"></i> Access Type</label>
-          <select id="accessibleByTypeGen" class="form-control" [(ngModel)]="accessibleByType" name="accessibleByTypeGen"
-                  (ngModelChange)="onAccessibleByTypeChange()">
-            <option value="all_departments">All Departments</option>
-            <option value="department">Specific Department</option>
-            <option value="employees">Specific Employees</option>
-          </select>
-        </div>
-        <div class="form-group" *ngIf="accessibleByType === 'department'">
-          <label for="departmentGen"><i class="fas fa-building"></i> Department</label>
-          <select id="departmentGen" class="form-control" [(ngModel)]="departmentValue" name="departmentGen"
-                  (ngModelChange)="fetchEmployees(departmentValue)">
-            <option value="">Select Department</option>
-            <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
-          </select>
-        </div>
-        <div class="form-group" *ngIf="accessibleByType === 'employees'">
-          <label for="employeesGen"><i class="fas fa-users"></i> Employees (Select Multiple)</label>
-          <select id="employeesGen" class="form-control" [(ngModel)]="employeeCins" name="employeesGen" multiple>
-            <option *ngFor="let emp of employees" [value]="emp.cin">{{ emp.name }} (CIN: {{ emp.cin }})</option>
-          </select>
+          <label for="generate-cin"><i class="fas fa-id-card"></i> Employee CIN</label>
+          <input type="text" id="generate-cin" class="form-control" placeholder="Enter 8-digit CIN"
+                 [(ngModel)]="newDocument.cin" name="cin" pattern="[0-9]{8}" required>
         </div>
         <div class="form-actions">
-          <button type="button" class="btn btn-primary" (click)="generateDocument()" [disabled]="isLoading">
+          <button type="button" class="btn btn-primary" (click)="previewDocument()" [disabled]="isLoading || !isValidCin()">
+            <i class="fas" [class.fa-download]="!isLoading" [class.fa-spinner]="isLoading" [class.fa-spin]="isLoading"></i>
+            Download Preview
+          </button>
+          <button type="button" class="btn btn-success" (click)="generateDocument()" [disabled]="isLoading || !isValidCin()">
             <i class="fas" [class.fa-file-medical]="!isLoading" [class.fa-spinner]="isLoading" [class.fa-spin]="isLoading"></i>
             Generate
           </button>
@@ -118,28 +79,37 @@
     <!-- Document List View -->
     <div *ngIf="currentView === 'list' && !isLoading && !errorMessage" class="documents-card">
       <h3><i class="fas fa-list"></i> Document List</h3>
-      <!-- Filter Section -->
       <div class="filter-section">
         <div class="filter-grid">
           <div class="filter-group">
             <input class="form-control" placeholder="Search by name..." [(ngModel)]="searchTerm" (ngModelChange)="filterDocuments()">
           </div>
           <div class="filter-group">
-            <input type="date" class="form-control" placeholder="Start Date" [(ngModel)]="startDate" (ngModelChange)="filterDocuments()">
+            <select class="form-control" [(ngModel)]="year" (ngModelChange)="filterDocuments()">
+              <option value="">Select Year</option>
+              <option *ngFor="let y of years" [value]="y">{{ y }}</option>
+            </select>
           </div>
           <div class="filter-group">
-            <input type="date" class="form-control" placeholder="End Date" [(ngModel)]="endDate" (ngModelChange)="filterDocuments()">
+            <select class="form-control" [(ngModel)]="month" (ngModelChange)="filterDocuments()">
+              <option value="">Select Month</option>
+              <option *ngFor="let m of months" [value]="m">{{ m }}</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <select class="form-control" [(ngModel)]="day" (ngModelChange)="filterDocuments()">
+              <option value="">Select Day</option>
+              <option *ngFor="let d of days" [value]="d">{{ d }}</option>
+            </select>
           </div>
         </div>
       </div>
-      <!-- Document List -->
       <div class="table-container">
         <table class="documents-table" *ngIf="filteredDocuments.length; else noDocuments">
           <thead>
           <tr>
             <th>Name</th>
             <th>Uploaded By</th>
-            <th>Accessible By</th>
             <th>Upload Date</th>
             <th>Actions</th>
           </tr>
@@ -148,7 +118,6 @@
           <tr *ngFor="let doc of filteredDocuments">
             <td>{{ doc.name }}</td>
             <td>{{ doc.uploadedBy }}</td>
-            <td>{{ formatAccessibleBy(doc.accessibleBy) }}</td>
             <td>{{ doc.uploadDate | date }}</td>
             <td>
               <button class="btn btn-primary" (click)="downloadDocument(doc.id, doc.name)" [disabled]="isLoading">
@@ -160,6 +129,84 @@
         </table>
         <ng-template #noDocuments>
           <p class="no-data"><i class="fas fa-info-circle"></i> No documents found.</p>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- Document Requests View -->
+    <div *ngIf="currentView === 'requests' && !isLoading && !errorMessage" class="requests-card">
+      <h3><i class="fas fa-file-signature"></i> Document Requests</h3>
+      <div class="filter-section">
+        <div class="filter-grid">
+          <div class="filter-group">
+            <input class="form-control" placeholder="Search by type or description..." [(ngModel)]="searchTerm" (ngModelChange)="filterRequests()">
+          </div>
+          <div class="filter-group">
+            <select class="form-control" [(ngModel)]="year" (ngModelChange)="filterRequests()">
+              <option value="">Select Year</option>
+              <option *ngFor="let y of years" [value]="y">{{ y }}</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <select class="form-control" [(ngModel)]="month" (ngModelChange)="filterRequests()">
+              <option value="">Select Month</option>
+              <option *ngFor="let m of months" [value]="m">{{ m }}</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <select class="form-control" [(ngModel)]="day" (ngModelChange)="filterRequests()">
+              <option value="">Select Day</option>
+              <option *ngFor="let d of days" [value]="d">{{ d }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="table-container">
+        <table class="requests-table" *ngIf="filteredRequests.length; else noRequests">
+          <thead>
+          <tr>
+            <th>Document Type</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Request Date</th>
+            <th>Urgency</th>
+            <th>Employee Email</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let req of filteredRequests">
+            <td>{{ req.type | titlecase }}</td>
+            <td>{{ req.description }}</td>
+            <td>
+              <span class="status-badge" [ngClass]="{
+                'pending': req.status === 'PENDING',
+                'approved': req.status === 'APPROVED',
+                'rejected': req.status === 'REJECTED'
+              }">{{ req.status }}</span>
+            </td>
+            <td>{{ req.requestDate | date }}</td>
+            <td>
+              <i class="fas" [ngClass]="req.urgency ? 'fa-exclamation-circle text-danger' : 'fa-circle'"></i>
+            </td>
+            <td>{{ req.employeeEmail }}</td>
+            <td>
+              <button class="btn btn-success" (click)="reviewRequest(req.id, 'APPROVED')"
+                      [disabled]="req.status !== 'PENDING' || isLoading">
+                <i class="fas" [class.fa-check]="!isLoading" [class.fa-spinner]="isLoading" [class.fa-spin]="isLoading"></i>
+                Approve
+              </button>
+              <button class="btn btn-danger" (click)="reviewRequest(req.id, 'REJECTED')"
+                      [disabled]="req.status !== 'PENDING' || isLoading">
+                <i class="fas" [class.fa-times]="!isLoading" [class.fa-spinner]="isLoading" [class.fa-spin]="isLoading"></i>
+                Reject
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <ng-template #noRequests>
+          <p class="no-data"><i class="fas fa-info-circle"></i> No document requests found.</p>
         </ng-template>
       </div>
     </div>

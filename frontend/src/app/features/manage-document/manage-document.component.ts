@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../../layout/navbar/navbar.component';
 import { SidebarComponent } from '../../layout/sidebar/sidebar.component';
 import { FooterComponent } from '../../layout/footer/footer.component';
-import { Document } from '../../core/models/document.model';
+import { Document, DocumentRequest } from '../../core/models/document.model';
 import { saveAs } from 'file-saver';
 import { ToastService } from '../../core/services/toast.service';
 import { DocumentService } from '../document/document.service';
 import { ManageDocumentService } from './manage-document.service';
+import { WebsocketService } from '../../core/services/websocket.service';
 
 @Component({
   selector: 'app-manage-document',
@@ -20,50 +21,37 @@ import { ManageDocumentService } from './manage-document.service';
 export class ManageDocumentComponent implements OnInit {
   documents: Document[] = [];
   filteredDocuments: Document[] = [];
+  documentRequests: DocumentRequest[] = [];
+  filteredRequests: DocumentRequest[] = [];
   fileToUpload: File | null = null;
-  accessibleByType: 'department' | 'employees' | 'all_departments' = 'all_departments';
-  departmentValue: string = '';
-  employeeCins: string[] = [];
-  departments: string[] = [];
-  employees: { cin: string, name: string }[] = [];
-  newDocument: { name: string; content: string; templateType: string } = { name: '', content: '', templateType: 'work_certificate' };
+  employeeCin: string = '';
+  newDocument: { cin: string; templateType: string } = {
+    cin: '',
+    templateType: 'work_certificate'
+  };
   templateTypes: string[] = ['work_certificate', 'leave_certificate'];
   errorMessage: string = '';
   isLoading: boolean = false;
-  currentView: 'upload' | 'generate' | 'list' = 'upload';
+  currentView: 'upload' | 'generate' | 'list' | 'requests' = 'upload';
   searchTerm: string = '';
-  startDate: string = '';
-  endDate: string = '';
-
-  // Mock data
-  private mockDocuments: Document[] = [
-    { id: 1, name: 'Employee Handbook.pdf', uploadedBy: 'admin@example.com', accessibleBy: JSON.stringify({ type: 'all_departments', value: null }), uploadDate: '2025-04-01' },
-    { id: 2, name: 'Training Certificate.pdf', uploadedBy: 'hr@example.com', accessibleBy: JSON.stringify({ type: 'department', value: 'HR' }), uploadDate: '2025-04-10' },
-    { id: 3, name: 'Leave Policy.docx', uploadedBy: 'manager@example.com', accessibleBy: JSON.stringify({ type: 'employees', value: ['E123', 'E456'] }), uploadDate: '2025-04-15' }
-  ];
-  private mockDepartments: string[] = ['HR', 'IT', 'Finance'];
-  private mockEmployees: { cin: string, name: string }[] = [
-    { cin: 'E123', name: 'John Doe' },
-    { cin: 'E456', name: 'Jane Smith' },
-    { cin: 'E789', name: 'Alice Johnson' }
-  ];
+  year: string = '';
+  month: string = '';
+  day: string = '';
+  years: string[] = Array.from({ length: 10 }, (_, i) => (2025 - i).toString());
+  months: string[] = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+  days: string[] = Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0'));
 
   constructor(
     private documentService: DocumentService,
     private manageDocumentService: ManageDocumentService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private websocketService: WebsocketService
   ) {}
 
   ngOnInit(): void {
-    this.documents = this.mockDocuments;
-    this.filteredDocuments = this.documents;
-    this.departments = this.mockDepartments;
-    this.employees = this.mockEmployees;
-    this.filterDocuments();
-    // Uncomment when backend is ready
-    // this.fetchDocuments();
-    // this.fetchDepartments();
-    // this.fetchEmployees('');
+    this.fetchDocuments();
+    this.fetchPendingRequests();
+    this.subscribeToNotifications();
   }
 
   fetchDocuments(): void {
@@ -84,34 +72,35 @@ export class ManageDocumentComponent implements OnInit {
     });
   }
 
-  fetchDepartments(): void {
+  fetchPendingRequests(): void {
     this.isLoading = true;
     this.errorMessage = '';
-    this.manageDocumentService.getDepartments().subscribe({
-      next: (depts) => {
-        this.departments = depts;
+    this.manageDocumentService.getPendingRequests().subscribe({
+      next: (requests) => {
+        this.documentRequests = requests;
+        this.filteredRequests = requests;
         this.isLoading = false;
+        this.filterRequests();
       },
       error: (err) => {
         this.errorMessage = err.message;
-        this.toastService.show('Failed to fetch departments', 'error');
+        this.toastService.show(err.message, 'error');
         this.isLoading = false;
       }
     });
   }
 
-  fetchEmployees(department: string): void {
-    this.isLoading = true;
-    this.errorMessage = '';
-    this.manageDocumentService.getEmployees(department).subscribe({
-      next: (emps) => {
-        this.employees = emps;
-        this.isLoading = false;
+  subscribeToNotifications(): void {
+    const email = localStorage.getItem('email') || 'hr@example.com';
+    this.websocketService.connect(`/topic/notifications/${email}`).subscribe({
+      next: (notification) => {
+        this.toastService.show(notification.message, 'success');
+        if (notification.message.includes('document request')) {
+          this.fetchPendingRequests();
+        }
       },
       error: (err) => {
-        this.errorMessage = err.message;
-        this.toastService.show('Failed to fetch employees', 'error');
-        this.isLoading = false;
+        console.error('WebSocket error:', err);
       }
     });
   }
@@ -121,41 +110,30 @@ export class ManageDocumentComponent implements OnInit {
     this.fileToUpload = input.files?.[0] || null;
   }
 
+  isValidCin(): boolean {
+    const cinRegex = /^[0-9]{8}$/;
+    return cinRegex.test(this.newDocument.cin) || (this.currentView === 'upload' && cinRegex.test(this.employeeCin));
+  }
+
   uploadDocument(): void {
-    if (!this.fileToUpload) {
-      this.errorMessage = 'Please select a file to upload';
-      this.toastService.show('Please select a file to upload', 'error');
+    if (!this.fileToUpload || !this.employeeCin) {
+      this.errorMessage = 'Please select a file and enter a valid CIN';
+      this.toastService.show('Please select a file and enter a valid CIN', 'error');
+      return;
+    }
+    if (!this.isValidCin()) {
+      this.errorMessage = 'CIN must be 8 digits';
+      this.toastService.show('CIN must be 8 digits', 'error');
       return;
     }
     this.isLoading = true;
     this.errorMessage = '';
-    const accessibleBy = this.buildAccessibleBy();
-    // Mock upload
-    const newDoc: Document = {
-      id: this.documents.length + 1,
-      name: this.fileToUpload.name,
-      uploadedBy: 'user@example.com',
-      accessibleBy: JSON.stringify(accessibleBy),
-      uploadDate: new Date().toISOString()
-    };
-    this.documents.push(newDoc);
-    this.filteredDocuments = this.documents;
-    this.filterDocuments();
-    this.toastService.show(`Uploaded "${newDoc.name}" successfully`, 'success');
-    this.fileToUpload = null;
-    this.accessibleByType = 'all_departments';
-    this.departmentValue = '';
-    this.employeeCins = [];
-    this.isLoading = false;
-    // Uncomment when backend is ready
-    /*
+    const accessibleBy = { type: 'employees', value: [this.employeeCin] };
     this.manageDocumentService.uploadDocument(this.fileToUpload, accessibleBy).subscribe({
       next: (doc) => {
         this.toastService.show(`Uploaded "${doc.name}" successfully`, 'success');
         this.fileToUpload = null;
-        this.accessibleByType = 'all_departments';
-        this.departmentValue = '';
-        this.employeeCins = [];
+        this.employeeCin = '';
         this.fetchDocuments();
         this.isLoading = false;
       },
@@ -165,49 +143,59 @@ export class ManageDocumentComponent implements OnInit {
         this.isLoading = false;
       }
     });
-    */
   }
 
-  generateDocument(): void {
-    if (!this.newDocument.name.trim() || !this.newDocument.content.trim()) {
-      this.errorMessage = 'Document name and content are required';
-      this.toastService.show('Document name and content are required', 'error');
+  previewDocument(): void {
+    if (!this.isValidCin()) {
+      this.errorMessage = 'CIN must be 8 digits';
+      this.toastService.show('CIN must be 8 digits', 'error');
       return;
     }
     this.isLoading = true;
     this.errorMessage = '';
-    const accessibleBy = this.buildAccessibleBy();
-    // Mock generate
-    const newDoc: Document = {
-      id: this.documents.length + 1,
-      name: this.newDocument.name,
-      uploadedBy: 'user@example.com',
-      accessibleBy: JSON.stringify(accessibleBy),
-      uploadDate: new Date().toISOString()
+    const documentName = this.newDocument.templateType === 'work_certificate' ? 'Work Certificate' : 'Leave Certificate';
+    const parameters = {
+      cin: this.newDocument.cin,
+      leaveType: this.newDocument.templateType === 'leave_certificate' ? 'Annual Leave' : null,
+      startDate: this.newDocument.templateType === 'leave_certificate' ? new Date().toISOString().split('T')[0] : null,
+      endDate: this.newDocument.templateType === 'leave_certificate' ? new Date().toISOString().split('T')[0] : null
     };
-    this.documents.push(newDoc);
-    this.filteredDocuments = this.documents;
-    this.filterDocuments();
-    this.toastService.show(`Generated "${newDoc.name}" successfully`, 'success');
-    this.newDocument = { name: '', content: '', templateType: 'work_certificate' };
-    this.accessibleByType = 'all_departments';
-    this.departmentValue = '';
-    this.employeeCins = [];
-    this.isLoading = false;
-    // Uncomment when backend is ready
-    /*
-    this.manageDocumentService.generateDocument(
-      this.newDocument.name,
-      this.newDocument.content,
-      accessibleBy,
-      this.newDocument.templateType
-    ).subscribe({
+    const accessibleBy = { type: 'employees', value: [this.newDocument.cin] };
+    this.manageDocumentService.previewDocument(documentName, parameters, accessibleBy, this.newDocument.templateType).subscribe({
+      next: (blob) => {
+        const fileName = `${documentName}_preview.pdf`;
+        saveAs(blob, fileName);
+        this.toastService.show(`Preview downloaded for "${documentName}"`, 'success');
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.errorMessage = err.message || 'Failed to download preview';
+        this.toastService.show(this.errorMessage, 'error');
+        this.isLoading = false;
+      }
+    });
+  }
+
+  generateDocument(): void {
+    if (!this.isValidCin()) {
+      this.errorMessage = 'CIN must be 8 digits';
+      this.toastService.show('CIN must be 8 digits', 'error');
+      return;
+    }
+    this.isLoading = true;
+    this.errorMessage = '';
+    const documentName = this.newDocument.templateType === 'work_certificate' ? 'Work Certificate' : 'Leave Certificate';
+    const parameters = {
+      cin: this.newDocument.cin,
+      leaveType: this.newDocument.templateType === 'leave_certificate' ? 'Annual Leave' : null,
+      startDate: this.newDocument.templateType === 'leave_certificate' ? new Date().toISOString().split('T')[0] : null,
+      endDate: this.newDocument.templateType === 'leave_certificate' ? new Date().toISOString().split('T')[0] : null
+    };
+    const accessibleBy = { type: 'employees', value: [this.newDocument.cin] };
+    this.manageDocumentService.generateDocument(documentName, parameters, accessibleBy, this.newDocument.templateType).subscribe({
       next: (doc) => {
         this.toastService.show(`Generated "${doc.name}" successfully`, 'success');
-        this.newDocument = { name: '', content: '', templateType: 'work_certificate' };
-        this.accessibleByType = 'all_departments';
-        this.departmentValue = '';
-        this.employeeCins = [];
+        this.newDocument = { cin: '', templateType: 'work_certificate' };
         this.fetchDocuments();
         this.isLoading = false;
       },
@@ -217,22 +205,16 @@ export class ManageDocumentComponent implements OnInit {
         this.isLoading = false;
       }
     });
-    */
   }
 
   downloadDocument(id: number, name: string): void {
     this.isLoading = true;
     this.errorMessage = '';
-    // Mock download
-    const blob = new Blob(['Mock document content'], { type: 'text/plain' });
-    saveAs(blob, name);
-    this.isLoading = false;
-    // Uncomment when backend is ready
-    /*
     this.documentService.downloadDocument(id).subscribe({
       next: (blob) => {
         saveAs(blob, name);
         this.isLoading = false;
+        this.toastService.show(`Downloaded "${name}" successfully`, 'success');
       },
       error: (err) => {
         this.errorMessage = err.message;
@@ -240,7 +222,6 @@ export class ManageDocumentComponent implements OnInit {
         this.isLoading = false;
       }
     });
-    */
   }
 
   filterDocuments(): void {
@@ -248,42 +229,40 @@ export class ManageDocumentComponent implements OnInit {
       const matchesSearch = !this.searchTerm ||
         doc.name.toLowerCase().includes(this.searchTerm.toLowerCase());
       const uploadDate = new Date(doc.uploadDate);
-      const start = this.startDate ? new Date(this.startDate) : null;
-      const end = this.endDate ? new Date(this.endDate) : null;
-      const matchesDate = (!start || uploadDate >= start) && (!end || uploadDate <= end);
-      return matchesSearch && matchesDate;
+      const matchesYear = !this.year || uploadDate.getFullYear().toString() === this.year;
+      const matchesMonth = !this.month || (uploadDate.getMonth() + 1).toString().padStart(2, '0') === this.month;
+      const matchesDay = !this.day || uploadDate.getDate().toString().padStart(2, '0') === this.day;
+      return matchesSearch && matchesYear && matchesMonth && matchesDay;
     });
   }
 
-  onAccessibleByTypeChange(): void {
-    this.departmentValue = '';
-    this.employeeCins = [];
-    if (this.accessibleByType === 'department') {
-      this.fetchEmployees(this.departmentValue);
-    } else if (this.accessibleByType === 'employees') {
-      this.fetchEmployees('');
-    }
+  filterRequests(): void {
+    this.filteredRequests = this.documentRequests.filter(req => {
+      const matchesSearch = !this.searchTerm ||
+        req.type.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        req.description.toLowerCase().includes(this.searchTerm.toLowerCase());
+      const requestDate = new Date(req.requestDate);
+      const matchesYear = !this.year || requestDate.getFullYear().toString() === this.year;
+      const matchesMonth = !this.month || (requestDate.getMonth() + 1).toString().padStart(2, '0') === this.month;
+      const matchesDay = !this.day || requestDate.getDate().toString().padStart(2, '0') === this.day;
+      return matchesSearch && matchesYear && matchesMonth && matchesDay;
+    });
   }
 
-  private buildAccessibleBy(): any {
-    if (this.accessibleByType === 'all_departments') {
-      return { type: 'all_departments', value: null };
-    } else if (this.accessibleByType === 'department') {
-      return { type: 'department', value: this.departmentValue };
-    } else {
-      return { type: 'employees', value: this.employeeCins };
-    }
-  }
-
-  formatAccessibleBy(accessibleBy: string): string {
-    try {
-      const json = JSON.parse(accessibleBy);
-      if (json.type === 'all_departments') return 'All Departments';
-      if (json.type === 'department') return `Department: ${json.value}`;
-      if (json.type === 'employees') return `Employees: ${json.value.join(', ')}`;
-      return 'Unknown';
-    } catch {
-      return accessibleBy;
-    }
+  reviewRequest(id: number, status: 'APPROVED' | 'REJECTED'): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.manageDocumentService.reviewRequest(id, status).subscribe({
+      next: () => {
+        this.toastService.show(`Request ${status.toLowerCase()} successfully`, 'success');
+        this.fetchPendingRequests();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+        this.toastService.show(err.message, 'error');
+        this.isLoading = false;
+      }
+    });
   }
 }

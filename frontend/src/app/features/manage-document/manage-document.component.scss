@@ -44,7 +44,7 @@
   }
 }
 
-.upload-card, .generate-card, .documents-card {
+.upload-card, .generate-card, .documents-card, .requests-card {
   background: white;
   padding: 30px;
   border-radius: 12px;
@@ -124,15 +124,6 @@
       box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
     }
   }
-
-  textarea.form-control {
-    resize: vertical;
-    min-height: 100px;
-  }
-
-  select[multiple] {
-    height: 100px;
-  }
 }
 
 .form-actions {
@@ -165,7 +156,7 @@
   overflow-x: auto;
 }
 
-.documents-table {
+.documents-table, .requests-table {
   width: 100%;
   border-collapse: collapse;
   background: white;
@@ -198,6 +189,31 @@
   }
 }
 
+.status-badge {
+  display: inline-block;
+  width: 100px;
+  text-align: center;
+  padding: 6px 0;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+
+  &.pending {
+    background: #f7e08b;
+    color: #333;
+  }
+
+  &.approved {
+    background: #6abf69;
+    color: #fff;
+  }
+
+  &.rejected {
+    background: #e57373;
+    color: #fff;
+  }
+}
+
 .btn {
   padding: 10px 15px;
   border-radius: 6px;
@@ -214,6 +230,38 @@
 
     &:hover:not(:disabled) {
       background: #0056b3;
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+    }
+  }
+
+  &.btn-success {
+    background: #28a745;
+    color: white;
+    border: none;
+
+    &:hover:not(:disabled) {
+      background: #218838;
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+    }
+  }
+
+  &.btn-danger {
+    background: #dc3545;
+    color: white;
+    border: none;
+
+    &:hover:not(:disabled) {
+      background: #c82333;
       transform: translateY(-2px);
     }
 
@@ -244,7 +292,7 @@
     grid-template-columns: 1fr;
   }
 
-  .documents-table {
+  .documents-table, .requests-table {
     font-size: 0.9rem;
 
     th, td {
@@ -259,7 +307,7 @@
 }
 
 @media (max-width: 576px) {
-  .upload-card, .generate-card, .documents-card {
+  .upload-card, .generate-card, .documents-card, .requests-card {
     padding: 20px;
 
     h3 {

@@ -49,19 +49,21 @@ public class SecurityConfig {
                         .requestMatchers("/api/leave/pending", "/api/leave/review/**").hasAuthority("HR_MANAGER")
                         .requestMatchers("/api/training/all", "/api/training/my-enrollments", "/api/training/enroll/**", "/api/training/cancel/**").authenticated()
                         .requestMatchers("/api/training/create", "/api/training/review/**", "/api/training/pending-enrollments").hasAuthority("HR_MANAGER")
-                        .requestMatchers("/api/documents/upload", "/api/documents/generate").hasAuthority("HR_MANAGER")
+                        .requestMatchers("/api/documents/generate").hasAuthority("HR_MANAGER")
+                        .requestMatchers("/api/documents/request", "/api/documents/my-requests","/api/documents/upload").authenticated()
+                        .requestMatchers("/api/documents/pending-requests", "/api/documents/review-request/**").hasAuthority("HR_MANAGER")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(ex -> ex
-                .authenticationEntryPoint((req, res, e) -> {
-                    res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    res.getWriter().write("{\"message\": \"Unauthorized\"}");
-                })
-                .accessDeniedHandler((req, res, e) -> {
-                    res.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    res.getWriter().write("{\"message\": \"You do not have permission to perform this action\"}");
-                }));
+                        .authenticationEntryPoint((req, res, e) -> {
+                            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            res.getWriter().write("{\"message\": \"Unauthorized\"}");
+                        })
+                        .accessDeniedHandler((req, res, e) -> {
+                            res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            res.getWriter().write("{\"message\": \"You do not have permission to perform this action\"}");
+                        }));
         return http.build();
     }
 

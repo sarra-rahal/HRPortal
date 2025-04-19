@@ -2,7 +2,6 @@
 <app-sidebar></app-sidebar>
 <div class="main-container">
   <div class="content-container">
-    <!-- View Toggle Buttons -->
     <div class="view-toggle">
       <button class="toggle-btn" [class.active]="currentView === 'documents'" (click)="currentView = 'documents'">
         <i class="fas fa-file-alt"></i> My Documents
@@ -12,39 +11,45 @@
       </button>
     </div>
 
-    <!-- Error Message -->
     <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 
-    <!-- Loading State -->
     <div *ngIf="isLoading" class="loading">
       <i class="fas fa-spinner fa-spin"></i> Loading...
     </div>
 
-    <!-- My Documents View -->
     <div *ngIf="currentView === 'documents' && !isLoading && !errorMessage" class="documents-card">
       <h3><i class="fas fa-file-alt"></i> My Documents</h3>
-      <!-- Filter Section -->
       <div class="filter-section">
         <div class="filter-grid">
           <div class="filter-group">
             <input class="form-control" placeholder="Search by name..." [(ngModel)]="searchTerm" (ngModelChange)="filterDocuments()">
           </div>
           <div class="filter-group">
-            <input type="date" class="form-control" placeholder="Start Date" [(ngModel)]="startDate" (ngModelChange)="filterDocuments()">
+            <select class="form-control" [(ngModel)]="year" (ngModelChange)="filterDocuments()">
+              <option value="">Select Year</option>
+              <option *ngFor="let y of years" [value]="y">{{ y }}</option>
+            </select>
           </div>
           <div class="filter-group">
-            <input type="date" class="form-control" placeholder="End Date" [(ngModel)]="endDate" (ngModelChange)="filterDocuments()">
+            <select class="form-control" [(ngModel)]="month" (ngModelChange)="filterDocuments()">
+              <option value="">Select Month</option>
+              <option *ngFor="let m of months" [value]="m">{{ m }}</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <select class="form-control" [(ngModel)]="day" (ngModelChange)="filterDocuments()">
+              <option value="">Select Day</option>
+              <option *ngFor="let d of days" [value]="d">{{ d }}</option>
+            </select>
           </div>
         </div>
       </div>
-      <!-- Document List -->
       <div class="table-container">
         <table class="documents-table" *ngIf="filteredDocuments.length; else noDocuments">
           <thead>
           <tr>
             <th>Name</th>
             <th>Uploaded By</th>
-            <th>Accessible By</th>
             <th>Upload Date</th>
             <th>Actions</th>
           </tr>
@@ -53,7 +58,6 @@
           <tr *ngFor="let doc of filteredDocuments">
             <td>{{ doc.name }}</td>
             <td>{{ doc.uploadedBy }}</td>
-            <td>{{ formatAccessibleBy(doc.accessibleBy) }}</td>
             <td>{{ doc.uploadDate | date }}</td>
             <td>
               <button class="btn btn-primary" (click)="downloadDocument(doc.id, doc.name)" [disabled]="isLoading">
@@ -69,10 +73,8 @@
       </div>
     </div>
 
-    <!-- Document Requests View -->
     <div *ngIf="currentView === 'requests' && !isLoading && !errorMessage" class="requests-card">
       <h3><i class="fas fa-file-signature"></i> Document Requests</h3>
-      <!-- Request Form -->
       <div class="request-form">
         <h4><i class="fas fa-plus-circle"></i> Request a Document</h4>
         <form class="form-grid">
@@ -99,21 +101,31 @@
           </div>
         </form>
       </div>
-      <!-- Filter Section -->
       <div class="filter-section">
         <div class="filter-grid">
           <div class="filter-group">
             <input class="form-control" placeholder="Search by type or description..." [(ngModel)]="searchTerm" (ngModelChange)="filterRequests()">
           </div>
           <div class="filter-group">
-            <input type="date" class="form-control" placeholder="Start Date" [(ngModel)]="startDate" (ngModelChange)="filterRequests()">
+            <select class="form-control" [(ngModel)]="year" (ngModelChange)="filterRequests()">
+              <option value="">Select Year</option>
+              <option *ngFor="let y of years" [value]="y">{{ y }}</option>
+            </select>
           </div>
           <div class="filter-group">
-            <input type="date" class="form-control" placeholder="End Date" [(ngModel)]="endDate" (ngModelChange)="filterRequests()">
+            <select class="form-control" [(ngModel)]="month" (ngModelChange)="filterRequests()">
+              <option value="">Select Month</option>
+              <option *ngFor="let m of months" [value]="m">{{ m }}</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <select class="form-control" [(ngModel)]="day" (ngModelChange)="filterRequests()">
+              <option value="">Select Day</option>
+              <option *ngFor="let d of days" [value]="d">{{ d }}</option>
+            </select>
           </div>
         </div>
       </div>
-      <!-- Requests List -->
       <div class="table-container">
         <table class="requests-table" *ngIf="filteredRequests.length; else noRequests">
           <thead>
@@ -131,11 +143,11 @@
             <td>{{ req.type | titlecase }}</td>
             <td>{{ req.description }}</td>
             <td>
-                <span class="status-badge" [ngClass]="{
-                  'pending': req.status === 'PENDING',
-                  'approved': req.status === 'APPROVED',
-                  'rejected': req.status === 'REJECTED'
-                }">{{ req.status }}</span>
+              <span class="status-badge" [ngClass]="{
+                'pending': req.status === 'PENDING',
+                'approved': req.status === 'APPROVED',
+                'rejected': req.status === 'REJECTED'
+              }">{{ req.status }}</span>
             </td>
             <td>{{ req.requestDate | date }}</td>
             <td>

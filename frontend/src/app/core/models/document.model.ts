@@ -1,12 +1,3 @@
-// export interface Document {
-//   id: number;
-//   name: string;
-//   filePath: string;
-//   uploadedBy: string;
-//   uploadDate: string;
-//   generated: boolean;
-//   accessibleBy: string;
-// }
 export interface Document {
   id: number;
   name: string;
@@ -22,4 +13,5 @@ export interface DocumentRequest {
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
   requestDate: string;
   urgency: boolean;
+  employeeEmail: string;
 }
