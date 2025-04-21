@@ -30,7 +30,6 @@ export class DocumentComponent implements OnInit {
   month: string = '';
   day: string = '';
   newRequest: DocumentRequest = {
-    id: 0,
     type: 'work_certificate',
     description: '',
     status: 'PENDING',
@@ -140,10 +139,15 @@ export class DocumentComponent implements OnInit {
   }
 
   filterRequests(): void {
+
     this.filteredRequests = this.documentRequests.filter(req => {
-      const matchesSearch = !this.searchTerm ||
-        req.type.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        req.description.toLowerCase().includes(this.searchTerm.toLowerCase());
+      var matchesSearch = !this.searchTerm ||
+        req.type.toLowerCase().includes(this.searchTerm.toLowerCase());
+      if(req.description != undefined){
+        matchesSearch = !this.searchTerm ||
+          req.type.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+          req.description.toLowerCase().includes(this.searchTerm.toLowerCase());
+      }
       const requestDate = new Date(req.requestDate);
       const matchesYear = !this.year || requestDate.getFullYear().toString() === this.year;
       const matchesMonth = !this.month || (requestDate.getMonth() + 1).toString().padStart(2, '0') === this.month;
@@ -153,11 +157,6 @@ export class DocumentComponent implements OnInit {
   }
 
   requestDocument(): void {
-    if (!this.newRequest.description.trim()) {
-      this.errorMessage = 'Description is required';
-      this.toastService.show('Description is required', 'error');
-      return;
-    }
     this.isLoading = true;
     this.errorMessage = '';
     this.documentService.requestDocument(this.newRequest).subscribe({
@@ -177,24 +176,29 @@ export class DocumentComponent implements OnInit {
     });
   }
 
-  cancelRequest(id: number): void {
-    if (confirm('Are you sure you want to cancel this request?')) {
-      this.isLoading = true;
-      this.errorMessage = '';
-      this.documentService.cancelRequest(id).subscribe({
-        next: () => {
-          this.documentRequests = this.documentRequests.filter(req => req.id !== id);
-          this.filteredRequests = this.documentRequests;
-          this.filterRequests();
-          this.toastService.show('Request cancelled successfully', 'success');
-          this.isLoading = false;
-        },
-        error: (err) => {
-          this.errorMessage = err.message;
-          this.toastService.show(err.message, 'error');
-          this.isLoading = false;
-        }
-      });
+  cancelRequest(id: number | undefined): void {
+    if(id == undefined){
+      this.toastService.show('Request id not found', 'error');
+    }
+    else{
+      if (confirm('Are you sure you want to cancel this request?')) {
+        this.isLoading = true;
+        this.errorMessage = '';
+        this.documentService.cancelRequest(id).subscribe({
+          next: () => {
+            this.documentRequests = this.documentRequests.filter(req => req.id !== id);
+            this.filteredRequests = this.documentRequests;
+            this.filterRequests();
+            this.toastService.show('Request cancelled successfully', 'success');
+            this.isLoading = false;
+          },
+          error: (err) => {
+            this.errorMessage = err.message;
+            this.toastService.show(err.message, 'error');
+            this.isLoading = false;
+          }
+        });
+      }
     }
   }
 }

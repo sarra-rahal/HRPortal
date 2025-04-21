@@ -73,6 +73,7 @@ public class DocumentService {
         }
     }
 
+
     public Document generateDocument(String name, Map<String, Object> parameters, String accessibleBy, String templateType, String token) {
         validateToken(token);
         String email = jwtUtil.extractEmail(token.split(" ")[1]);
@@ -84,7 +85,6 @@ public class DocumentService {
         String cin = (String) parameters.get("cin");
         Employee employee = employeeRepository.findById(cin)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee with CIN " + cin + " not found"));
-
         String fileName = UUID.randomUUID() + "_" + name.trim() + ".pdf";
         String filePath = DOCUMENTS_DIR + fileName;
 
@@ -93,17 +93,19 @@ public class DocumentService {
             String templatePath;
             switch (templateType.toLowerCase()) {
                 case "work_certificate":
-                    templatePath = REPORTS_DIR + "work_certificate.jrxml";
+                    templatePath = "src/main/resources/reports/work_certificate.jrxml";
                     parameters.put("employeeName", employee.getFirstname() + " " + employee.getLastname());
                     parameters.put("jobTitle", employee.getJobtitle());
                     parameters.put("department", employee.getDepartement());
                     break;
                 case "leave_certificate":
-                    templatePath = REPORTS_DIR + "leave_certificate.jrxml";
+                    templatePath = "src/main/resources/reports/leave_certificate.jrxml";
                     parameters.put("employeeName", employee.getFirstname() + " " + employee.getLastname());
-                    parameters.put("leaveType", parameters.getOrDefault("leaveType", "Annual Leave"));
-                    parameters.put("startDate", parameters.getOrDefault("startDate", LocalDateTime.now().toString()));
-                    parameters.put("endDate", parameters.getOrDefault("endDate", LocalDateTime.now().toString()));
+                    parameters.put("employeeId", parameters.getOrDefault("leaveType", "********"));
+                    parameters.put("leaveStartDate", parameters.getOrDefault("startDate", LocalDateTime.now().toString()));
+                    parameters.put("leaveEndDate", parameters.getOrDefault("endDate", LocalDateTime.now().toString()));
+                    parameters.put("leaveReason", parameters.getOrDefault("endDate", LocalDateTime.now().toString()));
+                    parameters.put("genDate", LocalDateTime.now().toString());
                     break;
                 default:
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid template type");
@@ -201,7 +203,7 @@ public class DocumentService {
         if (!"HR_MANAGER".equals(role)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
         }
-        return documentRequestRepository.findByStatusOrderByRequestDateDesc("PENDING");
+        return documentRequestRepository.findByStatusInOrderByRequestDateDesc(List.of("APPROVED","PENDING"));
     }
 
     public DocumentRequest reviewRequest(Long id, String status, String token) {

@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface DocumentRequestRepository extends JpaRepository<DocumentRequest, Long> {
     List<DocumentRequest> findByEmployeeEmailOrderByRequestDateDesc(String employeeEmail);
-    List<DocumentRequest> findByStatusOrderByRequestDateDesc(String status);
+    List<DocumentRequest> findByStatusInOrderByRequestDateDesc(List<String> status);
 }
