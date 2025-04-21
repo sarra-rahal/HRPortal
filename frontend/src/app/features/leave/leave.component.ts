@@ -9,6 +9,7 @@ import { WebsocketService } from '../../core/services/websocket.service';
 import { ToastService } from '../../core/services/toast.service';
 import { Subscription } from 'rxjs';
 import { LeaveService } from './leave.service';
+import {DocumentComponent} from '../document/document.component';
 
 @Component({
   selector: 'app-leave',
@@ -29,6 +30,7 @@ export class LeaveComponent implements OnInit, OnDestroy {
   startDateFilter: string = '';
   endDateFilter: string = '';
   statusFilter: string = '';
+  genLCRequest: number | null = null;
   currentView: 'submit' | 'history' = 'submit';
   cancellingRequest: number | null = null;
   private wsSub?: Subscription;
@@ -38,7 +40,7 @@ export class LeaveComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private apiService: LeaveService,
     private websocketService: WebsocketService,
-    private toastService: ToastService
+    private toastService: ToastService,
   ) {
     this.leaveForm = this.fb.group({
       leaveType: ['', Validators.required],
@@ -130,6 +132,25 @@ export class LeaveComponent implements OnInit, OnDestroy {
       });
     }
   }
+  //
+  // deleteRequest(id: number): void {
+  //   if (confirm('Are you sure you want to delete this request from history?')) {
+  //     this.deletingRequest = id;
+  //     this.apiService.cancelLeaveRequest(id).subscribe({
+  //       next: () => {
+  //         this.toastService.show('Leave request deleted successfully', 'success');
+  //         this.loadRequests();
+  //         this.deletingRequest = null;
+  //       },
+  //       error: (err) => {
+  //         this.error = err.message;
+  //         this.toastService.show('Error deleting request: ' + err.message, 'error');
+  //         this.deletingRequest = null;
+  //       }
+  //     });
+  //   }
+  // }
+
 
   editRequest(request: any): void {
     this.isEditing = true;
@@ -141,6 +162,29 @@ export class LeaveComponent implements OnInit, OnDestroy {
       endDate: request.endDate,
       reason: request.reason || ''
     });
+  }
+
+  generateLeaveCertif(request: any): void {
+    this.toastService.show('a request to get a leave certificate is sent successfully', 'success');
+  //   this.isGenerating = true;
+  //   this.genRequestId = request.id
+  //   this.documentComponent.requestDocument({
+  //     type: 'leave_certificate',
+  //     description: "i want a leave certificate with start date",
+  //     status: 'PENDING',
+  //     requestDate: '',
+  //     urgency: false,
+  //     employeeEmail: ''
+  //   })
+  //       this.toastService.show('a request to get a leave certificate is sent successfully', 'success');
+  //       this.genRequestId = null;
+  //     }
+  //     error: (err) => {
+  //       this.error = err.message;
+  //       this.toastService.show('Error sending leave certificate request: ' + err.message, 'error');
+  //       this.genRequestId = null;
+  //     }
+  //
   }
 
   filterRequests(): void {

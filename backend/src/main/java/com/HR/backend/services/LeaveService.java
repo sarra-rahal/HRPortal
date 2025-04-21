@@ -79,9 +79,9 @@ public class LeaveService {
         if (!request.getEmployeeCin().equals(employeeCin)) {
             throw new IllegalArgumentException("You can only cancel your own requests");
         }
-        if (!request.getStatus().equals("PENDING")) {
-            throw new IllegalArgumentException("Only pending requests can be canceled");
-        }
+//        if (!request.getStatus().equals("PENDING")) {
+//            throw new IllegalArgumentException("Only pending requests can be canceled");
+//        }
         leaveRequestRepository.delete(request);
 
         Employee employee = employeeRepository.findByCin(employeeCin)

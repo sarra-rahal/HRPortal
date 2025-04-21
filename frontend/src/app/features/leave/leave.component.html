@@ -121,12 +121,20 @@
             <td>{{ req.submittedAt | date }}</td>
             <td>{{ req.hrComment || '-' }}</td>
             <td class="actions">
-              <button class="btn btn-outline-primary" (click)="editRequest(req)" [disabled]="req.status !== 'PENDING'">
+              <button class="btn btn-outline-primary" (click)="editRequest(req)" [hidden]="req.status === 'APPROVED'" >
                 <i class="fas fa-edit"></i> Edit
               </button>
-              <button class="btn btn-outline-danger" (click)="cancelRequest(req.id)" [disabled]="req.status !== 'PENDING' || cancellingRequest === req.id">
+              <button class="btn btn-outline-danger" (click)="cancelRequest(req.id)" [hidden]="req.status !== 'PENDING' || cancellingRequest === req.id">
                 <i class="fas" [class.fa-trash]="cancellingRequest !== req.id" [class.fa-spinner]="cancellingRequest === req.id" [class.fa-spin]="cancellingRequest === req.id"></i>
                 Cancel
+              </button>
+              <button class="btn btn-outline-danger" (click)="cancelRequest(req.id)" [hidden]="req.status !== 'DENIED' || cancellingRequest === req.id">
+                <i class="fas" [class.fa-trash]="cancellingRequest !== req.id" [class.fa-spinner]="cancellingRequest === req.id" [class.fa-spin]="cancellingRequest === req.id"></i>
+                Delete
+              </button>
+              <button class="btn btn-outline-green" (click)="generateLeaveCertif(req)" [hidden]="req.status !== 'APPROVED' || genLCRequest === req.id">
+                <i class="fas" [class.fa-file]="genLCRequest !== req.id" [class.fa-spinner]="genLCRequest === req.id" [class.fa-spin]="genLCRequest === req.id"></i>
+                Generate leave certificate
               </button>
             </td>
           </tr>

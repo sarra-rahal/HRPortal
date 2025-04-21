@@ -4,24 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="84417b3a-da8d-4c40-ad47-5e2ea64ae2cf" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/models/DocumentRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repositories/DocumentRequestRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/resources/reports/leave_certificate.jrxml" afterDir="false" />
+    <list default="true" id="84417b3a-da8d-4c40-ad47-5e2ea64ae2cf" name="Changes" comment="to manage employees and departments">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/DocumentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/DocumentController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/DocumentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/DocumentService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/reports/work_certificate.jrxml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/reports/work_certificate.jrxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/core/models/document.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/core/models/document.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/document/document.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/document/document.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/document/document.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/document/document.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/document/document.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/document/document.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/manage-document/manage-document.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-document/manage-document.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/manage-document/manage-document.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-document/manage-document.component.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/manage-document/manage-document.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-document/manage-document.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/manage-document/manage-document.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-document/manage-document.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/LeaveService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/LeaveService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.component.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/manage-leaves/manage-leaves.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-leaves/manage-leaves.component.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,7 +43,7 @@
   }
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="QODANA_PROBLEMS_VIEW_TAB" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -162,6 +152,7 @@
       <workItem from="1744807698349" duration="9867000" />
       <workItem from="1744875971099" duration="2462000" />
       <workItem from="1744926095619" duration="6315000" />
+      <workItem from="1745163806857" duration="10533000" />
     </task>
     <servers />
   </component>

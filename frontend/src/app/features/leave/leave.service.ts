@@ -31,6 +31,14 @@ export class LeaveService {
     return this.http.delete<void>(`${this.apiUrl}/leave/cancel/${id}`, { headers: this.getAuthHeaders() });
   }
 
+  // deleteLeaveRequest(id: number): Observable<void> {
+  //   return this.http.delete<void>(`${this.apiUrl}/leave/delete/${id}`, { headers: this.getAuthHeaders() });
+  // }
+
+  // genLeaveCertif(id: number): Observable<void> {
+  //   return this.http.delete<void>(`${this.apiUrl}/leave/delete/${id}`, { headers: this.getAuthHeaders() });
+  // }
+
   updateLeaveRequest(id: number, request: any): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/leave/update/${id}`, request, { headers: this.getAuthHeaders() });
   }
