@@ -124,17 +124,17 @@
               <button class="btn btn-outline-primary" (click)="editRequest(req)" [hidden]="req.status === 'APPROVED'" >
                 <i class="fas fa-edit"></i> Edit
               </button>
-              <button class="btn btn-outline-danger" (click)="cancelRequest(req.id)" [hidden]="req.status !== 'PENDING' || cancellingRequest === req.id">
+              <button name="C" class="btn btn-outline-danger" (click)="cancelRequest(req.id,'C')" [hidden]="req.status !== 'PENDING' || cancellingRequest === req.id">
                 <i class="fas" [class.fa-trash]="cancellingRequest !== req.id" [class.fa-spinner]="cancellingRequest === req.id" [class.fa-spin]="cancellingRequest === req.id"></i>
                 Cancel
               </button>
-              <button class="btn btn-outline-danger" (click)="cancelRequest(req.id)" [hidden]="req.status !== 'DENIED' || cancellingRequest === req.id">
+              <button class="btn btn-outline-danger" (click)="cancelRequest(req.id,'D')" [hidden]="req.status !== 'DENIED' || cancellingRequest === req.id">
                 <i class="fas" [class.fa-trash]="cancellingRequest !== req.id" [class.fa-spinner]="cancellingRequest === req.id" [class.fa-spin]="cancellingRequest === req.id"></i>
                 Delete
               </button>
               <button class="btn btn-outline-green" (click)="generateLeaveCertif(req)" [hidden]="req.status !== 'APPROVED' || genLCRequest === req.id">
                 <i class="fas" [class.fa-file]="genLCRequest !== req.id" [class.fa-spinner]="genLCRequest === req.id" [class.fa-spin]="genLCRequest === req.id"></i>
-                Generate leave certificate
+                Request a leave certificate
               </button>
             </td>
           </tr>

@@ -10,6 +10,8 @@ import { ToastService } from '../../core/services/toast.service';
 import { Subscription } from 'rxjs';
 import { LeaveService } from './leave.service';
 import {DocumentComponent} from '../document/document.component';
+import {DocumentService} from '../document/document.service';
+import {DocumentRequest} from '../../core/models/document.model';
 
 @Component({
   selector: 'app-leave',
@@ -22,6 +24,15 @@ export class LeaveComponent implements OnInit, OnDestroy {
   leaveForm: FormGroup;
   requests: any[] = [];
   filteredRequests: any[] = [];
+  documentRequests: DocumentRequest[] = [];
+  newRequest: DocumentRequest = {
+    type: 'leave_certificate',
+    description: '',
+    status: 'PENDING',
+    requestDate: '',
+    urgency: false,
+    employeeEmail: ''
+  };
   error: string | null = null;
   isLoading: boolean = false;
   isSubmitting: boolean = false;
@@ -34,6 +45,7 @@ export class LeaveComponent implements OnInit, OnDestroy {
   currentView: 'submit' | 'history' = 'submit';
   cancellingRequest: number | null = null;
   private wsSub?: Subscription;
+  private isGenerating: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -41,6 +53,7 @@ export class LeaveComponent implements OnInit, OnDestroy {
     private apiService: LeaveService,
     private websocketService: WebsocketService,
     private toastService: ToastService,
+    private documentService : DocumentService
   ) {
     this.leaveForm = this.fb.group({
       leaveType: ['', Validators.required],
@@ -115,41 +128,33 @@ export class LeaveComponent implements OnInit, OnDestroy {
     }
   }
 
-  cancelRequest(id: number): void {
+  cancelRequest(id: number,B : string): void {
     if (confirm('Are you sure you want to cancel this request?')) {
       this.cancellingRequest = id;
       this.apiService.cancelLeaveRequest(id).subscribe({
         next: () => {
-          this.toastService.show('Leave request cancelled successfully', 'success');
+          if(B == 'C'){
+            this.toastService.show('Leave request cancelled successfully', 'success');
+          }
+          else{
+            this.toastService.show('Leave request deleted successfully', 'success');
+          }
           this.loadRequests();
           this.cancellingRequest = null;
         },
         error: (err) => {
           this.error = err.message;
-          this.toastService.show('Error cancelling request: ' + err.message, 'error');
+          if(B == 'C'){
+            this.toastService.show('Error cancelling request: ' + err.message, 'error');
+          }
+          else{
+            this.toastService.show('Error deleting request: ' + err.message, 'error');
+          }
           this.cancellingRequest = null;
         }
       });
     }
   }
-  //
-  // deleteRequest(id: number): void {
-  //   if (confirm('Are you sure you want to delete this request from history?')) {
-  //     this.deletingRequest = id;
-  //     this.apiService.cancelLeaveRequest(id).subscribe({
-  //       next: () => {
-  //         this.toastService.show('Leave request deleted successfully', 'success');
-  //         this.loadRequests();
-  //         this.deletingRequest = null;
-  //       },
-  //       error: (err) => {
-  //         this.error = err.message;
-  //         this.toastService.show('Error deleting request: ' + err.message, 'error');
-  //         this.deletingRequest = null;
-  //       }
-  //     });
-  //   }
-  // }
 
 
   editRequest(request: any): void {
@@ -165,26 +170,33 @@ export class LeaveComponent implements OnInit, OnDestroy {
   }
 
   generateLeaveCertif(request: any): void {
-    this.toastService.show('a request to get a leave certificate is sent successfully', 'success');
-  //   this.isGenerating = true;
-  //   this.genRequestId = request.id
-  //   this.documentComponent.requestDocument({
-  //     type: 'leave_certificate',
-  //     description: "i want a leave certificate with start date",
-  //     status: 'PENDING',
-  //     requestDate: '',
-  //     urgency: false,
-  //     employeeEmail: ''
-  //   })
-  //       this.toastService.show('a request to get a leave certificate is sent successfully', 'success');
-  //       this.genRequestId = null;
-  //     }
-  //     error: (err) => {
-  //       this.error = err.message;
-  //       this.toastService.show('Error sending leave certificate request: ' + err.message, 'error');
-  //       this.genRequestId = null;
-  //     }
-  //
+    this.newRequest= {
+      type: 'leave_certificate',
+      description: request.reason,
+      status: 'PENDING',
+      requestDate: '',
+      urgency: false,
+      employeeEmail: '',
+      startLDate: request.startDate,
+      endLDater: request.endDate,
+      duration: request.duration,
+    };
+    this.isLoading = true;
+    this.error = '';
+    this.documentService.requestDocument(this.newRequest).subscribe({
+      next: (request) => {
+        this.documentRequests.push(request);
+        this.filteredRequests = this.documentRequests;
+        this.filterRequests();
+        this.toastService.show('leave certificate request submitted successfully', 'success');
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.error = err.message;
+        this.toastService.show(err.message, 'error');
+        this.isLoading = false;
+      }
+    });
   }
 
   filterRequests(): void {

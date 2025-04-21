@@ -64,10 +64,10 @@
                  [(ngModel)]="newDocument.cin" name="cin" pattern="[0-9]{8}" required>
         </div>
         <div class="form-actions">
-          <button type="button" class="btn btn-primary" (click)="previewDocument()" [disabled]="isLoading || !isValidCin()">
-            <i class="fas" [class.fa-download]="!isLoading" [class.fa-spinner]="isLoading" [class.fa-spin]="isLoading"></i>
-            Download Preview
-          </button>
+<!--          <button type="button" class="btn btn-primary" (click)="previewDocument()" [disabled]="isLoading || !isValidCin()">-->
+<!--            <i class="fas" [class.fa-download]="!isLoading" [class.fa-spinner]="isLoading" [class.fa-spin]="isLoading"></i>-->
+<!--            Download Preview-->
+<!--          </button>-->
           <button type="button" class="btn btn-success" (click)="generateDocument()" [disabled]="isLoading || !isValidCin()">
             <i class="fas" [class.fa-file-medical]="!isLoading" [class.fa-spinner]="isLoading" [class.fa-spin]="isLoading"></i>
             Generate
@@ -191,13 +191,23 @@
             </td>
             <td>{{ req.employeeEmail }}</td>
             <td>
+              <button class="btn btn-primary" (click)="reviewRequest(req.id, 'APPROVED')"
+                      [hidden]="req.status !== 'APPROVED' || isLoading">
+                <i class="fas" [class.fa-file]="!isLoading" [class.fa-spinner]="isLoading" [class.fa-spin]="isLoading"></i>
+                generate
+              </button>
+              <button class="btn btn-primary" (click)="reviewRequest(req.id, 'APPROVED')"
+                      [hidden]="req.status !== 'APPROVED' || isLoading">
+                <i class="fas" [class.fa-upload]="!isLoading" [class.fa-spinner]="isLoading" [class.fa-spin]="isLoading"></i>
+                upload
+              </button>
               <button class="btn btn-success" (click)="reviewRequest(req.id, 'APPROVED')"
-                      [disabled]="req.status !== 'PENDING' || isLoading">
+                      [hidden]="req.status !== 'PENDING' || isLoading">
                 <i class="fas" [class.fa-check]="!isLoading" [class.fa-spinner]="isLoading" [class.fa-spin]="isLoading"></i>
                 Approve
               </button>
               <button class="btn btn-danger" (click)="reviewRequest(req.id, 'REJECTED')"
-                      [disabled]="req.status !== 'PENDING' || isLoading">
+                      [hidden]="req.status !== 'PENDING' || isLoading">
                 <i class="fas" [class.fa-times]="!isLoading" [class.fa-spinner]="isLoading" [class.fa-spin]="isLoading"></i>
                 Reject
               </button>

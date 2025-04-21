@@ -5,13 +5,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="84417b3a-da8d-4c40-ad47-5e2ea64ae2cf" name="Changes" comment="to manage employees and departments">
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/GlobalExceptionHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/DepartmentService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/resources/static/img.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-employees/manage-employees.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-employees/manage-employees.component.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-employees/manage-employees.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-employees/manage-employees.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/LeaveService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/LeaveService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/DepartmentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/DepartmentController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/EmployeeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/controllers/EmployeeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repositories/DocumentRequestRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repositories/DocumentRequestRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repositories/EmployeeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/repositories/EmployeeRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/DocumentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/DocumentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/EmployeeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/HR/backend/services/EmployeeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/reports/leave_certificate.jrxml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/reports/leave_certificate.jrxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/core/models/document.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/core/models/document.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/document/document.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/document/document.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.component.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/leave/leave.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/manage-leaves/manage-leaves.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-leaves/manage-leaves.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/manage-document/manage-document.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-document/manage-document.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/manage-document/manage-document.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/manage-document/manage-document.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/features/welcome/welcome.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/features/welcome/welcome.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/layout/sidebar/sidebar.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/layout/sidebar/sidebar.component.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -152,8 +170,18 @@
       <workItem from="1744807698349" duration="9867000" />
       <workItem from="1744875971099" duration="2462000" />
       <workItem from="1744926095619" duration="6315000" />
-      <workItem from="1745163806857" duration="10533000" />
+      <workItem from="1745163806857" duration="10595000" />
+      <workItem from="1745230274262" duration="28112000" />
     </task>
+    <task id="LOCAL-00001" summary="to manage employees and departments">
+      <option name="closed" value="true" />
+      <created>1745199282021</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1745199282021</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -169,6 +197,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="to manage employees and departments" />
+    <option name="LAST_COMMIT_MESSAGE" value="to manage employees and departments" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

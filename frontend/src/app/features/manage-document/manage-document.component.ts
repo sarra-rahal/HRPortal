@@ -238,9 +238,13 @@ export class ManageDocumentComponent implements OnInit {
 
   filterRequests(): void {
     this.filteredRequests = this.documentRequests.filter(req => {
-      const matchesSearch = !this.searchTerm ||
-        req.type.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        req.description.toLowerCase().includes(this.searchTerm.toLowerCase());
+      var matchesSearch = !this.searchTerm ||
+        req.type.toLowerCase().includes(this.searchTerm.toLowerCase());
+      if(req.description != undefined){
+        matchesSearch = !this.searchTerm ||
+          req.type.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+          req.description.toLowerCase().includes(this.searchTerm.toLowerCase());
+      }
       const requestDate = new Date(req.requestDate);
       const matchesYear = !this.year || requestDate.getFullYear().toString() === this.year;
       const matchesMonth = !this.month || (requestDate.getMonth() + 1).toString().padStart(2, '0') === this.month;
@@ -249,20 +253,25 @@ export class ManageDocumentComponent implements OnInit {
     });
   }
 
-  reviewRequest(id: number, status: 'APPROVED' | 'REJECTED'): void {
-    this.isLoading = true;
-    this.errorMessage = '';
-    this.manageDocumentService.reviewRequest(id, status).subscribe({
-      next: () => {
-        this.toastService.show(`Request ${status.toLowerCase()} successfully`, 'success');
-        this.fetchPendingRequests();
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.errorMessage = err.message;
-        this.toastService.show(err.message, 'error');
-        this.isLoading = false;
-      }
-    });
+  reviewRequest(id: number | undefined , status: 'APPROVED' | 'REJECTED'): void {
+    if(id == undefined){
+      this.toastService.show('Request id not found', 'error');
+    }
+    else{
+      this.isLoading = true;
+      this.errorMessage = '';
+      this.manageDocumentService.reviewRequest(id, status).subscribe({
+        next: () => {
+          this.toastService.show(`Request ${status.toLowerCase()} successfully`, 'success');
+          this.fetchPendingRequests();
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.errorMessage = err.message;
+          this.toastService.show(err.message, 'error');
+          this.isLoading = false;
+        }
+      });
+    }
   }
 }
