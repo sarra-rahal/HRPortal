@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Random;
 
@@ -43,6 +44,7 @@ public class AuthService {
 
         Employee employee = employeeRepository.findByCin(request.getCin())
                 .orElseThrow(() -> new IllegalArgumentException("No employee with this CIN"));
+        employee.setEmail(request.getEmail());
 
         if (userRepository.existsByCin(request.getCin())) {
             logger.warn("Account already exists for the employee with the CIN: {}", request.getCin());
@@ -54,7 +56,8 @@ public class AuthService {
         }
 
         // Generate and send verification code
-        String code = generateVerificationCode();
+        SecureRandom random = new SecureRandom();
+        String code =String.valueOf( random.nextInt(900000) + 100000);
         VerificationCode verificationCode = new VerificationCode();
         verificationCode.setEmail(request.getEmail());
         verificationCode.setCode(code);
@@ -62,15 +65,16 @@ public class AuthService {
         verificationCodeRepository.save(verificationCode);
 
         // Send email with verification code
-        String maskedEmail = maskEmail(request.getEmail());
+        String[] parts = request.getEmail().split("@");
+        String maskedEmail = "*****" + parts[0].charAt(parts[0].length() - 1) + "@" + parts[1];
         emailService.sendEmail(
                 "noreply@hrportal.com",
                 request.getEmail(),
-                "Verify Your HR Portal Account",
+                "Email verification for you HR Portal account",
                 "Your verification code is: " + code + "\nThis code expires in 15 minutes."
         );
 
-        return SignUpResponse.success("Verification code sent to " + maskedEmail + ". Please check your email.");
+        return SignUpResponse.success("If the email provided is correct a verification code sent to it .The code expires in 15 min.\n Please check your email." + maskedEmail);
     }
 
     public SignUpResponse verifyCode(String email, String code, SignUpRequest request) {
@@ -79,11 +83,11 @@ public class AuthService {
 
         if (LocalDateTime.now().isAfter(verificationCode.getExpiresAt())) {
             verificationCodeRepository.delete(verificationCode);
-            return SignUpResponse.error("Verification code expired", "CODE_EXPIRED");
+            return SignUpResponse.error("Verification code expired try signing up again", "CODE_EXPIRED");
         }
 
         if (!verificationCode.getCode().equals(code)) {
-            return SignUpResponse.error("Invalid verification code", "INVALID_CODE");
+            return SignUpResponse.error("The code is uncorrect", "INVALID_CODE");
         }
 
         // Code is valid, proceed with user creation
@@ -126,7 +130,6 @@ public class AuthService {
                 user.getRole().name(),
                 employee.getFirstname(),
                 employee.getLastname(),
-                user.getCin(),
                 user.getEmail()
         );
     }
@@ -161,8 +164,8 @@ public class AuthService {
                 "Reset Your HR Portal Password",
                 "Click the following link to reset your password: " + resetLink + "\nThis link expires in 1 hour."
         );
-
-        String maskedEmail = maskEmail(email);
+        String[] parts = email.split("@");
+        String maskedEmail = "*****" + parts[0].charAt(parts[0].length() - 1) + "@" + parts[1];
         return SignUpResponse.success("Password reset link sent to " + maskedEmail);
     }
 
@@ -195,8 +198,6 @@ public class AuthService {
 
     private String maskEmail(String email) {
         String[] parts = email.split("@");
-        String localPart = parts[0];
-        String domain = parts[1];
-        return "*****" + localPart.charAt(localPart.length() - 1) + "@" + domain;
+        return "*****" + parts[0].charAt(parts[0].length() - 1) + "@" + parts[1];
     }
 }

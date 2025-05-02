@@ -88,4 +88,11 @@ public class LeaveController {
             @RequestBody ReviewRequestDto reviewData) {
         return ResponseEntity.ok(leaveService.reviewLeaveRequest(id, reviewData.getStatus(), reviewData.getHrComment()));
     }
+
+    @PutMapping("/note/{id}")
+    public ResponseEntity<LeaveRequest> sendnote(
+            @PathVariable Long id,
+            @RequestBody String comment) {
+        return ResponseEntity.ok(leaveService.sendnote(id, comment));
+    }
 }

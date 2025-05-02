@@ -1,38 +1,47 @@
 package com.HR.backend.controllers;
 
-import com.HR.backend.config.JwtUtil;
 import com.HR.backend.models.Employee;
-import com.HR.backend.models.User;
-import com.HR.backend.repositories.EmployeeRepository;
-import com.HR.backend.repositories.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.HR.backend.services.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/employee")
-@PreAuthorize("hasAuthority('EMPLOYEE')")
-@CrossOrigin(origins = "http://localhost:4200")
-@RequiredArgsConstructor
+@RequestMapping("/api/employees")
 public class EmployeeController {
+    private final EmployeeService employeeService;
 
-    private final EmployeeRepository employeeRepository;
-    @Autowired
-    private UserRepository userRepository;
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
 
-    @GetMapping("/profile")
-    public ResponseEntity<Employee> getProfile() {
-        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        Employee employee = employeeRepository.findByCin(user.getCin())
-                .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
-        return ResponseEntity.ok(employee);
+    @GetMapping
+    @PreAuthorize("hasAuthority('HR_MANAGER')")
+    public List<Employee> getAllEmployees() {
+        return employeeService.getAllEmployees();
+    }
+
+    @PostMapping
+    @PreAuthorize("hasAuthority('HR_MANAGER')")
+    public ResponseEntity<Employee> createEmployee(@Valid @RequestBody Employee employee) {
+        Employee created = employeeService.createEmployee(employee);
+        return ResponseEntity.status(201).body(created);
+    }
+
+    @PutMapping("/{cin}")
+    @PreAuthorize("hasAuthority('HR_MANAGER')")
+    public ResponseEntity<Employee> updateEmployee(@PathVariable String cin, @Valid @RequestBody Employee employee) {
+        Employee updated = employeeService.updateEmployee(cin, employee);
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{cin}")
+    @PreAuthorize("hasAuthority('HR_MANAGER')")
+    public ResponseEntity<Void> deleteEmployee(@PathVariable String cin) {
+        employeeService.deleteEmployee(cin);
+        return ResponseEntity.noContent().build();
     }
 }

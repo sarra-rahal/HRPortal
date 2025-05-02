@@ -44,6 +44,9 @@
                 <button class="btn btn-outline-danger" (click)="confirmReview(req.id, 'DENIED', comment.value)">
                   <i class="fas fa-times"></i> Reject
                 </button>
+                <button class="btn btn-outline-primary" (click)="sendnote(req.id, comment.value)">
+                  <i class="fas fa-send"></i> Send note
+                </button>
               </div>
             </td>
           </tr>

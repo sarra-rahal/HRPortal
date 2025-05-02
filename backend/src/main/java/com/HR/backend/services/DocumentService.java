@@ -1,14 +1,8 @@
 package com.HR.backend.services;
 
 import com.HR.backend.config.JwtUtil;
-import com.HR.backend.models.Document;
-import com.HR.backend.models.DocumentRequest;
-import com.HR.backend.models.Employee;
-import com.HR.backend.models.Notification;
-import com.HR.backend.repositories.DocumentRepository;
-import com.HR.backend.repositories.DocumentRequestRepository;
-import com.HR.backend.repositories.EmployeeRepository;
-import com.HR.backend.repositories.NotificationRepository;
+import com.HR.backend.models.*;
+import com.HR.backend.repositories.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +29,7 @@ public class DocumentService {
     private final DocumentRepository documentRepository;
     private final DocumentRequestRepository documentRequestRepository;
     private final EmployeeRepository employeeRepository;
+    private final UserRepository userRepository;
     private final NotificationRepository notificationRepository;
     private final JwtUtil jwtUtil;
     private final EmailService emailService;
@@ -44,7 +39,7 @@ public class DocumentService {
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public Document uploadDocument(MultipartFile file, String accessibleBy, String token) {
+    public Document uploadDocument  (MultipartFile file, String accessibleBy, String token) {
         validateToken(token);
         String email = jwtUtil.extractEmail(token.split(" ")[1]);
         validateFile(file);
@@ -96,7 +91,7 @@ public class DocumentService {
                     templatePath = "src/main/resources/reports/work_certificate.jrxml";
                     parameters.put("employeeName", employee.getFirstname() + " " + employee.getLastname());
                     parameters.put("jobTitle", employee.getJobtitle());
-                    parameters.put("department", employee.getDepartement());
+                    parameters.put("department", employee.getDepartment().getName());
                     break;
                 case "leave_certificate":
                     templatePath = "src/main/resources/reports/leave_certificate.jrxml";
@@ -181,12 +176,8 @@ public class DocumentService {
         DocumentRequest savedRequest = documentRequestRepository.save(request);
 
         String message = "New document request from " + email + ": " + request.getType();
-        Notification notification = new Notification();
-        notification.setUserEmail("hr@example.com");
-        notification.setMessage(message);
-        notificationRepository.save(notification);
-        messagingTemplate.convertAndSend("/topic/notifications/hr@example.com", notification);
-        emailService.sendEmail("no-reply@hrportal.com", "hr@example.com", "New Document Request", message);
+        messagingTemplate.convertAndSend("/topic/notifications/"+ email, message);
+        emailService.sendEmail("no-reply@hrportal.com", "rahalsarra2@gmail.com", "New Document Request", message);
 
         return savedRequest;
     }

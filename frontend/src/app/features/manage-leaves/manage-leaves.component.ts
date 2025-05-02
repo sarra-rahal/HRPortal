@@ -70,4 +70,17 @@ export class ManageLeavesComponent implements OnInit {
       }
     });
   }
+
+  sendnote(id: number,  comment: string): void {
+    this.apiService.sendnote(id, comment).subscribe({
+      next: () => {
+        this.loadPendingRequests();
+        this.toastService.show(`Note send successfully`, 'success');
+      },
+      error: (err) => {
+        this.error = `Error sending note: ${err.message}`;
+        this.toastService.show(`Error sending note: ${err.message}`, 'error');
+      }
+    });
+  }
 }

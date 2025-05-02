@@ -32,12 +32,13 @@ public class Employee {
     @Column(name = "jobtitle", nullable = false)
     private String jobtitle;
 
-    @Column(name = "departement", nullable = false)
-    private String departement;
+    @ManyToOne
+    @JoinColumn(name = "department_id", nullable = false)
+    private Department department;
 
     @Column(name = "salary", nullable = false)
     private BigDecimal salary;
 
     @Column(name = "managernum")
-    private String managernum;
+    private String managercin;
 }

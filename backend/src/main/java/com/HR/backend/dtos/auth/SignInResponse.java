@@ -14,13 +14,12 @@ public class SignInResponse {
     private String email;
     private String errorCode;
 
-    public static SignInResponse success(String message, String token, String role, String firstname, String lastname, String cin, String email) {
+    public static SignInResponse success(String message, String token, String role, String firstname, String lastname, String email) {
         SignInResponse response = new SignInResponse();
         response.success = true;
         response.message = message;
         response.token = token;
         response.role = role;
-        response.cin = cin;
         response.firstname = firstname;
         response.lastname = lastname;
         response.email = email;

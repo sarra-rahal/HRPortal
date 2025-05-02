@@ -1,8 +1,9 @@
-// src/main/java/com/HR/backend/models/Department.java
 package com.HR.backend.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor

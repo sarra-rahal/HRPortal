@@ -36,15 +36,12 @@ public class TrainingService {
     public Training createTraining(Training training, String token) {
         validateTraining(training);
         Training saved = trainingRepository.save(training);
-        /*String hrEmail = jwtUtil.extractEmail(token.split(" ")[1]);
-        notifyUser(hrEmail, "New training created: " + saved.getTitle());
-        messagingTemplate.convertAndSend("/topic/trainings", saved);*/
 
         List<User> Users = userRepository.findAllByRoleNot(User.UserRole.HR_MANAGER);
         for (User user : Users) {
             if (!Objects.equals(String.valueOf(user.getRole()), "HR_Manager")){
                 String message = "New training available: " + saved.getTitle();
-                notifyUser(user.getEmail(), message);
+                emailService.notifyUser(user.getEmail(), message);
                 messagingTemplate.convertAndSend("/topic/notifications/" + user.getEmail(), message);
             }
         }
@@ -80,17 +77,12 @@ public class TrainingService {
             throw new IllegalArgumentException("Employee email cannot be null or empty");
         }
 
-        // Notify employee
-/*      String employeeMessage = "You have submitted an enrollment request for " + training.getTitle();
-        notifyUser(employeeEmail, employeeMessage);
-        messagingTemplate.convertAndSend("/topic/notifications/" + employeeEmail, saved);
-*/
         // Notify HR Manager
         String hrMessage = String.format(
                 "%s %s has submitted an enrollment request for %s",
                 employee.getFirstname(), employee.getLastname(), training.getTitle()
         );
-        notifyUser(HR_EMAIL, hrMessage);
+        emailService.notifyUser(HR_EMAIL, hrMessage);
         messagingTemplate.convertAndSend("/topic/notifications/" + HR_EMAIL, hrMessage);
         emailService.sendEmail(senderEmail, HR_EMAIL, "Training Enrollment Request", hrMessage);
         return saved;
@@ -118,7 +110,7 @@ public class TrainingService {
                 status.toLowerCase(),
                 status.equals("APPROVED") ? ". You are now enrolled in the training named " + trainingTitle : "."
         );
-        notifyUser(enrollment.getEmployeeEmail(), employeeMessage);
+        emailService.notifyUser(enrollment.getEmployeeEmail(), employeeMessage);
         messagingTemplate.convertAndSend("/topic/notifications/" + enrollment.getEmployeeEmail(), updated);
         emailService.sendEmail(
                 hrEmail,
@@ -160,15 +152,8 @@ public class TrainingService {
         Training training = enrollment.getTraining();
 
         enrollmentRepository.delete(enrollment);
-        notifyUser(HR_EMAIL, "Enrollment cancelled for " + training.getTitle());
+        emailService.notifyUser(HR_EMAIL, "Enrollment cancelled for " + training.getTitle());
         messagingTemplate.convertAndSend("/topic/notifications/" + HR_EMAIL,
                 "Enrollment cancelled for " + training.getTitle());
-    }
-
-    private void notifyUser(String email, String message) {
-        Notification notification = new Notification();
-        notification.setUserEmail(email);
-        notification.setMessage(message);
-        notificationRepository.save(notification);
     }
 }

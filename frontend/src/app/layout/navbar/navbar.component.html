@@ -17,7 +17,9 @@
           <div class="notification-list">
             <div *ngFor="let notification of notifications" class="notification-item" [class.read]="notification.isRead">
               <span>{{ notification.message }}</span>
-              <button class="btn btn-sm btn-danger" (click)="deleteNotification(notification.id)">Delete</button>
+              <button class="btn btn-sm btn-danger" (click)="deleteNotification(notification.id)">
+                <i class="fas fa-trash"></i>
+              </button>
             </div>
             <div *ngIf="!notifications.length" class="notification-item">No new notifications</div>
           </div>

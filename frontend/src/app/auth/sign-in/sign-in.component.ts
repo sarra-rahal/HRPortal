@@ -61,7 +61,6 @@ export class SignInComponent implements OnInit {
         if (response.success && response.token) {
           this.authService.setUserData(
             response.token,
-            response.cin || '',
             response.firstname || '',
             response.lastname || '',
             response.role,

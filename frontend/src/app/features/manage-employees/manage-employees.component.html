@@ -1,0 +1,200 @@
+<app-navbar></app-navbar>
+<app-sidebar></app-sidebar>
+<div class="main-container">
+  <div class="content-container">
+    <!-- View Toggle Buttons -->
+    <div class="view-toggle">
+      <button class="toggle-btn" [class.active]="currentView === 'add-employee'" (click)="currentView = 'add-employee'">
+        <i class="fas fa-user-plus"></i> Add Employee
+      </button>
+      <button class="toggle-btn" [class.active]="currentView === 'list-employees'" (click)="currentView = 'list-employees'">
+        <i class="fas fa-users"></i> Employee List
+      </button>
+      <button class="toggle-btn" [class.active]="currentView === 'manage-departments'" (click)="currentView = 'manage-departments'">
+        <i class="fas fa-building"></i> Manage Departments
+      </button>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading">
+      <i class="fas fa-spinner fa-spin"></i> Loading...
+    </div>
+
+    <!-- Add Employee View -->
+    <div *ngIf="currentView === 'add-employee' && !isLoading && !errorMessage" class="employee-card">
+      <h3><i class="fas fa-user-plus"></i> {{ editingEmployee ? 'Edit Employee' : 'Add Employee' }}</h3>
+      <form class="form-grid">
+        <div class="form-group">
+          <label for="employee-cin"><i class="fas fa-id-card"></i> CIN</label>
+          <input type="text" id="employee-cin" class="form-control" placeholder="Enter 8-digit CIN"
+                 [(ngModel)]="newEmployee.cin" name="cin" pattern="[0-9]{8}" required [disabled]="!!editingEmployee" >
+        </div>
+        <div class="form-group">
+          <label for="employee-firstname"><i class="fas fa-user"></i> First Name</label>
+          <input type="text" id="employee-firstname" class="form-control" placeholder="Enter first name"
+                 [(ngModel)]="newEmployee.firstname" name="firstname" required>
+        </div>
+        <div class="form-group">
+          <label for="employee-lastname"><i class="fas fa-user"></i> Last Name</label>
+          <input type="text" id="employee-lastname" class="form-control" placeholder="Enter last name"
+                 [(ngModel)]="newEmployee.lastname" name="lastname" required>
+        </div>
+        <div class="form-group">
+          <label for="employee-email"><i class="fas fa-envelope"></i> Email</label>
+          <input type="email" id="employee-email" class="form-control" placeholder="Enter email"
+                 [(ngModel)]="newEmployee.email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="employee-phonenumber"><i class="fas fa-phone"></i> Phone Number</label>
+          <input type="text" id="employee-phonenumber" class="form-control" placeholder="Enter phone number"
+                 [(ngModel)]="newEmployee.phonenumber" name="phonenumber">
+        </div>
+        <div class="form-group">
+          <label for="employee-hiredate"><i class="fas fa-calendar"></i> Hire Date</label>
+          <input type="date" id="employee-hiredate" class="form-control"
+                 [(ngModel)]="newEmployee.hiredate" name="hiredate" required>
+        </div>
+        <div class="form-group">
+          <label for="employee-jobtitle"><i class="fas fa-briefcase"></i> Job Title</label>
+          <input type="text" id="employee-jobtitle" class="form-control" placeholder="Enter job title"
+                 [(ngModel)]="newEmployee.jobtitle" name="jobtitle" required>
+        </div>
+        <div class="form-group">
+          <label for="employee-department"><i class="fas fa-building"></i> Department</label>
+          <select id="employee-department" class="form-control" [(ngModel)]="newEmployee.department.id" name="departmentId" required>
+            <option value="0">Select Department</option>
+            <option *ngFor="let dept of departments" [value]="dept.id">{{ dept.name }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="employee-salary"><i class="fas fa-dollar-sign"></i> Salary</label>
+          <input type="number" id="employee-salary" class="form-control" placeholder="Enter salary"
+                 [(ngModel)]="newEmployee.salary" name="salary" required>
+        </div>
+        <div class="form-group">
+          <label for="employee-managernum"><i class="fas fa-user-tie"></i> Manager CIN</label>
+          <input type="text" id="employee-managernum" class="form-control" placeholder="Enter manager CIN"
+                 [(ngModel)]="newEmployee.managernum" name="managernum" pattern="[0-9]{8}">
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-primary" (click)="saveEmployee()" [disabled]="isLoading || !isValidEmployee()">
+            <i class="fas" [class.fa-save]="!isLoading" [class.fa-spinner]="isLoading" [class.fa-spin]="isLoading"></i>
+            {{ editingEmployee ? 'Update' : 'Save' }}
+          </button>
+          <button type="button" class="btn btn-danger" (click)="cancelEdit()" *ngIf="editingEmployee" [disabled]="isLoading">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Employee List View -->
+    <div *ngIf="currentView === 'list-employees' && !isLoading && !errorMessage" class="employees-card">
+      <h3><i class="fas fa-users"></i> Employee List</h3>
+      <div class="filter-section">
+        <div class="filter-grid">
+          <div class="filter-group">
+            <input class="form-control" placeholder="Search by name or CIN..." [(ngModel)]="searchTerm" (ngModelChange)="filterEmployees()">
+          </div>
+          <div class="filter-group">
+            <select class="form-control" [(ngModel)]="departmentFilter" (ngModelChange)="filterEmployees()">
+              <option value="">All Departments</option>
+              <option *ngFor="let dept of departments" [value]="dept.name">{{ dept.name }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="table-container">
+        <table class="employees-table" *ngIf="filteredEmployees.length; else noEmployees">
+          <thead>
+          <tr>
+            <th>CIN</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>Job Title</th>
+            <th>Salary</th>
+            <th>Hire Date</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let emp of filteredEmployees">
+            <td>{{ emp.cin }}</td>
+            <td>{{ emp.firstname }} {{ emp.lastname }}</td>
+            <td>{{ emp.email }}</td>
+            <td>{{ getDepartmentName(emp.department) }}</td>
+            <td>{{ emp.jobtitle }}</td>
+            <td>{{ emp.salary }}</td>
+            <td>{{ emp.hiredate }}</td>
+            <td>
+              <button class="btn btn-primary" (click)="editEmployee(emp)" [disabled]="isLoading">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button class="btn btn-danger" (click)="deleteEmployee(emp.cin)" [disabled]="isLoading">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <ng-template #noEmployees>
+          <p class="no-data"><i class="fas fa-info-circle"></i> No employees found.</p>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- Manage Departments View -->
+    <div *ngIf="currentView === 'manage-departments' && !isLoading && !errorMessage" class="departments-card">
+      <h3><i class="fas fa-building"></i> Manage Departments</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="department-name"><i class="fas fa-building"></i> Department Name</label>
+          <input type="text" id="department-name" class="form-control" placeholder="Enter department name"
+                 [(ngModel)]="newDepartment.name" name="departmentName" required>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-primary" (click)="saveDepartment()" [disabled]="isLoading || !newDepartment.name">
+            <i class="fas" [class.fa-save]="!isLoading" [class.fa-spinner]="isLoading" [class.fa-spin]="isLoading"></i>
+            {{ editingDepartment ? 'Update' : 'Add' }}
+          </button>
+          <button type="button" class="btn btn-danger" (click)="cancelDepartmentEdit()" *ngIf="editingDepartment" [disabled]="isLoading">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+        </div>
+      </div>
+      <div class="table-container" style="margin-top: 20px;">
+        <table class="departments-table" *ngIf="departments.length; else noDepartments">
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Employee Count</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let dept of departments">
+            <td>{{ dept.name }}</td>
+            <td>{{ getEmployeeCount(dept.name) }}</td>
+            <td>
+              <button class="btn btn-primary" (click)="editDepartment(dept)" [disabled]="isLoading">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button class="btn btn-danger" (click)="deleteDepartment(dept.id)" [disabled]="isLoading || getEmployeeCount(dept.name) > 0">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <ng-template #noDepartments>
+          <p class="no-data"><i class="fas fa-info-circle"></i> No departments found.</p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+<app-footer></app-footer>

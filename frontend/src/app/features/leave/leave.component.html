@@ -20,9 +20,9 @@
           <label for="leaveType"><i class="fas fa-list"></i> Leave Type</label>
           <select id="leaveType" formControlName="leaveType" class="form-control">
             <option value="">Select a leave type</option>
-            <option value="VACATION">Vacation</option>
+            <option value="ANNUAL">Annual</option>
             <option value="SICK">Sick</option>
-            <option value="PERSONAL">Personal</option>
+            <option value="UNPAID">Unpaid</option>
           </select>
           <div class="error" *ngIf="leaveForm.get('leaveType')?.touched && leaveForm.get('leaveType')?.hasError('required')">
             Leave type is required.

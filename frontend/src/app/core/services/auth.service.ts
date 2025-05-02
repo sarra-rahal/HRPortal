@@ -22,9 +22,8 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  setUserData(token: string, cin: string, firstname: string, lastname: string, role: string, email: string): void {
+  setUserData(token: string, firstname: string, lastname: string, role: string, email: string): void {
     localStorage.setItem('token', token);
-    localStorage.setItem('cin', cin);
     localStorage.setItem('firstname', firstname);
     localStorage.setItem('lastname', lastname);
     localStorage.setItem('role', role);
@@ -33,10 +32,6 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem('token');
-  }
-
-  getCin(): string | null {
-    return localStorage.getItem('cin');
   }
 
   getFirstname(): string | null {
@@ -57,7 +52,6 @@ export class AuthService {
 
   clearUserData(): void {
     localStorage.removeItem('token');
-    localStorage.removeItem('cin');
     localStorage.removeItem('firstname');
     localStorage.removeItem('lastname');
     localStorage.removeItem('role');

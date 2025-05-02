@@ -26,4 +26,8 @@ export class ManageLeavesService {
   reviewLeaveRequest(id: number, reviewData: { status: string; hrComment: string }): Observable<any> {
     return this.http.put(`${this.apiUrl}/leave/review/${id}`, reviewData, { headers: this.getAuthHeaders() });
   }
+
+  sendnote(id: number, comment: string ): Observable<any> {
+    return this.http.put(`${this.apiUrl}/leave/note/${id}`, comment, { headers: this.getAuthHeaders() });
+  }
 }

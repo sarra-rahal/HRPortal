@@ -12,6 +12,7 @@ import {ManageTrainingComponent} from './features/manage-training/manage-trainin
 import {ManageDocumentComponent} from './features/manage-document/manage-document.component';
 import {DocumentComponent} from './features/document/document.component';
 import {ResetPasswordComponent} from './auth/reset-password/reset-password.component';
+import {ManageEmployeesComponent} from './features/manage-employees/manage-employees.component';
 
 export const routes: Routes = [
   { path: 'sign-up', component: SignUpComponent },
@@ -26,11 +27,7 @@ export const routes: Routes = [
   { path: 'manage-training', component: ManageTrainingComponent, canActivate: [authGuard] },
   { path: 'manage-documents', component: ManageDocumentComponent, canActivate: [authGuard]},
   { path: 'documents', component: DocumentComponent,canActivate: [authGuard] },
-  // Placeholder routes for services
-  { path: 'advance', component: WelcomeComponent, canActivate: [authGuard] },
-  { path: 'manage-training', component: WelcomeComponent, canActivate: [authGuard] },
-  { path: 'manage-advance', component: WelcomeComponent, canActivate: [authGuard] },
-  { path: 'manage-employees', component: WelcomeComponent, canActivate: [authGuard] },
+  { path: 'employees', component: ManageEmployeesComponent, canActivate: [authGuard] },
   { path: '', redirectTo: '/sign-in', pathMatch: 'full' },
   { path: '**', redirectTo: '/sign-in' }
 ];

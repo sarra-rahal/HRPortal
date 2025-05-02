@@ -21,7 +21,6 @@ export class SignUpComponent implements OnInit {
   signUpForm!: FormGroup;
   verifyForm!: FormGroup;
   loading = false;
-  isSuccess = false;
   successMessage: string | null = null;
   errorMessage: string | null = null;
   showVerifyForm = false;
@@ -75,7 +74,7 @@ export class SignUpComponent implements OnInit {
         this.loading = false;
         if (response.success) {
           this.successMessage = response.message;
-          this.maskedEmail = response.message.split("to ")[1]?.replace(".", "") || '';
+          this.maskedEmail = response.message.split("email.")[1]?.replace(".", "") || '';
           this.showVerifyForm = true;
         }
       },
