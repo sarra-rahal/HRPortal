@@ -87,7 +87,7 @@ public class AuthService {
         }
 
         if (!verificationCode.getCode().equals(code)) {
-            return SignUpResponse.error("The code is uncorrect", "INVALID_CODE");
+            return SignUpResponse.error("The code is not correct", "INVALID_CODE");
         }
 
         // Code is valid, proceed with user creation

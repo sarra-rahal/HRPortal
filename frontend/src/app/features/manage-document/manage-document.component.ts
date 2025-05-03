@@ -10,6 +10,8 @@ import { ToastService } from '../../core/services/toast.service';
 import { DocumentService } from '../document/document.service';
 import { ManageDocumentService } from './manage-document.service';
 import { WebsocketService } from '../../core/services/websocket.service';
+import {ManageEmployeesService} from '../manage-employees/manage-employees.service';
+import {Department} from '../../core/models/Employee-departments.model';
 
 @Component({
   selector: 'app-manage-document',
@@ -20,9 +22,11 @@ import { WebsocketService } from '../../core/services/websocket.service';
 })
 export class ManageDocumentComponent implements OnInit {
   documents: Document[] = [];
+  departments: Department[] = [];
   filteredDocuments: Document[] = [];
   documentRequests: DocumentRequest[] = [];
   filteredRequests: DocumentRequest[] = [];
+
   fileToUpload: File | null = null;
   employeeCin: string = '';
   newDocument: { cin: string; templateType: string } = {
@@ -32,7 +36,7 @@ export class ManageDocumentComponent implements OnInit {
   templateTypes: string[] = ['work_certificate', 'leave_certificate'];
   errorMessage: string = '';
   isLoading: boolean = false;
-  currentView: 'upload' | 'generate' | 'list' | 'requests' = 'upload';
+  currentView: 'upload' | 'generate' | 'list' | 'requests' = 'requests';
   searchTerm: string = '';
   year: string = '';
   month: string = '';
@@ -44,14 +48,32 @@ export class ManageDocumentComponent implements OnInit {
   constructor(
     private documentService: DocumentService,
     private manageDocumentService: ManageDocumentService,
+    private manageEmployeesService: ManageEmployeesService,
     private toastService: ToastService,
     private websocketService: WebsocketService
   ) {}
 
   ngOnInit(): void {
     this.fetchDocuments();
+    this.fetchDepartments()
     this.fetchPendingRequests();
     this.subscribeToNotifications();
+  }
+
+  fetchDepartments(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.manageEmployeesService.getDepartments().subscribe({
+      next: (departments) => {
+        this.departments = departments;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+        this.toastService.show(err.message, 'error');
+        this.isLoading = false;
+      }
+    });
   }
 
   fetchDocuments(): void {
@@ -145,37 +167,6 @@ export class ManageDocumentComponent implements OnInit {
     });
   }
 
-  previewDocument(): void {
-    if (!this.isValidCin()) {
-      this.errorMessage = 'CIN must be 8 digits';
-      this.toastService.show('CIN must be 8 digits', 'error');
-      return;
-    }
-    this.isLoading = true;
-    this.errorMessage = '';
-    const documentName = this.newDocument.templateType === 'work_certificate' ? 'Work Certificate' : 'Leave Certificate';
-    const parameters = {
-      cin: this.newDocument.cin,
-      leaveType: this.newDocument.templateType === 'leave_certificate' ? 'Annual Leave' : null,
-      startDate: this.newDocument.templateType === 'leave_certificate' ? new Date().toISOString().split('T')[0] : null,
-      endDate: this.newDocument.templateType === 'leave_certificate' ? new Date().toISOString().split('T')[0] : null
-    };
-    const accessibleBy = { type: 'employees', value: [this.newDocument.cin] };
-    this.manageDocumentService.previewDocument(documentName, parameters, accessibleBy, this.newDocument.templateType).subscribe({
-      next: (blob) => {
-        const fileName = `${documentName}_preview.pdf`;
-        saveAs(blob, fileName);
-        this.toastService.show(`Preview downloaded for "${documentName}"`, 'success');
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.errorMessage = err.message || 'Failed to download preview';
-        this.toastService.show(this.errorMessage, 'error');
-        this.isLoading = false;
-      }
-    });
-  }
-
   generateDocument(): void {
     if (!this.isValidCin()) {
       this.errorMessage = 'CIN must be 8 digits';
@@ -253,7 +244,7 @@ export class ManageDocumentComponent implements OnInit {
     });
   }
 
-  reviewRequest(id: number | undefined , status: 'APPROVED' | 'REJECTED'): void {
+  reviewRequest(id: number | undefined, status: string): void {
     if(id == undefined){
       this.toastService.show('Request id not found', 'error');
     }
@@ -262,7 +253,7 @@ export class ManageDocumentComponent implements OnInit {
       this.errorMessage = '';
       this.manageDocumentService.reviewRequest(id, status).subscribe({
         next: () => {
-          this.toastService.show(`Request ${status.toLowerCase()} successfully`, 'success');
+          this.toastService.show(`The document is ready info sent to employee successfully`, 'success');
           this.fetchPendingRequests();
           this.isLoading = false;
         },

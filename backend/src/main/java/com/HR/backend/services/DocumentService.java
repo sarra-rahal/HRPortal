@@ -39,6 +39,7 @@ public class DocumentService {
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+
     public Document uploadDocument  (MultipartFile file, String accessibleBy, String token) {
         validateToken(token);
         String email = jwtUtil.extractEmail(token.split(" ")[1]);
@@ -135,7 +136,9 @@ public class DocumentService {
         String role = jwtUtil.extractRole(token.split(" ")[1]);
         String email = jwtUtil.extractEmail(token.split(" ")[1]);
         List<Document> allDocs = documentRepository.findAll();
-        Employee employee = employeeRepository.findByEmail(email)
+        User user= userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        Employee employee = employeeRepository.findByCin(user.getCin())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found"));
 
         return allDocs.stream()
@@ -144,13 +147,14 @@ public class DocumentService {
     }
 
     public Resource downloadDocument(Long id, String token) {
-        validateToken(token);
         String role = jwtUtil.extractRole(token.split(" ")[1]);
         String email = jwtUtil.extractEmail(token.split(" ")[1]);
         Document document = documentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Document not found"));
         Employee employee = employeeRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found"));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         if (!isAccessible(document.getAccessibleBy(), role, employee)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied to this document");
@@ -169,7 +173,6 @@ public class DocumentService {
     }
 
     public DocumentRequest requestDocument(DocumentRequest request, String token) {
-        validateToken(token);
         String email = jwtUtil.extractEmail(token.split(" ")[1]);
         request.setEmployeeEmail(email);
         request.setRequestDate(LocalDateTime.now());
@@ -194,7 +197,7 @@ public class DocumentService {
         if (!"HR_MANAGER".equals(role)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
         }
-        return documentRequestRepository.findByStatusInOrderByRequestDateDesc(List.of("APPROVED","PENDING"));
+        return documentRequestRepository.findByStatusInOrderByRequestDateDesc(List.of("PENDING"));
     }
 
     public DocumentRequest reviewRequest(Long id, String status, String token) {
@@ -208,13 +211,10 @@ public class DocumentService {
         request.setStatus(status);
         DocumentRequest updatedRequest = documentRequestRepository.save(request);
 
-        String message = "Your document request for " + request.getType() + " has been " + status.toLowerCase();
-        Notification notification = new Notification();
-        notification.setUserEmail(request.getEmployeeEmail());
-        notification.setMessage(message);
-        notificationRepository.save(notification);
-        messagingTemplate.convertAndSend("/topic/notifications/" + request.getEmployeeEmail(), notification);
-        emailService.sendEmail("no-reply@hrportal.com", request.getEmployeeEmail(), "Document Request Update", message);
+        String senderEmail = jwtUtil.extractEmail(token.split(" ")[1]);
+        String message = "Your document for " + request.getType() + "is" + status.toLowerCase();
+        emailService.sendEmail(senderEmail, request.getEmployeeEmail(), "Document Request Update", message);
+        emailService.notifyUser(request.getEmployeeEmail(), message);
 
         return updatedRequest;
     }
