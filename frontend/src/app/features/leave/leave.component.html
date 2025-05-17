@@ -10,6 +10,9 @@
       <button class="toggle-btn" [class.active]="currentView === 'history'" (click)="currentView = 'history'">
         <i class="fas fa-history"></i> Leave History
       </button>
+      <button class="toggle-btn" [class.active]="currentView === 'balance'" (click)="currentView = 'balance'">
+        <i class="fas fa-balance-scale"></i> Leave Balance
+      </button>
     </div>
 
     <!-- Submit/Edit Leave Request View -->
@@ -121,7 +124,7 @@
             <td>{{ req.submittedAt | date }}</td>
             <td>{{ req.hrComment || '-' }}</td>
             <td class="actions">
-              <button class="btn btn-outline-primary" (click)="editRequest(req)" [hidden]="req.status === 'APPROVED'" >
+              <button class="btn btn-outline-primary" (click)="editRequest(req)" [hidden]="req.status === 'APPROVED'">
                 <i class="fas fa-edit"></i> Edit
               </button>
               <button name="C" class="btn btn-outline-danger" (click)="cancelRequest(req.id,'C')" [hidden]="req.status !== 'PENDING' || cancellingRequest === req.id">
@@ -143,6 +146,32 @@
         <ng-template #noRequests>
           <p class="no-data">No leave requests found.</p>
         </ng-template>
+      </div>
+    </div>
+
+    <!-- Leave Balance View -->
+    <div *ngIf="currentView === 'balance'" class="balance-card">
+      <h3><i class="fas fa-balance-scale"></i> Leave Balance</h3>
+      <div *ngIf="isLoading" class="loading">
+        <i class="fas fa-spinner fa-spin"></i> Loading...
+      </div>
+      <div *ngIf="!isLoading && error" class="error-message">{{ error }}</div>
+      <div *ngIf="!isLoading && !error && leaveBalance" class="balance-grid">
+        <div class="balance-item">
+          <h4>Annual Leave</h4>
+          <p>{{ leaveBalance.personal }} days remaining</p>
+        </div>
+        <div class="balance-item">
+          <h4>Sick Leave</h4>
+          <p>{{ leaveBalance.sick }} days remaining</p>
+        </div>
+        <div class="balance-item">
+          <h4>Unpaid Leave</h4>
+          <p>{{ leaveBalance.unpaid }} days remaining</p>
+        </div>
+      </div>
+      <div *ngIf="!isLoading && !error && !leaveBalance" class="no-data">
+        No leave balance data available.
       </div>
     </div>
 

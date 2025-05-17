@@ -9,9 +9,9 @@ import { WebsocketService } from '../../core/services/websocket.service';
 import { ToastService } from '../../core/services/toast.service';
 import { Subscription } from 'rxjs';
 import { LeaveService } from './leave.service';
-import {DocumentComponent} from '../document/document.component';
-import {DocumentService} from '../document/document.service';
-import {DocumentRequest} from '../../core/models/document.model';
+import { DocumentComponent } from '../document/document.component';
+import { DocumentService } from '../document/document.service';
+import { DocumentRequest } from '../../core/models/document.model';
 
 @Component({
   selector: 'app-leave',
@@ -25,6 +25,7 @@ export class LeaveComponent implements OnInit, OnDestroy {
   requests: any[] = [];
   filteredRequests: any[] = [];
   documentRequests: DocumentRequest[] = [];
+  leaveBalance: { personal: number; sick: number; unpaid: number } | null = null;
   newRequest: DocumentRequest = {
     type: 'leave_certificate',
     description: '',
@@ -42,7 +43,7 @@ export class LeaveComponent implements OnInit, OnDestroy {
   endDateFilter: string = '';
   statusFilter: string = '';
   genLCRequest: number | null = null;
-  currentView: 'submit' | 'history' = 'submit';
+  currentView: 'submit' | 'history' | 'balance' = 'submit';
   cancellingRequest: number | null = null;
   private wsSub?: Subscription;
   private isGenerating: boolean = false;
@@ -53,7 +54,7 @@ export class LeaveComponent implements OnInit, OnDestroy {
     private apiService: LeaveService,
     private websocketService: WebsocketService,
     private toastService: ToastService,
-    private documentService : DocumentService
+    private documentService: DocumentService
   ) {
     this.leaveForm = this.fb.group({
       leaveType: ['', Validators.required],
@@ -65,6 +66,7 @@ export class LeaveComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadRequests();
+    this.loadLeaveBalance();
     this.setupWebSocket();
   }
 
@@ -89,6 +91,21 @@ export class LeaveComponent implements OnInit, OnDestroy {
     });
   }
 
+  loadLeaveBalance(): void {
+    this.isLoading = true;
+    this.apiService.getLeaveBalance().subscribe({
+      next: (data) => {
+        this.leaveBalance = data;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.error = err.message;
+        this.isLoading = false;
+        this.toastService.show('Error loading leave balance: ' + err.message, 'error');
+      }
+    });
+  }
+
   onSubmit(): void {
     if (this.leaveForm.invalid) return;
     this.isSubmitting = true;
@@ -103,6 +120,7 @@ export class LeaveComponent implements OnInit, OnDestroy {
           this.isEditing = false;
           this.editingRequestId = null;
           this.loadRequests();
+          this.loadLeaveBalance();
           this.isSubmitting = false;
         },
         error: (err) => {
@@ -117,6 +135,7 @@ export class LeaveComponent implements OnInit, OnDestroy {
           this.toastService.show(`Leave request for ${data.leaveType} submitted successfully`, 'success');
           this.leaveForm.reset();
           this.loadRequests();
+          this.loadLeaveBalance();
           this.isSubmitting = false;
         },
         error: (err) => {
@@ -128,26 +147,25 @@ export class LeaveComponent implements OnInit, OnDestroy {
     }
   }
 
-  cancelRequest(id: number,B : string): void {
+  cancelRequest(id: number, B: string): void {
     if (confirm('Are you sure you want to cancel this request?')) {
       this.cancellingRequest = id;
       this.apiService.cancelLeaveRequest(id).subscribe({
         next: () => {
-          if(B == 'C'){
+          if (B == 'C') {
             this.toastService.show('Leave request cancelled successfully', 'success');
-          }
-          else{
+          } else {
             this.toastService.show('Leave request deleted successfully', 'success');
           }
           this.loadRequests();
+          this.loadLeaveBalance();
           this.cancellingRequest = null;
         },
         error: (err) => {
           this.error = err.message;
-          if(B == 'C'){
+          if (B == 'C') {
             this.toastService.show('Error cancelling request: ' + err.message, 'error');
-          }
-          else{
+          } else {
             this.toastService.show('Error deleting request: ' + err.message, 'error');
           }
           this.cancellingRequest = null;
@@ -155,7 +173,6 @@ export class LeaveComponent implements OnInit, OnDestroy {
       });
     }
   }
-
 
   editRequest(request: any): void {
     this.isEditing = true;
@@ -170,7 +187,7 @@ export class LeaveComponent implements OnInit, OnDestroy {
   }
 
   generateLeaveCertif(request: any): void {
-    this.newRequest= {
+    this.newRequest = {
       type: 'leave_certificate',
       description: request.reason,
       status: 'PENDING',
@@ -211,7 +228,10 @@ export class LeaveComponent implements OnInit, OnDestroy {
   private setupWebSocket(): void {
     const email = this.authService.getEmail() || '';
     this.wsSub = this.websocketService.connect(`/topic/notifications/${email}`).subscribe({
-      next: () => this.loadRequests(),
+      next: () => {
+        this.loadRequests();
+        this.loadLeaveBalance();
+      },
       error: (err) => console.error('WebSocket error:', err)
     });
   }

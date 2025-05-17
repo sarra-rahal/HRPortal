@@ -12,13 +12,12 @@ export class LeaveService {
 
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
-    console.log('Token being sent:',token)
+    console.log('Token being sent:', token);
     return new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
   }
 
-  // Leave Requests
   getMyLeaveRequests(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/leave/my-requests`, { headers: this.getAuthHeaders() });
   }
@@ -31,15 +30,11 @@ export class LeaveService {
     return this.http.delete<void>(`${this.apiUrl}/leave/cancel/${id}`, { headers: this.getAuthHeaders() });
   }
 
-  // deleteLeaveRequest(id: number): Observable<void> {
-  //   return this.http.delete<void>(`${this.apiUrl}/leave/delete/${id}`, { headers: this.getAuthHeaders() });
-  // }
-
-  // genLeaveCertif(id: number): Observable<void> {
-  //   return this.http.delete<void>(`${this.apiUrl}/leave/delete/${id}`, { headers: this.getAuthHeaders() });
-  // }
-
   updateLeaveRequest(id: number, request: any): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/leave/update/${id}`, request, { headers: this.getAuthHeaders() });
+  }
+
+  getLeaveBalance(): Observable<{ personal: number; sick: number; unpaid: number }> {
+    return this.http.get<{ personal: number; sick: number; unpaid: number }>(`${this.apiUrl}/leave/balance`, { headers: this.getAuthHeaders() });
   }
 }

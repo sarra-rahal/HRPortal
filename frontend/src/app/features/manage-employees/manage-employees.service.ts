@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import {Department, Employee} from '../../core/models/Employee-departments.model';
-
+import { Department, Employee } from '../../core/models/Employee-departments.model';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +27,14 @@ export class ManageEmployeesService {
     return this.http.get<Employee[]>(`${this.apiUrl}/employees`, { headers: this.getAuthHeaders() })
       .pipe(
         tap(employees => console.log('Fetched employees:', employees)),
+        catchError(this.handleError)
+      );
+  }
+
+  searchEmployeesByCin(cin: string): Observable<Employee[]> {
+    return this.http.get<Employee[]>(`${this.apiUrl}/employees/search?cin=${cin}`, { headers: this.getAuthHeaders() })
+      .pipe(
+        tap(suggestions => console.log('Fetched manager suggestions:', suggestions)),
         catchError(this.handleError)
       );
   }
@@ -96,6 +103,9 @@ export class ManageEmployeesService {
       errorMessage = error.error?.message || error.message || `Error ${error.status}`;
       if (error.status === 401) {
         errorMessage = 'Authentication failed, please sign in again';
+      }
+      if (error.error?.text) {
+        console.error('Raw response text:', error.error.text);
       }
     }
     console.error('ManageEmployees API Error:', error);

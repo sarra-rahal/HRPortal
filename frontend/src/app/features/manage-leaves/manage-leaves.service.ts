@@ -12,13 +12,12 @@ export class ManageLeavesService {
 
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
-    console.log('Token being sent:',token)
+    console.log('Token being sent:', token);
     return new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
   }
 
-  // Managing Leave Requests
   getAllLeaveRequests(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/leave/pending`, { headers: this.getAuthHeaders() });
   }
@@ -27,7 +26,7 @@ export class ManageLeavesService {
     return this.http.put(`${this.apiUrl}/leave/review/${id}`, reviewData, { headers: this.getAuthHeaders() });
   }
 
-  sendnote(id: number, comment: string ): Observable<any> {
+  sendnote(id: number, comment: string): Observable<any> {
     return this.http.put(`${this.apiUrl}/leave/note/${id}`, comment, { headers: this.getAuthHeaders() });
   }
 }

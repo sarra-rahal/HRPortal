@@ -22,32 +22,14 @@ public class DocumentController {
     private final DocumentService documentService;
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Document> uploadDocument(
+    @PreAuthorize("hasAuthority('HR_MANAGER')")
+    public ResponseEntity<Document> upload(
             @RequestParam("file") MultipartFile file,
-            @RequestParam("accessibleBy") String accessibleBy,
+            @RequestParam("access") String access,
             @RequestHeader("Authorization") String token) {
         System.out.println("Upload - Token Received: " + token);
-        Document document = documentService.uploadDocument(file, accessibleBy, token);
+        Document document = documentService.upload(file, access, token);
         return ResponseEntity.ok(document);
-    }
-
-    @PostMapping("/generate")
-    @PreAuthorize("hasAuthority('HR_MANAGER')")
-    public ResponseEntity<Document> generateDocument(
-            @RequestParam("name") String name,
-            @RequestParam("parameters") String parametersJson,
-            @RequestParam("accessibleBy") String accessibleBy,
-            @RequestParam("templateType") String templateType,
-            @RequestHeader("Authorization") String token) {
-        System.out.println("Generate - Token Received: " + token);
-        try {
-            Map<String, Object> parameters = new com.fasterxml.jackson.databind.ObjectMapper()
-                    .readValue(parametersJson, new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>() {});
-            Document document = documentService.generateDocument(name, parameters, accessibleBy, templateType, token);
-            return ResponseEntity.ok(document);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(null);
-        }
     }
 
     @GetMapping("/all")
@@ -97,6 +79,7 @@ public class DocumentController {
         DocumentRequest updatedRequest = documentService.reviewRequest(id, status, token);
         return ResponseEntity.ok(updatedRequest);
     }
+
     @DeleteMapping("/cancel-request/{id}")
     public ResponseEntity<Void> cancelRequest(
             @PathVariable Long id,
@@ -104,4 +87,34 @@ public class DocumentController {
         documentService.cancelRequest(id, token);
         return ResponseEntity.ok().build();
     }
+
 }
+//    @PostMapping("/generate")
+//    @PreAuthorize("hasAuthority('HR_MANAGER')")
+//    public ResponseEntity<Document> generateDocument(
+//            @RequestParam("name") String name,
+//            @RequestParam("parameters") String parametersJson,
+//            @RequestParam("accessibleBy") String accessibleBy,
+//            @RequestParam("templateType") String templateType,
+//            @RequestHeader("Authorization") String token) {
+//        System.out.println("Generate - Token Received: " + token);
+//        try {
+//            Map<String, Object> parameters = new com.fasterxml.jackson.databind.ObjectMapper()
+//                    .readValue(parametersJson, new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>() {});
+//            Document document = documentService.generateDocument(name, parameters, accessibleBy, templateType, token);
+//            return ResponseEntity.ok(document);
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().body(null);
+//        }
+//    }
+
+
+//    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<Document> uploadDocument(
+//            @RequestParam("file") MultipartFile file,
+//            @RequestParam("accessibleBy") String accessibleBy,
+//            @RequestHeader("Authorization") String token) {
+//        System.out.println("Upload - Token Received: " + token);
+//        Document document = documentService.uploadDocument(file, accessibleBy, token);
+//        return ResponseEntity.ok(document);
+//    }

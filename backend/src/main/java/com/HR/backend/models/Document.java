@@ -2,8 +2,11 @@ package com.HR.backend.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "documents")
@@ -28,6 +31,7 @@ public class Document {
     @Column(nullable = false)
     private boolean generated;
 
-    @Column(name = "accessible_by", nullable = false)
-    private String accessibleBy;
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "accessible_by", columnDefinition = "text[]", nullable = false)
+    private List<String> accessibleBy;
 }

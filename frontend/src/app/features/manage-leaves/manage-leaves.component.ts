@@ -15,6 +15,7 @@ interface LeaveRequest {
   duration: number;
   reason: string;
   status: string;
+  employeeName?: string; // Optional field for employee name
 }
 
 @Component({
@@ -28,6 +29,7 @@ export class ManageLeavesComponent implements OnInit {
   requests: LeaveRequest[] = [];
   error: string | null = null;
   loading: boolean = false;
+  processingRequests: Set<number> = new Set(); // Track requests being processed
 
   constructor(private apiService: ManageLeavesService, private toastService: ToastService) {}
 
@@ -40,46 +42,74 @@ export class ManageLeavesComponent implements OnInit {
     this.error = null;
     this.apiService.getAllLeaveRequests().subscribe({
       next: (data) => {
-        this.requests = data.filter(req => req.status === 'PENDING');
+        this.requests = data
+          .filter(req => req.status === 'PENDING')
+          .map(req => ({
+            ...req,
+            employeeName: req.employeeName || req.employeeCin // Fallback to CIN if name unavailable
+          }));
         this.loading = false;
       },
       error: (err) => {
-        this.error = `Error fetching leave requests: ${err.message}`;
+        this.error = `Error fetching leave requests: ${err.error?.error || err.message}`;
         this.loading = false;
-        this.toastService.show(`Error fetching leave requests: ${err.message}`, 'error');
+        this.toastService.show(this.error, 'error');
       }
     });
   }
 
-  confirmReview(id: number, status: string, comment: string): void {
+  confirmReview(id: number, status: string, comment: string, inputElement: HTMLInputElement): void {
     const action = status.toLowerCase();
-    if (confirm(`Are you sure you want to ${action} this request?`)) {
-      this.reviewRequest(id, status, comment);
+    if (confirm(`Are you sure you want to ${action} this leave request?`)) {
+      this.reviewRequest(id, status, comment, inputElement);
     }
   }
 
-  reviewRequest(id: number, status: string, comment: string): void {
+  reviewRequest(id: number, status: string, comment: string, inputElement: HTMLInputElement): void {
+    this.processingRequests.add(id);
     this.apiService.reviewLeaveRequest(id, { status, hrComment: comment }).subscribe({
       next: () => {
+        this.processingRequests.delete(id);
         this.loadPendingRequests();
-        this.toastService.show(`Leave request ${status.toLowerCase()} successfully`, 'success');
+        const message = status === 'APPROVED'
+          ? 'Leave request approved successfully'
+          : 'Leave request denied successfully';
+        this.toastService.show(message, 'success');
+        inputElement.value = ''; // Clear comment field
       },
       error: (err) => {
-        this.error = `Error reviewing request: ${err.message}`;
-        this.toastService.show(`Error reviewing request: ${err.message}`, 'error');
+        this.processingRequests.delete(id);
+        const errorMessage = err.error?.error || `Error ${status.toLowerCase()} request: ${err.message}`;
+        this.toastService.show(errorMessage, 'error');
+        inputElement.value = ''; // Clear comment field even on error
       }
     });
   }
 
-  sendnote(id: number,  comment: string): void {
+  confirmSendNote(id: number, comment: string, inputElement: HTMLInputElement): void {
+    if (!comment.trim()) {
+      this.toastService.show('Please enter a note before sending.', 'error');
+      return;
+    }
+    if (confirm('Are you sure you want to send this note?')) {
+      this.sendNote(id, comment, inputElement);
+    }
+  }
+
+  sendNote(id: number, comment: string, inputElement: HTMLInputElement): void {
+    this.processingRequests.add(id);
     this.apiService.sendnote(id, comment).subscribe({
       next: () => {
+        this.processingRequests.delete(id);
         this.loadPendingRequests();
-        this.toastService.show(`Note send successfully`, 'success');
+        this.toastService.show('Note sent successfully', 'success');
+        inputElement.value = ''; // Clear comment field
       },
       error: (err) => {
-        this.error = `Error sending note: ${err.message}`;
-        this.toastService.show(`Error sending note: ${err.message}`, 'error');
+        this.processingRequests.delete(id);
+        const errorMessage = err.error?.error || `Error sending note: ${err.message}`;
+        this.toastService.show(errorMessage, 'error');
+        inputElement.value = ''; // Clear comment field even on error
       }
     });
   }

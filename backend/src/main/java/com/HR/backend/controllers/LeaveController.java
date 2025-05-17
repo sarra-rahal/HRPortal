@@ -75,6 +75,16 @@ public class LeaveController {
         return ResponseEntity.ok(leaveService.getEmployeeLeaveRequests(cin));
     }
 
+    @GetMapping("/balance")
+    public ResponseEntity<Map<String, Integer>> getLeaveBalance() {
+        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        String cin = user.getCin();
+        Map<String, Integer> balance = leaveService.getLeaveBalance(cin);
+        return ResponseEntity.ok(balance);
+    }
+
     @GetMapping("/pending")
     @PreAuthorize("hasAuthority('HR_MANAGER')")
     public ResponseEntity<List<LeaveRequest>> getPendingLeaveRequests() {

@@ -13,15 +13,19 @@ export class ProfileService {
 
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
-    console.log('Token being sent:',token)
+    console.log('Token being sent:', token);
     return new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${token}`,
     });
   }
 
-  // Employee endpoint: Fetch own profile
   getEmployeeProfile(): Observable<any> {
     return this.http.get(`${this.apiUrl}/profile`, { headers: this.getAuthHeaders() })
+      .pipe(catchError(this.handleError));
+  }
+
+  updateEmployeeProfile(profile: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/profile`, profile, { headers: this.getAuthHeaders() })
       .pipe(catchError(this.handleError));
   }
 
@@ -31,8 +35,7 @@ export class ProfileService {
     if (error.status === 403) {
       errorMessage = 'Access denied. Insufficient permissions.';
     } else if (error.status === 401) {
-      errorMessage = 'Session expired. Please sign in again.';
-      window.location.href = '/sign-in';
+      errorMessage = 'UNAUTHORIZED.';
     }
     return throwError(() => new Error(errorMessage));
   }

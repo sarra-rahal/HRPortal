@@ -24,13 +24,13 @@
     </div>
 
     <!-- Add Employee View -->
-    <div *ngIf="currentView === 'add-employee' && !isLoading && !errorMessage" class="employee-card">
+    <div *ngIf="currentView === 'add-employee' && !isLoading && !errorMessage" class="employee-card view-wrapper">
       <h3><i class="fas fa-user-plus"></i> {{ editingEmployee ? 'Edit Employee' : 'Add Employee' }}</h3>
       <form class="form-grid">
         <div class="form-group">
           <label for="employee-cin"><i class="fas fa-id-card"></i> CIN</label>
           <input type="text" id="employee-cin" class="form-control" placeholder="Enter 8-digit CIN"
-                 [(ngModel)]="newEmployee.cin" name="cin" pattern="[0-9]{8}" required [disabled]="!!editingEmployee" >
+                 [(ngModel)]="newEmployee.cin" name="cin" pattern="[0-9]{8}" required [disabled]="!!editingEmployee">
         </div>
         <div class="form-group">
           <label for="employee-firstname"><i class="fas fa-user"></i> First Name</label>
@@ -43,6 +43,33 @@
                  [(ngModel)]="newEmployee.lastname" name="lastname" required>
         </div>
         <div class="form-group">
+          <label for="employee-dateOfBirth"><i class="fas fa-calendar"></i> Date of Birth</label>
+          <input type="date" id="employee-dateOfBirth" class="form-control"
+                 [(ngModel)]="newEmployee.dateOfBirth" name="dateOfBirth">
+        </div>
+        <div class="form-group">
+          <label for="employee-gender"><i class="fas fa-venus-mars"></i> Gender</label>
+          <select id="employee-gender" class="form-control" [(ngModel)]="newEmployee.gender" name="gender" required>
+            <option value="" disabled selected>Select gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="employee-nationality"><i class="fas fa-globe"></i> Nationality</label>
+          <input type="text" id="employee-nationality" class="form-control" placeholder="Enter nationality"
+                 [(ngModel)]="newEmployee.nationality" name="nationality" required>
+        </div>
+        <div class="form-group">
+          <label for="employee-maritalStatus"><i class="fas fa-ring"></i> Marital Status</label>
+          <select id="employee-maritalStatus" class="form-control" [(ngModel)]="newEmployee.maritalStatus" name="maritalStatus" required>
+            <option value="" disabled selected>Select marital status</option>
+            <option value="Single">Single</option>
+            <option value="Married">Married</option>
+            <option value="Divorced">Divorced</option>
+          </select>
+        </div>
+        <div class="form-group">
           <label for="employee-email"><i class="fas fa-envelope"></i> Email</label>
           <input type="email" id="employee-email" class="form-control" placeholder="Enter email"
                  [(ngModel)]="newEmployee.email" name="email" required>
@@ -50,7 +77,12 @@
         <div class="form-group">
           <label for="employee-phonenumber"><i class="fas fa-phone"></i> Phone Number</label>
           <input type="text" id="employee-phonenumber" class="form-control" placeholder="Enter phone number"
-                 [(ngModel)]="newEmployee.phonenumber" name="phonenumber">
+                 [(ngModel)]="newEmployee.phonenumber" name="phonenumber" required>
+        </div>
+        <div class="form-group">
+          <label for="employee-address"><i class="fas fa-home"></i> Address</label>
+          <input type="text" id="employee-address" class="form-control" placeholder="Enter address"
+                 [(ngModel)]="newEmployee.address" name="address" required>
         </div>
         <div class="form-group">
           <label for="employee-hiredate"><i class="fas fa-calendar"></i> Hire Date</label>
@@ -58,26 +90,68 @@
                  [(ngModel)]="newEmployee.hiredate" name="hiredate" required>
         </div>
         <div class="form-group">
-          <label for="employee-jobtitle"><i class="fas fa-briefcase"></i> Job Title</label>
-          <input type="text" id="employee-jobtitle" class="form-control" placeholder="Enter job title"
-                 [(ngModel)]="newEmployee.jobtitle" name="jobtitle" required>
+          <label for="employee-employeeStatus"><i class="fas fa-user-check"></i> Employee Status</label>
+          <select id="employee-employeeStatus" class="form-control" [(ngModel)]="newEmployee.employeeStatus" name="employeeStatus" required>
+            <option value="" disabled selected>Select status</option>
+            <option value="Active">Active</option>
+            <option value="On Leave">On Leave</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="employee-employmentType"><i class="fas fa-briefcase"></i> Employment Type</label>
+          <select id="employee-employmentType" class="form-control" [(ngModel)]="newEmployee.employmentType" name="employmentType" required>
+            <option value="" disabled selected>Select employment type</option>
+            <option value="Full-Time">Full-Time</option>
+            <option value="Part-Time">Part-Time</option>
+            <option value="Contractor">Contractor</option>
+          </select>
         </div>
         <div class="form-group">
           <label for="employee-department"><i class="fas fa-building"></i> Department</label>
           <select id="employee-department" class="form-control" [(ngModel)]="newEmployee.department.id" name="departmentId" required>
-            <option value="0">Select Department</option>
+            <option value="0" disabled selected>Select department</option>
             <option *ngFor="let dept of departments" [value]="dept.id">{{ dept.name }}</option>
           </select>
+        </div>
+        <div class="form-group">
+          <label for="employee-jobtitle"><i class="fas fa-briefcase"></i> Job Title</label>
+          <input type="text" id="employee-jobtitle" class="form-control" placeholder="Enter job title"
+                 [(ngModel)]="newEmployee.jobtitle" name="jobtitle" required>
         </div>
         <div class="form-group">
           <label for="employee-salary"><i class="fas fa-dollar-sign"></i> Salary</label>
           <input type="number" id="employee-salary" class="form-control" placeholder="Enter salary"
                  [(ngModel)]="newEmployee.salary" name="salary" required>
         </div>
-        <div class="form-group">
-          <label for="employee-managernum"><i class="fas fa-user-tie"></i> Manager CIN</label>
+        <div class="form-group manager-group">
+          <label for="employee-managernum"><i class="fas fa-user-tie"></i> Manager</label>
           <input type="text" id="employee-managernum" class="form-control" placeholder="Enter manager CIN"
-                 [(ngModel)]="newEmployee.managernum" name="managernum" pattern="[0-9]{8}">
+                 [(ngModel)]="newEmployee.managercin" name="managercin" (ngModelChange)="onManagerCinInput($event)">
+          <ul class="suggestions" *ngIf="managerSuggestions.length">
+            <li *ngFor="let emp of managerSuggestions" (click)="selectManager(emp)">
+              {{ emp.cin }} - {{ emp.firstname }} {{ emp.lastname }}
+            </li>
+          </ul>
+        </div>
+        <div class="form-group">
+          <label for="employee-certifications"><i class="fas fa-certificate"></i> Certifications (comma-separated)</label>
+          <input type="text" id="employee-certifications" class="form-control" placeholder="example: AWS, Java"
+                 [(ngModel)]="certificationsInput" name="certifications">
+        </div>
+        <div class="form-group">
+          <label for="employee-personalLeaveBalance"><i class="fas fa-calendar"></i> Personal Leave Balance</label>
+          <input type="number" id="employee-personalLeaveBalance" class="form-control" placeholder="Enter personal leave balance"
+                 [(ngModel)]="newEmployee.personalLeaveBalance" name="personalLeaveBalance" required>
+        </div>
+        <div class="form-group">
+          <label for="employee-sickLeaveBalance"><i class="fas fa-calendar"></i> Sick Leave Balance</label>
+          <input type="number" id="employee-sickLeaveBalance" class="form-control" placeholder="Enter sick leave balance"
+                 [(ngModel)]="newEmployee.sickLeaveBalance" name="sickLeaveBalance" required>
+        </div>
+        <div class="form-group">
+          <label for="employee-unpaidLeaveBalance"><i class="fas fa-calendar"></i> Unpaid Leave Balance</label>
+          <input type="number" id="employee-unpaidLeaveBalance" class="form-control" placeholder="Enter unpaid leave balance"
+                 [(ngModel)]="newEmployee.unpaidLeaveBalance" name="unpaidLeaveBalance" required>
         </div>
         <div class="form-actions">
           <button type="button" class="btn btn-primary" (click)="saveEmployee()" [disabled]="isLoading || !isValidEmployee()">
@@ -92,7 +166,7 @@
     </div>
 
     <!-- Employee List View -->
-    <div *ngIf="currentView === 'list-employees' && !isLoading && !errorMessage" class="employees-card">
+    <div *ngIf="currentView === 'list-employees' && !isLoading && !errorMessage" class="employees-card view-wrapper">
       <h3><i class="fas fa-users"></i> Employee List</h3>
       <div class="filter-section">
         <div class="filter-grid">
@@ -118,19 +192,23 @@
             <th>Job Title</th>
             <th>Salary</th>
             <th>Hire Date</th>
+            <th>Status</th>
+            <th>Employment Type</th>
             <th>Actions</th>
           </tr>
           </thead>
           <tbody>
           <tr *ngFor="let emp of filteredEmployees">
-            <td>{{ emp.cin }}</td>
-            <td>{{ emp.firstname }} {{ emp.lastname }}</td>
-            <td>{{ emp.email }}</td>
-            <td>{{ getDepartmentName(emp.department) }}</td>
-            <td>{{ emp.jobtitle }}</td>
-            <td>{{ emp.salary }}</td>
-            <td>{{ emp.hiredate }}</td>
-            <td>
+            <td data-label="CIN">{{ emp.cin }}</td>
+            <td data-label="Name">{{ emp.firstname }} {{ emp.lastname }}</td>
+            <td data-label="Email">{{ emp.email }}</td>
+            <td data-label="Department">{{ getDepartmentName(emp.department) }}</td>
+            <td data-label="Job Title">{{ emp.jobtitle }}</td>
+            <td data-label="Salary">{{ emp.salary }}</td>
+            <td data-label="Hire Date">{{ emp.hiredate }}</td>
+            <td data-label="Status">{{ emp.employeeStatus }}</td>
+            <td data-label="Employment Type">{{ emp.employmentType }}</td>
+            <td data-label="Actions">
               <button class="btn btn-primary" (click)="editEmployee(emp)" [disabled]="isLoading">
                 <i class="fas fa-edit"></i> Edit
               </button>
@@ -148,7 +226,7 @@
     </div>
 
     <!-- Manage Departments View -->
-    <div *ngIf="currentView === 'manage-departments' && !isLoading && !errorMessage" class="departments-card">
+    <div *ngIf="currentView === 'manage-departments' && !isLoading && !errorMessage" class="departments-card view-wrapper">
       <h3><i class="fas fa-building"></i> Manage Departments</h3>
       <div class="form-grid">
         <div class="form-group">
@@ -166,7 +244,7 @@
           </button>
         </div>
       </div>
-      <div class="table-container" style="margin-top: 20px;">
+      <div class="table-container">
         <table class="departments-table" *ngIf="departments.length; else noDepartments">
           <thead>
           <tr>

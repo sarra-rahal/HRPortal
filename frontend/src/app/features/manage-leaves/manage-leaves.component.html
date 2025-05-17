@@ -14,7 +14,7 @@
         <table class="leaves-table">
           <thead>
           <tr>
-            <th>Employee CIN</th>
+            <th>Employee</th>
             <th>Type</th>
             <th>Start Date</th>
             <th>End Date</th>
@@ -26,7 +26,7 @@
           </thead>
           <tbody>
           <tr *ngFor="let req of requests">
-            <td>{{ req.employeeCin }}</td>
+            <td>{{ req.employeeName }}</td>
             <td>{{ req.leaveType }}</td>
             <td>{{ req.startDate | date }}</td>
             <td>{{ req.endDate | date }}</td>
@@ -37,16 +37,30 @@
             </td>
             <td class="actions">
               <div class="action-group">
-                <input #comment type="text" placeholder="Add comment (optional)" class="form-control"><br>
-                <button class="btn btn-outline-success" (click)="confirmReview(req.id, 'APPROVED', comment.value)">
-                  <i class="fas fa-check"></i> Approve
-                </button>
-                <button class="btn btn-outline-danger" (click)="confirmReview(req.id, 'DENIED', comment.value)">
-                  <i class="fas fa-times"></i> Reject
-                </button>
-                <button class="btn btn-outline-primary" (click)="sendnote(req.id, comment.value)">
-                  <i class="fas fa-send"></i> Send note
-                </button>
+                <input #comment type="text" placeholder="Add comment (optional)" class="form-control">
+                <div class="button-group">
+                  <button class="btn btn-outline-success"
+                          [disabled]="processingRequests.has(req.id)"
+                          (click)="confirmReview(req.id, 'APPROVED', comment.value, comment)">
+                    <i class="fas" [class.fa-check]="!processingRequests.has(req.id)"
+                       [class.fa-spinner]="processingRequests.has(req.id)"
+                       [class.fa-spin]="processingRequests.has(req.id)"></i> Approve
+                  </button>
+                  <button class="btn btn-outline-danger"
+                          [disabled]="processingRequests.has(req.id)"
+                          (click)="confirmReview(req.id, 'DENIED', comment.value, comment)">
+                    <i class="fas" [class.fa-times]="!processingRequests.has(req.id)"
+                       [class.fa-spinner]="processingRequests.has(req.id)"
+                       [class.fa-spin]="processingRequests.has(req.id)"></i> Reject
+                  </button>
+                  <button class="btn btn-outline-primary"
+                          [disabled]="processingRequests.has(req.id)"
+                          (click)="confirmSendNote(req.id, comment.value, comment)">
+                    <i class="fas" [class.fa-paper-plane]="!processingRequests.has(req.id)"
+                       [class.fa-spinner]="processingRequests.has(req.id)"
+                       [class.fa-spin]="processingRequests.has(req.id)"></i> Send Note
+                  </button>
+                </div>
               </div>
             </td>
           </tr>

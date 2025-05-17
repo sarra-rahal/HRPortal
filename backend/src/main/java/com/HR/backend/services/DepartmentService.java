@@ -33,7 +33,6 @@ public class DepartmentService {
     public Department updateDepartment(Long id, Department department) {
         Department existing = departmentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Department with ID " + id + " not found"));
-        department.setId(id);
         validateDepartment(department);
         if (!department.getName().equals(existing.getName()) && departmentRepository.existsByName(department.getName())) {
             throw new IllegalArgumentException("Department with name " + department.getName() + " already exists");
@@ -42,8 +41,6 @@ public class DepartmentService {
     }
 
     public void deleteDepartment(Long id) {
-        Department department = departmentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Department with ID " + id + " not found"));
         if (employeeRepository.existsByDepartmentId(id)) {
             throw new IllegalStateException("Cannot delete department with assigned employees");
         }

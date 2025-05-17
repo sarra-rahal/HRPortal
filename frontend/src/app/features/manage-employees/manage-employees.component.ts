@@ -7,8 +7,9 @@ import { FooterComponent } from '../../layout/footer/footer.component';
 import { ToastService } from '../../core/services/toast.service';
 import { ManageEmployeesService } from './manage-employees.service';
 import { AuthService } from '../../core/services/auth.service';
-import {Department, Employee} from '../../core/models/Employee-departments.model';
-
+import { Department, Employee } from '../../core/models/Employee-departments.model';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-manage-employees',
@@ -25,20 +26,36 @@ export class ManageEmployeesComponent implements OnInit {
     cin: '',
     firstname: '',
     lastname: '',
+    dateOfBirth: '',
+    gender: '',
+    nationality: '',
+    maritalStatus: '',
     email: '',
+    phonenumber: '',
+    address: '',
     hiredate: '',
-    jobtitle: '',
+    employeeStatus: '',
+    employmentType: '',
     department: { id: 0, name: '' },
-    salary: 0
+    jobtitle: '',
+    salary: 0,
+    managercin: '',
+    certifications: [],
+    personalLeaveBalance: 0,
+    sickLeaveBalance: 0,
+    unpaidLeaveBalance: 0
   };
   newDepartment: Department = { id: 0, name: '' };
   editingEmployee: Employee | null = null;
   editingDepartment: Department | null = null;
   errorMessage: string = '';
   isLoading: boolean = false;
-  currentView: 'add-employee' | 'list-employees' | 'manage-departments' = 'add-employee';
+  currentView: 'add-employee' | 'list-employees' | 'manage-departments' = 'list-employees';
   searchTerm: string = '';
   departmentFilter: string = '';
+  certificationsInput: string = '';
+  managerSuggestions: Employee[] = [];
+  private managerSearchSubject = new Subject<string>();
 
   constructor(
     private manageEmployeesService: ManageEmployeesService,
@@ -57,6 +74,7 @@ export class ManageEmployeesComponent implements OnInit {
   ngOnInit(): void {
     this.fetchEmployees();
     this.fetchDepartments();
+    this.setupManagerSearch();
   }
 
   fetchEmployees(): void {
@@ -93,16 +111,64 @@ export class ManageEmployeesComponent implements OnInit {
     });
   }
 
+  setupManagerSearch(): void {
+    this.managerSearchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(cin => {
+        if (cin.length < 3) {
+          this.managerSuggestions = [];
+          return [];
+        }
+        return this.manageEmployeesService.searchEmployeesByCin(cin);
+      })
+    ).subscribe({
+      next: (suggestions) => {
+        this.managerSuggestions = suggestions;
+      },
+      error: (err) => {
+        this.toastService.show('Error fetching manager suggestions', 'error');
+      }
+    });
+  }
+
+  onManagerCinInput(cin: string): void {
+    this.managerSearchSubject.next(cin);
+  }
+
+  selectManager(employee: Employee): void {
+    this.newEmployee.managercin = employee.cin;
+    this.managerSuggestions = [];
+  }
+
   isValidEmployee(): boolean {
     const cinRegex = /^[0-9]{8}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^\+?[0-9]{8,15}$/;
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    const managercinValid = !this.newEmployee.managercin || cinRegex.test(this.newEmployee.managercin);
+
     return cinRegex.test(this.newEmployee.cin) &&
       this.newEmployee.firstname.trim().length > 0 &&
       this.newEmployee.lastname.trim().length > 0 &&
-      this.newEmployee.email.includes('@') &&
-      !!this.newEmployee.hiredate.match(/^\d{4}-\d{2}-\d{2}$/) &&
+      emailRegex.test(this.newEmployee.email) &&
+      phoneRegex.test(this.newEmployee.phonenumber) &&
+      this.newEmployee.address.trim().length > 0 &&
+      dateRegex.test(this.newEmployee.hiredate) &&
+      (!this.newEmployee.dateOfBirth || dateRegex.test(this.newEmployee.dateOfBirth)) &&
+      ['Male', 'Female'].includes(this.newEmployee.gender) &&
+      this.newEmployee.nationality.trim().length > 0 &&
+      ['Single', 'Married', 'Divorced'].includes(this.newEmployee.maritalStatus) &&
+      ['Active', 'On Leave'].includes(this.newEmployee.employeeStatus) &&
+      ['Full-Time', 'Part-Time', 'Contractor'].includes(this.newEmployee.employmentType) &&
       this.newEmployee.jobtitle.trim().length > 0 &&
       this.newEmployee.department.id > 0 &&
-      this.newEmployee.salary > 0;
+      this.newEmployee.salary > 0 &&
+      this.newEmployee.personalLeaveBalance >= 0 &&
+      this.newEmployee.sickLeaveBalance >= 0 &&
+      this.newEmployee.unpaidLeaveBalance >= 0 &&
+      managercinValid &&
+      this.newEmployee.cin !== this.newEmployee.managercin;
   }
 
   saveEmployee(): void {
@@ -111,6 +177,11 @@ export class ManageEmployeesComponent implements OnInit {
       this.toastService.show(this.errorMessage, 'error');
       return;
     }
+
+    this.newEmployee.certifications = this.certificationsInput
+      ? this.certificationsInput.split(',').map(c => c.trim()).filter(c => c)
+      : [];
+
     this.isLoading = true;
     this.errorMessage = '';
 
@@ -121,16 +192,7 @@ export class ManageEmployeesComponent implements OnInit {
     operation.subscribe({
       next: () => {
         this.toastService.show(`Employee ${this.editingEmployee ? 'updated' : 'added'} successfully`, 'success');
-        this.newEmployee = {
-          cin: '',
-          firstname: '',
-          lastname: '',
-          email: '',
-          hiredate: '',
-          jobtitle: '',
-          department: { id: 0, name: '' },
-          salary: 0
-        };
+        this.resetNewEmployee();
         this.editingEmployee = null;
         this.fetchEmployees();
         this.isLoading = false;
@@ -145,21 +207,13 @@ export class ManageEmployeesComponent implements OnInit {
 
   editEmployee(employee: Employee): void {
     this.newEmployee = { ...employee };
+    this.certificationsInput = employee.certifications.join(', ');
     this.editingEmployee = employee;
     this.currentView = 'add-employee';
   }
 
   cancelEdit(): void {
-    this.newEmployee = {
-      cin: '',
-      firstname: '',
-      lastname: '',
-      email: '',
-      hiredate: '',
-      jobtitle: '',
-      department: { id: 0, name: '' },
-      salary: 0
-    };
+    this.resetNewEmployee();
     this.editingEmployee = null;
   }
 
@@ -253,5 +307,33 @@ export class ManageEmployeesComponent implements OnInit {
 
   getEmployeeCount(departmentName: string): number {
     return this.employees.filter(emp => emp.department.name === departmentName).length;
+  }
+
+  private resetNewEmployee(): void {
+    this.newEmployee = {
+      cin: '',
+      firstname: '',
+      lastname: '',
+      dateOfBirth: '',
+      gender: '',
+      nationality: '',
+      maritalStatus: '',
+      email: '',
+      phonenumber: '',
+      address: '',
+      hiredate: '',
+      employeeStatus: '',
+      employmentType: '',
+      department: { id: 0, name: '' },
+      jobtitle: '',
+      salary: 0,
+      managercin: '',
+      certifications: [],
+      personalLeaveBalance: 0,
+      sickLeaveBalance: 0,
+      unpaidLeaveBalance: 0
+    };
+    this.certificationsInput = '';
+    this.managerSuggestions = [];
   }
 }

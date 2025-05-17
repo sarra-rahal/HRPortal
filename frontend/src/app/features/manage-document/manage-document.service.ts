@@ -4,6 +4,11 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Document, DocumentRequest } from '../../core/models/document.model';
 
+
+interface StringListDictionary {
+  [key: string]: string[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -14,26 +19,45 @@ export class ManageDocumentService {
 
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
-    if (!token) {
-      console.error('No token found in localStorage');
-      throw new Error('No authentication token');
-    }
     console.log('Sending token:', token);
     return new HttpHeaders({
-      'Authorization': `Bearer ${token.trim()}`
+      'Authorization': `Bearer ${token}`
     });
   }
 
-  uploadDocument(file: File, accessibleBy: any): Observable<Document> {
+  // uploadDocument(file: File, accessibleBy: any): Observable<Document> {
+  //   const formData = new FormData();
+  //   formData.append('file', file);
+  //   formData.append('accessibleBy', JSON.stringify(accessibleBy));
+  //   return this.http.post<Document>(`${this.apiUrl}/documents/upload`, formData, { headers: this.getAuthHeaders() })
+  //     .pipe(
+  //       tap(() => console.log('Document uploaded successfully')),
+  //       catchError(this.handleError)
+  //     );
+  // }
+  upload(file: File, access: StringListDictionary): Observable<Document> {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('accessibleBy', JSON.stringify(accessibleBy));
+    formData.append('access', JSON.stringify(access));
     return this.http.post<Document>(`${this.apiUrl}/documents/upload`, formData, { headers: this.getAuthHeaders() })
       .pipe(
         tap(() => console.log('Document uploaded successfully')),
         catchError(this.handleError)
       );
   }
+
+  // generate(name: string, parameters: any, access: any, templateType: string): Observable<Document> {
+  //   const formData = new FormData();
+  //   formData.append('name', name);
+  //   formData.append('parameters', JSON.stringify(parameters));
+  //   formData.append('accessibleBy', JSON.stringify(access));
+  //   formData.append('templateType', templateType);
+  //   return this.http.post<Document>(`${this.apiUrl}/documents/generate`, formData, { headers: this.getAuthHeaders() })
+  //     .pipe(
+  //       tap(() => console.log('Document generated successfully')),
+  //       catchError(this.handleError)
+  //     );
+  // }
 
   generateDocument(name: string, parameters: any, accessibleBy: any, templateType: string): Observable<Document> {
     const formData = new FormData();
@@ -46,21 +70,6 @@ export class ManageDocumentService {
         tap(() => console.log('Document generated successfully')),
         catchError(this.handleError)
       );
-  }
-
-  previewDocument(name: string, parameters: any, accessibleBy: any, templateType: string): Observable<Blob> {
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('parameters', JSON.stringify(parameters));
-    formData.append('accessibleBy', JSON.stringify(accessibleBy));
-    formData.append('templateType', templateType);
-    return this.http.post(`${this.apiUrl}/documents/preview`, formData, {
-      headers: this.getAuthHeaders(),
-      responseType: 'blob'
-    }).pipe(
-      tap(() => console.log('Document preview downloaded successfully')),
-      catchError(this.handleError)
-    );
   }
 
   getPendingRequests(): Observable<DocumentRequest[]> {

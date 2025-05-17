@@ -1,16 +1,10 @@
 package com.HR.backend.controllers;
 
 import com.HR.backend.models.Employee;
-import com.HR.backend.models.User;
-import com.HR.backend.repositories.EmployeeRepository;
-import com.HR.backend.repositories.UserRepository;
+import com.HR.backend.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -18,16 +12,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserRepository userRepository;
-    private final EmployeeRepository employeeRepository;
+    private final UserService userService;
 
     @GetMapping("/profile")
     public ResponseEntity<Employee> getProfile() {
-        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        Employee employee = employeeRepository.findByCin(user.getCin())
-                .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
+        Employee employee = userService.getProfile();
+        return ResponseEntity.ok(employee);
+    }
+
+    @PostMapping("/profile")
+    public ResponseEntity<Employee> updateProfile(@RequestBody Employee updatedEmployee) {
+        Employee employee = userService.updateProfile(updatedEmployee);
         return ResponseEntity.ok(employee);
     }
 }

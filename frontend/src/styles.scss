@@ -1,7 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'bootstrap-icons/font/bootstrap-icons.css';
 html, body {
-  height: 100%;
   margin: 0;
   padding: 0;
 }
@@ -9,5 +8,5 @@ html, body {
 body {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 500px;
 }

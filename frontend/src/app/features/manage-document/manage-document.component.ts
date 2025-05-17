@@ -10,8 +10,12 @@ import { ToastService } from '../../core/services/toast.service';
 import { DocumentService } from '../document/document.service';
 import { ManageDocumentService } from './manage-document.service';
 import { WebsocketService } from '../../core/services/websocket.service';
-import {ManageEmployeesService} from '../manage-employees/manage-employees.service';
-import {Department} from '../../core/models/Employee-departments.model';
+import { ManageEmployeesService } from '../manage-employees/manage-employees.service';
+import { Employee as ModelEmployee } from '../../core/models/Employee-departments.model';
+
+interface StringListDictionary {
+  [key: string]: string[];
+}
 
 @Component({
   selector: 'app-manage-document',
@@ -22,21 +26,37 @@ import {Department} from '../../core/models/Employee-departments.model';
 })
 export class ManageDocumentComponent implements OnInit {
   documents: Document[] = [];
-  departments: Department[] = [];
+  employees: ModelEmployee[] = [];
+  access: StringListDictionary = { "dep": [], "emp": [] };
+  Cin: string = '';
+  filteredEmployees: ModelEmployee[] = [];
+  showAutocomplete: boolean = false;
   filteredDocuments: Document[] = [];
   documentRequests: DocumentRequest[] = [];
   filteredRequests: DocumentRequest[] = [];
-
   fileToUpload: File | null = null;
-  employeeCin: string = '';
-  newDocument: { cin: string; templateType: string } = {
+  newDocument: {
+    cin: string;
+    templateType: string;
+    fileName: string;
+    trainingRequestId?: string;
+    reviewId?: string;
+  } = {
     cin: '',
-    templateType: 'work_certificate'
+    templateType: 'work_certificate',
+    fileName: ''
   };
-  templateTypes: string[] = ['work_certificate', 'leave_certificate'];
+  templateTypes: string[] = [
+    'work_certificate',
+    'leave_certificate',
+    'training_approval',
+    'performance_review',
+    'promotion_letter',
+    'termination_notice'
+  ];
   errorMessage: string = '';
   isLoading: boolean = false;
-  currentView: 'upload' | 'generate' | 'list' | 'requests' = 'requests';
+  currentView: 'upload' | 'generate' | 'list' | 'requests' = 'generate';
   searchTerm: string = '';
   year: string = '';
   month: string = '';
@@ -55,17 +75,18 @@ export class ManageDocumentComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchDocuments();
-    this.fetchDepartments()
+    this.fetchEmployees();
     this.fetchPendingRequests();
     this.subscribeToNotifications();
   }
 
-  fetchDepartments(): void {
+  fetchEmployees(): void {
     this.isLoading = true;
     this.errorMessage = '';
-    this.manageEmployeesService.getDepartments().subscribe({
-      next: (departments) => {
-        this.departments = departments;
+    this.manageEmployeesService.getEmployees().subscribe({
+      next: (employees) => {
+        this.employees = employees;
+        this.filteredEmployees = employees;
         this.isLoading = false;
       },
       error: (err) => {
@@ -74,6 +95,112 @@ export class ManageDocumentComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  filterCins(event: Event): void {
+    const input = (event.target as HTMLInputElement).value.toLowerCase();
+    this.filteredEmployees = this.employees.filter(emp =>
+      emp.cin.toLowerCase().includes(input) ||
+      emp.firstname.toLowerCase().includes(input) ||
+      emp.lastname.toLowerCase().includes(input)
+    );
+    this.showAutocomplete = input.length > 0;
+  }
+
+  toggleAutocomplete(show: boolean): void {
+    this.showAutocomplete = show && this.filteredEmployees.length > 0;
+  }
+
+  selectCin(cin: string, isUploadView: boolean): void {
+    if (isUploadView) {
+      const currentCins = this.Cin.split(';').map(c => c.trim()).filter(c => c);
+      if (!currentCins.includes(cin)) {
+        this.Cin = currentCins.length ? `${this.Cin};${cin}` : cin;
+      }
+    } else {
+      this.newDocument.cin = cin;
+    }
+    this.filteredEmployees = [];
+    this.showAutocomplete = false;
+    this.updateAccessEmp();
+  }
+
+  getEmployeeNamesForCins(): string {
+    const cins = this.Cin.split(';').map(cin => cin.trim()).filter(cin => cin);
+    const names = cins
+      .map(cin => {
+        const emp = this.employees.find(e => e.cin === cin);
+        return emp ? `${emp.firstname} ${emp.lastname}` : null;
+      })
+      .filter(name => name);
+    return names.length ? names.join(', ') : 'No valid employees selected';
+  }
+
+  upload(): void {
+    if (!this.fileToUpload || !this.Cin) {
+      this.errorMessage = 'Please select a file and enter at least one valid CIN';
+      this.toastService.show('Please select a file and enter at least one valid CIN', 'error');
+      return;
+    }
+
+    if (!this.isValidCins(this.Cin)) {
+      this.errorMessage = 'Each CIN must be 8 digits, separated by semicolons';
+      this.toastService.show('Each CIN must be 8 digits, separated by semicolons', 'error');
+      return;
+    }
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.manageDocumentService.upload(this.fileToUpload, this.access).subscribe({
+      next: (doc) => {
+        this.toastService.show(`Uploaded "${doc.name}" successfully`, 'success');
+        this.fileToUpload = null;
+        this.Cin = '';
+        this.access['emp'] = [];
+        this.fetchDocuments();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.toastService.show(err.message, 'error');
+        this.isLoading = false;
+      }
+    });
+  }
+
+  isValidCins(input: string): boolean {
+    if (!input) return false;
+    const cins = input.split(';').map(cin => cin.trim()).filter(cin => cin);
+    return cins.length > 0 && cins.every(cin => /^[0-9]{8}$/.test(cin));
+  }
+
+  isValidSingleCin(cin: string): boolean {
+    return /^[0-9]{8}$/.test(cin);
+  }
+
+  isFormValid(): boolean {
+    const { templateType, cin, fileName, trainingRequestId, reviewId } = this.newDocument;
+    switch (templateType) {
+      case 'work_certificate':
+      case 'leave_certificate':
+      case 'promotion_letter':
+      case 'termination_notice':
+        return this.isValidSingleCin(cin) && !!fileName;
+      case 'training_approval':
+        return !!trainingRequestId && !!fileName;
+      case 'performance_review':
+        return !!reviewId && !!fileName;
+      default:
+        return false;
+    }
+  }
+
+  onTemplateTypeChange(): void {
+    this.newDocument = {
+      cin: '',
+      templateType: this.newDocument.templateType,
+      fileName: '',
+      trainingRequestId: undefined,
+      reviewId: undefined
+    };
   }
 
   fetchDocuments(): void {
@@ -132,61 +259,33 @@ export class ManageDocumentComponent implements OnInit {
     this.fileToUpload = input.files?.[0] || null;
   }
 
-  isValidCin(): boolean {
-    const cinRegex = /^[0-9]{8}$/;
-    return cinRegex.test(this.newDocument.cin) || (this.currentView === 'upload' && cinRegex.test(this.employeeCin));
-  }
-
-  uploadDocument(): void {
-    if (!this.fileToUpload || !this.employeeCin) {
-      this.errorMessage = 'Please select a file and enter a valid CIN';
-      this.toastService.show('Please select a file and enter a valid CIN', 'error');
-      return;
-    }
-    if (!this.isValidCin()) {
-      this.errorMessage = 'CIN must be 8 digits';
-      this.toastService.show('CIN must be 8 digits', 'error');
-      return;
-    }
-    this.isLoading = true;
-    this.errorMessage = '';
-    const accessibleBy = { type: 'employees', value: [this.employeeCin] };
-    this.manageDocumentService.uploadDocument(this.fileToUpload, accessibleBy).subscribe({
-      next: (doc) => {
-        this.toastService.show(`Uploaded "${doc.name}" successfully`, 'success');
-        this.fileToUpload = null;
-        this.employeeCin = '';
-        this.fetchDocuments();
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.errorMessage = err.message;
-        this.toastService.show(err.message, 'error');
-        this.isLoading = false;
-      }
-    });
-  }
-
   generateDocument(): void {
-    if (!this.isValidCin()) {
-      this.errorMessage = 'CIN must be 8 digits';
-      this.toastService.show('CIN must be 8 digits', 'error');
+    if (!this.isFormValid()) {
+      this.errorMessage = 'Please fill all required fields correctly';
+      this.toastService.show('Please fill all required fields correctly', 'error');
       return;
     }
     this.isLoading = true;
     this.errorMessage = '';
-    const documentName = this.newDocument.templateType === 'work_certificate' ? 'Work Certificate' : 'Leave Certificate';
-    const parameters = {
+    const documentName = this.newDocument.templateType.replace('_', ' ').replace(/\b\w/g, char => char.toUpperCase());
+    const parameters: any = {
       cin: this.newDocument.cin,
-      leaveType: this.newDocument.templateType === 'leave_certificate' ? 'Annual Leave' : null,
-      startDate: this.newDocument.templateType === 'leave_certificate' ? new Date().toISOString().split('T')[0] : null,
-      endDate: this.newDocument.templateType === 'leave_certificate' ? new Date().toISOString().split('T')[0] : null
+      fileName: this.newDocument.fileName
     };
-    const accessibleBy = { type: 'employees', value: [this.newDocument.cin] };
+    if (this.newDocument.templateType === 'training_approval') {
+      parameters.trainingRequestId = this.newDocument.trainingRequestId;
+    } else if (this.newDocument.templateType === 'performance_review') {
+      parameters.reviewId = this.newDocument.reviewId;
+    } else if (this.newDocument.templateType === 'leave_certificate') {
+      parameters.leaveType = 'Annual Leave';
+      parameters.startDate = new Date().toISOString().split('T')[0];
+      parameters.endDate = new Date().toISOString().split('T')[0];
+    }
+    const accessibleBy = { type: 'employees', value: [this.newDocument.cin].filter(Boolean) };
     this.manageDocumentService.generateDocument(documentName, parameters, accessibleBy, this.newDocument.templateType).subscribe({
       next: (doc) => {
         this.toastService.show(`Generated "${doc.name}" successfully`, 'success');
-        this.newDocument = { cin: '', templateType: 'work_certificate' };
+        this.newDocument = { cin: '', templateType: 'work_certificate', fileName: '' };
         this.fetchDocuments();
         this.isLoading = false;
       },
@@ -229,9 +328,9 @@ export class ManageDocumentComponent implements OnInit {
 
   filterRequests(): void {
     this.filteredRequests = this.documentRequests.filter(req => {
-      var matchesSearch = !this.searchTerm ||
+      let matchesSearch = !this.searchTerm ||
         req.type.toLowerCase().includes(this.searchTerm.toLowerCase());
-      if(req.description != undefined){
+      if (req.description != undefined) {
         matchesSearch = !this.searchTerm ||
           req.type.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
           req.description.toLowerCase().includes(this.searchTerm.toLowerCase());
@@ -245,10 +344,9 @@ export class ManageDocumentComponent implements OnInit {
   }
 
   reviewRequest(id: number | undefined, status: string): void {
-    if(id == undefined){
+    if (id == undefined) {
       this.toastService.show('Request id not found', 'error');
-    }
-    else{
+    } else {
       this.isLoading = true;
       this.errorMessage = '';
       this.manageDocumentService.reviewRequest(id, status).subscribe({
@@ -264,5 +362,12 @@ export class ManageDocumentComponent implements OnInit {
         }
       });
     }
+  }
+
+  updateAccessEmp(): void {
+    this.access['emp'] = this.Cin
+      .split(';')
+      .map(cin => cin.trim())
+      .filter(cin => cin && /^[0-9]{8}$/.test(cin));
   }
 }

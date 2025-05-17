@@ -18,6 +18,12 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
+    @GetMapping("/search")
+    @PreAuthorize("hasAuthority('HR_MANAGER')")
+    public List<Employee> searchEmployees(@RequestParam("cin") String cin) {
+        return employeeService.searchEmployeesByCin(cin);
+    }
+
     @GetMapping
     @PreAuthorize("hasAuthority('HR_MANAGER')")
     public List<Employee> getAllEmployees() {

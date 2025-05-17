@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,21 +32,23 @@ public class DocumentService {
     private final EmployeeRepository employeeRepository;
     private final UserRepository userRepository;
     private final NotificationRepository notificationRepository;
+    private final DepartmentRepository departmentRepository;
+    private final ObjectMapper objectMapper;
     private final JwtUtil jwtUtil;
     private final EmailService emailService;
     private final SimpMessagingTemplate messagingTemplate;
     private static final String DOCUMENTS_DIR = "documents/";
     private static final String REPORTS_DIR = "src/main/resources/reports/";
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
-
-    public Document uploadDocument  (MultipartFile file, String accessibleBy, String token) {
-        validateToken(token);
+    public Document upload (MultipartFile file, String access, String token) {
         String email = jwtUtil.extractEmail(token.split(" ")[1]);
+        User user= userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        Employee employee = employeeRepository.findByCin(user.getCin())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found"));
         validateFile(file);
-        validateAccessibleBy(accessibleBy);
-
+        List<String> accessibleBy =validateAndTransformAccess(access);
         String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
         String filePath = DOCUMENTS_DIR + fileName;
 
@@ -56,7 +59,7 @@ public class DocumentService {
             Document document = new Document();
             document.setName(file.getOriginalFilename());
             document.setFilePath(filePath);
-            document.setUploadedBy(email);
+            document.setUploadedBy(employee.getFirstname() + " " + employee.getLastname());
             document.setGenerated(false);
             document.setAccessibleBy(accessibleBy);
             document.setUploadDate(LocalDateTime.now());
@@ -69,70 +72,88 @@ public class DocumentService {
         }
     }
 
-
-    public Document generateDocument(String name, Map<String, Object> parameters, String accessibleBy, String templateType, String token) {
-        validateToken(token);
-        String email = jwtUtil.extractEmail(token.split(" ")[1]);
-        if (name == null || name.trim().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Document name is required");
+    public List<String> validateAndTransformAccess(String accessJson) {
+        // Check for null or empty input
+        if (accessJson == null || accessJson.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Access JSON is required");
         }
-        validateAccessibleBy(accessibleBy);
-
-        String cin = (String) parameters.get("cin");
-        Employee employee = employeeRepository.findById(cin)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee with CIN " + cin + " not found"));
-        String fileName = UUID.randomUUID() + "_" + name.trim() + ".pdf";
-        String filePath = DOCUMENTS_DIR + fileName;
-
         try {
-            Files.createDirectories(Paths.get(DOCUMENTS_DIR));
-            String templatePath;
-            switch (templateType.toLowerCase()) {
-                case "work_certificate":
-                    templatePath = "src/main/resources/reports/work_certificate.jrxml";
-                    parameters.put("employeeName", employee.getFirstname() + " " + employee.getLastname());
-                    parameters.put("jobTitle", employee.getJobtitle());
-                    parameters.put("department", employee.getDepartment().getName());
-                    break;
-                case "leave_certificate":
-                    templatePath = "src/main/resources/reports/leave_certificate.jrxml";
-                    parameters.put("employeeName", employee.getFirstname() + " " + employee.getLastname());
-                    parameters.put("employeeId", parameters.getOrDefault("leaveType", "********"));
-                    parameters.put("leaveStartDate", parameters.getOrDefault("startDate", LocalDateTime.now().toString()));
-                    parameters.put("leaveEndDate", parameters.getOrDefault("endDate", LocalDateTime.now().toString()));
-                    parameters.put("leaveReason", parameters.getOrDefault("endDate", LocalDateTime.now().toString()));
-                    parameters.put("genDate", LocalDateTime.now().toString());
-                    break;
-                default:
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid template type");
+            // Parse JSON to Map<String, List<String>>
+            Map<String, List<String>> access = objectMapper.readValue(
+                    accessJson,
+                    new TypeReference<Map<String, List<String>>>() {}
+            );
+
+            // Validate required keys
+            if (!access.containsKey("dep") || !access.containsKey("emp")) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "JSON must contain 'dep' and 'emp' keys");
             }
 
-            JasperReport jasperReport = JasperCompileManager.compileReport(templatePath);
-            parameters.put("name", name);
-            parameters.put("generatedBy", email);
-            parameters.put("generatedDate", LocalDateTime.now().toString());
+            List<String> dep = access.get("dep");
+            List<String> empCins = access.get("emp"); // Renamed to avoid confusion
 
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JRBeanCollectionDataSource(Collections.emptyList()));
-            JasperExportManager.exportReportToPdfFile(jasperPrint, filePath);
+            // Validate dep
+            if (dep == null || dep.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "'dep' array cannot be empty");
+            }
+            for (String depValue : dep) {
+                if (depValue == null) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "'dep' contains null values");
+                }
+                if (!depValue.equals("-1") && !depValue.equals("-2")) {
+                    try {
+                        int depId = Integer.parseInt(depValue);
+                        if (!departmentRepository.existsById((long) depId)) {
+                            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid department ID: " + depValue);
+                        }
+                    } catch (NumberFormatException e) {
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid department ID format: " + depValue);
+                    }
+                }
+            }
 
-            Document document = new Document();
-            document.setName(name.trim() + ".pdf");
-            document.setFilePath(filePath);
-            document.setUploadedBy(email);
-            document.setGenerated(true);
-            document.setAccessibleBy(accessibleBy);
-            document.setUploadDate(LocalDateTime.now());
-            Document savedDocument = documentRepository.save(document);
+            // Validate emp
 
-            notifyRecipients(accessibleBy, savedDocument, "New document generated: " + document.getName());
-            return savedDocument;
+            for (String cin : empCins) {
+                if (cin == null) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "'emp' contains null values");
+                }
+                if (!cin.isEmpty() && !employeeRepository.existsById(cin)) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid CIN: " + cin);
+                }
+            }
+
+            // Special rule: if dep contains "-2", emp must have at least one CIN
+            if (dep.contains("-2") && (empCins.isEmpty() || empCins.stream().allMatch(String::isEmpty))) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "When dep is -2, emp must contain at least one CIN");
+            }
+
+            // Transform to list of unique CINs
+            Set<String> resultCins = new HashSet<>(empCins.stream().filter(cin -> !cin.isEmpty()).collect(Collectors.toList()));
+
+            // Process based on dep[0]
+            String firstDep = dep.get(0);
+            if (firstDep.equals("-2")) {
+                // Only use emp CINs
+                return new ArrayList<>(resultCins);
+            } else if (firstDep.equals("-1")) {
+                // Add all employees from all departments
+                List<Employee> allEmployees = employeeRepository.findAll();
+                allEmployees.forEach(employee -> resultCins.add(employee.getCin())); // Changed 'emp' to 'employee'
+            } else {
+                // Add employees from the specified department
+                int depId = Integer.parseInt(firstDep);
+                List<Employee> deptEmployees = employeeRepository.findByDepartmentId(depId);
+                deptEmployees.forEach(employee -> resultCins.add(employee.getCin())); // Changed 'emp' to 'employee'
+            }
+
+            return new ArrayList<>(resultCins);
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to generate document: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid access JSON format: " + e.getMessage());
         }
     }
 
     public List<Document> getAccessibleDocuments(String token) {
-        validateToken(token);
         String role = jwtUtil.extractRole(token.split(" ")[1]);
         String email = jwtUtil.extractEmail(token.split(" ")[1]);
         List<Document> allDocs = documentRepository.findAll();
@@ -142,7 +163,7 @@ public class DocumentService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found"));
 
         return allDocs.stream()
-                .filter(doc -> isAccessible(doc.getAccessibleBy(), role, employee))
+                .filter(doc -> isAccessible(doc, employee))
                 .toList();
     }
 
@@ -156,7 +177,7 @@ public class DocumentService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        if (!isAccessible(document.getAccessibleBy(), role, employee)) {
+        if (!isAccessible(document, employee)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied to this document");
         }
 
@@ -186,13 +207,11 @@ public class DocumentService {
     }
 
     public List<DocumentRequest> getMyRequests(String token) {
-        validateToken(token);
         String email = jwtUtil.extractEmail(token.split(" ")[1]);
         return documentRequestRepository.findByEmployeeEmailOrderByRequestDateDesc(email);
     }
 
     public List<DocumentRequest> getPendingRequests(String token) {
-        validateToken(token);
         String role = jwtUtil.extractRole(token.split(" ")[1]);
         if (!"HR_MANAGER".equals(role)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
@@ -201,7 +220,6 @@ public class DocumentService {
     }
 
     public DocumentRequest reviewRequest(Long id, String status, String token) {
-        validateToken(token);
         String role = jwtUtil.extractRole(token.split(" ")[1]);
         if (!"HR_MANAGER".equals(role)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
@@ -217,16 +235,6 @@ public class DocumentService {
         emailService.notifyUser(request.getEmployeeEmail(), message);
 
         return updatedRequest;
-    }
-
-    private void validateToken(String token) {
-        if (token == null || !token.startsWith("Bearer ")) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing or invalid token format");
-        }
-        String jwt = token.split(" ")[1];
-        if (!jwtUtil.isTokenValid(jwt)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired token");
-        }
     }
 
     private void validateFile(MultipartFile file) {
@@ -266,40 +274,17 @@ public class DocumentService {
         }
     }
 
-    private boolean isAccessible(String accessibleBy, String role, Employee employee) {
-        if (accessibleBy == null || accessibleBy.trim().isEmpty()) {
+    public boolean isAccessible(Document document, Employee employee) {
+        if (document == null || employee == null) {
+            throw new IllegalArgumentException("Document and employee must not be null");
+        }
+        if (document.getAccessibleBy() == null || employee.getCin() == null) {
             return false;
         }
-        try {
-            Map<String, Object> json = objectMapper.readValue(accessibleBy, new TypeReference<Map<String, Object>>() {});
-            String type = (String) json.get("type");
-            Object value = json.get("value");
-            String userCin = employee.getCin();
-
-            if ("HR_MANAGER".equals(role)) {
-                return true;
-            }
-
-            if (type == null) {
-                return false;
-            }
-
-            if ("employees".equals(type)) {
-                if (!(value instanceof List<?>)) {
-                    return false;
-                }
-                List<?> rawCins = (List<?>) value;
-                List<String> cins = rawCins.stream().map(Object::toString).toList();
-                return cins.contains(userCin);
-            }
-            return false;
-        } catch (Exception e) {
-            return false;
-        }
+        return document.getAccessibleBy().contains(employee.getCin());
     }
 
     public void cancelRequest(Long id, String token) {
-        validateToken(token);
         String email = jwtUtil.extractEmail(token.split(" ")[1]);
         DocumentRequest request = documentRequestRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Request not found"));
@@ -312,37 +297,29 @@ public class DocumentService {
         documentRequestRepository.delete(request);
 
         String message = "Document request cancelled by " + email + ": " + request.getType();
-        Notification notification = new Notification();
-        notification.setUserEmail("hr@example.com");
-        notification.setMessage(message);
-        notificationRepository.save(notification);
-        messagingTemplate.convertAndSend("/topic/notifications/hr@example.com", notification);
-        emailService.sendEmail("no-reply@hrportal.com", "hr@example.com", "Document Request Cancelled", message);
+        emailService.sendEmail("sarrarahal2004@gmail.com", email, "Document Request Cancelled " , message);
+        emailService.notifyUser(email, message);
+        messagingTemplate.convertAndSend("/topic/notifications/" + email , message);
     }
 
-    private void notifyRecipients(String accessibleBy, Document document, String message) {
-        try {
-            Map<String, Object> json = objectMapper.readValue(accessibleBy, new TypeReference<Map<String, Object>>() {});
-            String type = (String) json.get("type");
-            Object value = json.get("value");
+    public void notifyRecipients(List<String> accessibleBy, Document document, String message) {
+        if (accessibleBy == null || document == null || message == null) {
+            throw new IllegalArgumentException("accessibleBy, document, and message must not be null");
+        }
 
-            List<Employee> recipients = new ArrayList<>();
-            if ("employees".equals(type)) {
-                List<?> rawCins = (List<?>) value;
-                List<String> cins = rawCins.stream().map(Object::toString).toList();
-                recipients.addAll(employeeRepository.findAllById(cins));
+        for (String cin : accessibleBy) {
+            try {
+                User user = userRepository.findByCin(cin)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found for CIN: " + cin));
+                String email = user.getEmail();
+                if (email != null && !email.isEmpty()) {
+                    emailService.sendEmail("sarrarahal2004@gmail.com", email, "New Document Available: " + document.getName(), message);
+                    emailService.notifyUser(email, message);
+                }
+            } catch (Exception e) {
+                // Log error but continue with other recipients
+                System.err.println("Failed to notify employee with CIN " + cin + ": " + e.getMessage());
             }
-
-            for (Employee emp : recipients) {
-                Notification notification = new Notification();
-                notification.setUserEmail(emp.getEmail());
-                notification.setMessage(message);
-                notificationRepository.save(notification);
-                messagingTemplate.convertAndSend("/topic/notifications/" + emp.getEmail(), notification);
-                emailService.sendEmail("no-reply@hrportal.com", emp.getEmail(), "New Document Available", message);
-            }
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to send notifications: " + e.getMessage());
         }
     }
 }
