@@ -1,4 +1,5 @@
 package com.HR.backend.services;
+
 import com.HR.backend.config.JwtUtil;
 import com.HR.backend.models.*;
 import com.HR.backend.repositories.*;
@@ -28,6 +29,7 @@ public class TrainingService {
     public List<Training> getAllTrainings() {
         return trainingRepository.findAll();
     }
+
     public List<TrainingEnrollment> getPendingEnrollments() {
         return enrollmentRepository.findByStatus("PENDING");
     }
@@ -37,15 +39,57 @@ public class TrainingService {
         validateTraining(training);
         Training saved = trainingRepository.save(training);
 
-        List<User> Users = userRepository.findAllByRoleNot(User.UserRole.HR_MANAGER);
-        for (User user : Users) {
-            if (!Objects.equals(String.valueOf(user.getRole()), "HR_Manager")){
+        List<User> users = userRepository.findAllByRoleNot(User.UserRole.HR_MANAGER);
+        for (User user : users) {
+            if (!Objects.equals(String.valueOf(user.getRole()), "HR_MANAGER")) {
                 String message = "New training available: " + saved.getTitle();
                 emailService.notifyUser(user.getEmail(), message);
                 messagingTemplate.convertAndSend("/topic/notifications/" + user.getEmail(), message);
             }
         }
         return saved;
+    }
+
+    @Transactional
+    public Training updateTraining(Training training, String token) {
+        Training existing = trainingRepository.findById(training.getId())
+                .orElseThrow(() -> new RuntimeException("Training not found"));
+        validateTraining(training);
+
+        existing.setTitle(training.getTitle());
+        existing.setDescription(training.getDescription());
+        existing.setStartDate(training.getStartDate());
+        existing.setEndDate(training.getEndDate());
+        existing.setCapacity(training.getCapacity());
+        existing.setCategory(training.getCategory());
+        existing.setRating(training.getRating());
+
+        Training updated = trainingRepository.save(existing);
+
+        List<TrainingEnrollment> enrollments = enrollmentRepository.findByTrainingId(training.getId());
+        for (TrainingEnrollment enrollment : enrollments) {
+            String message = String.format("Training %s has been updated", updated.getTitle());
+            emailService.notifyUser(enrollment.getEmployeeEmail(), message);
+            messagingTemplate.convertAndSend("/topic/notifications/" + enrollment.getEmployeeEmail(), message);
+        }
+
+        return updated;
+    }
+
+    @Transactional
+    public void deleteTraining(Long trainingId, String token) {
+        Training training = trainingRepository.findById(trainingId)
+                .orElseThrow(() -> new RuntimeException("Training not found"));
+
+        List<TrainingEnrollment> enrollments = enrollmentRepository.findByTrainingId(trainingId);
+        for (TrainingEnrollment enrollment : enrollments) {
+            String message = String.format("Training %s has been cancelled", training.getTitle());
+            emailService.notifyUser(enrollment.getEmployeeEmail(), message);
+            messagingTemplate.convertAndSend("/topic/notifications/" + enrollment.getEmployeeEmail(), message);
+            enrollmentRepository.delete(enrollment);
+        }
+
+        trainingRepository.delete(training);
     }
 
     @Transactional
@@ -66,8 +110,6 @@ public class TrainingService {
         enrollment.setStatus("PENDING");
         TrainingEnrollment saved = enrollmentRepository.save(enrollment);
 
-
-
         String senderEmail = jwtUtil.extractEmail(token.split(" ")[1]);
         User user = userRepository.findByEmail(employeeEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -77,7 +119,6 @@ public class TrainingService {
             throw new IllegalArgumentException("Employee email cannot be null or empty");
         }
 
-        // Notify HR Manager
         String hrMessage = String.format(
                 "%s %s has submitted an enrollment request for %s",
                 employee.getFirstname(), employee.getLastname(), training.getTitle()
@@ -100,7 +141,6 @@ public class TrainingService {
             training.setEnrolledCount(training.getEnrolledCount() + 1);
             trainingRepository.save(training);
         }
-
 
         String hrEmail = jwtUtil.extractEmail(token.split(" ")[1]);
         String trainingTitle = enrollment.getTraining().getTitle();
@@ -142,15 +182,11 @@ public class TrainingService {
         TrainingEnrollment enrollment = enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new RuntimeException("Enrollment not found"));
 
-//        if (!enrollment.getEmployeeEmail().equals(employeeEmail)) {
-//            throw new RuntimeException("Unauthorized cancellation attempt");
-//        }
         if (!enrollment.getStatus().equals("PENDING")) {
             throw new RuntimeException("Can only cancel pending enrollments");
         }
 
         Training training = enrollment.getTraining();
-
         enrollmentRepository.delete(enrollment);
         emailService.notifyUser(HR_EMAIL, "Enrollment cancelled for " + training.getTitle());
         messagingTemplate.convertAndSend("/topic/notifications/" + HR_EMAIL,

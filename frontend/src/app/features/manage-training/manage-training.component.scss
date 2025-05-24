@@ -167,7 +167,7 @@
 
 .status-badge {
   display: inline-block;
-  width: 100px; /* Fixed width for uniform size */
+  width: 100px;
   text-align: center;
   padding: 6px 0;
   border-radius: 12px;
@@ -175,17 +175,17 @@
   font-weight: 500;
 
   &.pending {
-    background: #f7e08b; /* Muted yellow */
+    background: #f7e08b;
     color: #333;
   }
 
   &.approved {
-    background: #6abf69; /* Muted green */
+    background: #6abf69;
     color: #fff;
   }
 
   &.rejected {
-    background: #e57373; /* Muted red */
+    background: #e57373;
     color: #fff;
   }
 }
@@ -244,6 +244,23 @@
 
     &:hover:not(:disabled) {
       background: #e57373;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      border-color: #cccccc;
+      color: #cccccc;
+    }
+  }
+
+  &.btn-outline-primary {
+    border: 2px solid #007bff;
+    color: #007bff;
+    background: transparent;
+
+    &:hover:not(:disabled) {
+      background: #007bff;
       color: white;
       transform: translateY(-2px);
     }

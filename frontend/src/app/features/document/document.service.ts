@@ -40,6 +40,17 @@ export class DocumentService {
     );
   }
 
+  uploadDocument(file: File, access: { [key: string]: string[] }): Observable<Document> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('access', JSON.stringify(access));
+    return this.http.post<Document>(`${this.apiUrl}/upload`, formData, { headers: this.getAuthHeaders() })
+      .pipe(
+        tap(doc => console.log('Uploaded document:', doc)),
+        catchError(this.handleError)
+      );
+  }
+
   requestDocument(request: DocumentRequest): Observable<DocumentRequest> {
     return this.http.post<DocumentRequest>(`${this.apiUrl}/request`, request, { headers: this.getAuthHeaders() })
       .pipe(

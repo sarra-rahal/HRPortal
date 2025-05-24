@@ -27,7 +27,7 @@ interface StringListDictionary {
 export class ManageDocumentComponent implements OnInit {
   documents: Document[] = [];
   employees: ModelEmployee[] = [];
-  access: StringListDictionary = { "dep": [], "emp": [] };
+  access: StringListDictionary = { emp: [], dep: [], job: [], all: [] };
   Cin: string = '';
   filteredEmployees: ModelEmployee[] = [];
   showAutocomplete: boolean = false;
@@ -35,6 +35,11 @@ export class ManageDocumentComponent implements OnInit {
   documentRequests: DocumentRequest[] = [];
   filteredRequests: DocumentRequest[] = [];
   fileToUpload: File | null = null;
+  destinationType: 'employee' | 'department' | 'job' | 'all' = 'employee';
+  selectedDepartment: string = '';
+  selectedJob: string = '';
+  departments: string[] = ['Engineering', 'QA', 'DevOps', 'Product Management', 'HR'];
+  jobs: string[] = ['Software Engineer', 'Senior Software Engineer', 'QA Engineer', 'DevOps Engineer', 'Product Manager'];
   newDocument: {
     cin: string;
     templateType: string;
@@ -111,18 +116,18 @@ export class ManageDocumentComponent implements OnInit {
     this.showAutocomplete = show && this.filteredEmployees.length > 0;
   }
 
-  selectCin(cin: string, isUploadView: boolean): void {
+  selectCin(cin: string, isUploadView: boolean = true): void {
     if (isUploadView) {
       const currentCins = this.Cin.split(';').map(c => c.trim()).filter(c => c);
       if (!currentCins.includes(cin)) {
         this.Cin = currentCins.length ? `${this.Cin};${cin}` : cin;
       }
+      this.updateAccess();
     } else {
       this.newDocument.cin = cin;
     }
     this.filteredEmployees = [];
     this.showAutocomplete = false;
-    this.updateAccessEmp();
   }
 
   getEmployeeNamesForCins(): string {
@@ -136,18 +141,67 @@ export class ManageDocumentComponent implements OnInit {
     return names.length ? names.join(', ') : 'No valid employees selected';
   }
 
+  onDestinationTypeChange(): void {
+    this.Cin = '';
+    this.selectedDepartment = '';
+    this.selectedJob = '';
+    this.access = { emp: [], dep: [], job: [], all: [] };
+  }
+
+  updateAccess(): void {
+    this.access = { emp: [], dep: [], job: [], all: [] };
+    switch (this.destinationType) {
+      case 'employee':
+        this.access['emp'] = this.Cin
+          .split(';')
+          .map(cin => cin.trim())
+          .filter(cin => cin && /^[0-9]{8}$/.test(cin));
+        break;
+      case 'department':
+        if (this.selectedDepartment) {
+          this.access['dep'] = [this.selectedDepartment];
+        }
+        break;
+      case 'job':
+        if (this.selectedJob) {
+          this.access['job'] = [this.selectedJob];
+        }
+        break;
+      case 'all':
+        this.access['all'] = ['all'];
+        break;
+    }
+  }
+
+  isUploadFormValid(): boolean {
+    if (!this.fileToUpload) return false;
+    switch (this.destinationType) {
+      case 'employee':
+        return this.isValidCins(this.Cin);
+      case 'department':
+        return !!this.selectedDepartment;
+      case 'job':
+        return !!this.selectedJob;
+      case 'all':
+        return true;
+      default:
+        return false;
+    }
+  }
+
   upload(): void {
-    if (!this.fileToUpload || !this.Cin) {
-      this.errorMessage = 'Please select a file and enter at least one valid CIN';
-      this.toastService.show('Please select a file and enter at least one valid CIN', 'error');
+    if (!this.fileToUpload) {
+      this.errorMessage = 'Please select a file';
+      this.toastService.show('Please select a file', 'error');
       return;
     }
 
-    if (!this.isValidCins(this.Cin)) {
-      this.errorMessage = 'Each CIN must be 8 digits, separated by semicolons';
-      this.toastService.show('Each CIN must be 8 digits, separated by semicolons', 'error');
+    if (!this.isUploadFormValid()) {
+      this.errorMessage = 'Please provide valid destination details';
+      this.toastService.show('Please provide valid destination details', 'error');
       return;
     }
+
     this.isLoading = true;
     this.errorMessage = '';
     this.manageDocumentService.upload(this.fileToUpload, this.access).subscribe({
@@ -155,11 +209,15 @@ export class ManageDocumentComponent implements OnInit {
         this.toastService.show(`Uploaded "${doc.name}" successfully`, 'success');
         this.fileToUpload = null;
         this.Cin = '';
-        this.access['emp'] = [];
+        this.selectedDepartment = '';
+        this.selectedJob = '';
+        this.destinationType = 'employee';
+        this.access = { emp: [], dep: [], job: [], all: [] };
         this.fetchDocuments();
         this.isLoading = false;
       },
       error: (err) => {
+        this.errorMessage = err.message;
         this.toastService.show(err.message, 'error');
         this.isLoading = false;
       }
@@ -362,12 +420,5 @@ export class ManageDocumentComponent implements OnInit {
         }
       });
     }
-  }
-
-  updateAccessEmp(): void {
-    this.access['emp'] = this.Cin
-      .split(';')
-      .map(cin => cin.trim())
-      .filter(cin => cin && /^[0-9]{8}$/.test(cin));
   }
 }

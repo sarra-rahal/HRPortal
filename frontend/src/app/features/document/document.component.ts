@@ -10,6 +10,10 @@ import { ToastService } from '../../core/services/toast.service';
 import { DocumentService } from './document.service';
 import { WebsocketService } from '../../core/services/websocket.service';
 
+interface StringListDictionary {
+  [key: string]: string[];
+}
+
 @Component({
   selector: 'app-document',
   standalone: true,
@@ -24,11 +28,12 @@ export class DocumentComponent implements OnInit {
   filteredRequests: DocumentRequest[] = [];
   errorMessage: string = '';
   isLoading: boolean = false;
-  currentView: 'documents' | 'requests' = 'documents';
+  currentView: 'documents' | 'requests' | 'upload' = 'documents';
   searchTerm: string = '';
   year: string = '';
   month: string = '';
   day: string = '';
+  fileToUpload: File | null = null;
   newRequest: DocumentRequest = {
     type: 'work_certificate',
     description: '',
@@ -109,6 +114,40 @@ export class DocumentComponent implements OnInit {
     }
   }
 
+  onFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.fileToUpload = input.files?.[0] || null;
+  }
+
+  isUploadFormValid(): boolean {
+    return !!this.fileToUpload;
+  }
+
+  uploadDocument(): void {
+    if (!this.isUploadFormValid()) {
+      this.errorMessage = 'Please select a file';
+      this.toastService.show('Please select a file', 'error');
+      return;
+    }
+
+    this.isLoading = true;
+    this.errorMessage = '';
+    const access: StringListDictionary = { emp: [], dep: ['HR'], job: [], all: [] };
+    this.documentService.uploadDocument(this.fileToUpload!, access).subscribe({
+      next: (doc) => {
+        this.toastService.show(`Uploaded "${doc.name}" to HR manager successfully`, 'success');
+        this.fileToUpload = null;
+        this.fetchDocuments();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+        this.toastService.show(err.message, 'error');
+        this.isLoading = false;
+      }
+    });
+  }
+
   downloadDocument(id: number, name: string): void {
     this.isLoading = true;
     this.errorMessage = '';
@@ -139,15 +178,10 @@ export class DocumentComponent implements OnInit {
   }
 
   filterRequests(): void {
-
     this.filteredRequests = this.documentRequests.filter(req => {
-      var matchesSearch = !this.searchTerm ||
-        req.type.toLowerCase().includes(this.searchTerm.toLowerCase());
-      if(req.description != undefined){
-        matchesSearch = !this.searchTerm ||
-          req.type.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-          req.description.toLowerCase().includes(this.searchTerm.toLowerCase());
-      }
+      const matchesSearch = !this.searchTerm ||
+        req.type.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        (req.description?.toLowerCase().includes(this.searchTerm.toLowerCase()) ?? false);
       const requestDate = new Date(req.requestDate);
       const matchesYear = !this.year || requestDate.getFullYear().toString() === this.year;
       const matchesMonth = !this.month || (requestDate.getMonth() + 1).toString().padStart(2, '0') === this.month;
@@ -159,6 +193,7 @@ export class DocumentComponent implements OnInit {
   requestDocument(): void {
     this.isLoading = true;
     this.errorMessage = '';
+    this.newRequest.employeeEmail = localStorage.getItem('email') || '';
     this.documentService.requestDocument(this.newRequest).subscribe({
       next: (request) => {
         this.documentRequests.push(request);
@@ -177,10 +212,9 @@ export class DocumentComponent implements OnInit {
   }
 
   cancelRequest(id: number | undefined): void {
-    if(id == undefined){
+    if (id == undefined) {
       this.toastService.show('Request id not found', 'error');
-    }
-    else{
+    } else {
       if (confirm('Are you sure you want to cancel this request?')) {
         this.isLoading = true;
         this.errorMessage = '';

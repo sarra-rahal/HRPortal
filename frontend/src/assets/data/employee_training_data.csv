@@ -1,0 +1,501 @@
+EmpID,TrainingID,ProgramName,Type,Cost,TrainingCompany,StartDate,EndDate,Completed,Outcome
+01941211,T015,Team Collaboration Skills,Internal,200,Arabsoft,14/09/2024,14/09/2024,Yes,85.0
+01220039,T014,Data Visualization,External,800,Tunisian Learning Hub,02/01/2024,03/01/2024,Yes,87.0
+01434161,T001,React.js Advanced,External,1200,Tunisian IT Academy,07/12/2023,09/12/2023,Yes,80.0
+04681316,T015,Team Collaboration Skills,Internal,200,Arabsoft,11/01/2025,11/01/2025,Yes,88.0
+03040804,T020,Employee Wellness,Internal,150,Arabsoft,28/10/2024,28/10/2024,Yes,80.0
+03240755,T013,Cloud Infrastructure,External,1600,Tunisian IT Academy,12/04/2024,15/04/2024,Yes,92.0
+04924417,T017,PMP Certification Prep,External,1200,Tunisian Learning Hub,17/04/2025,19/04/2025,Yes,86.0
+01232085,T015,Team Collaboration Skills,Internal,200,Arabsoft,07/12/2024,07/12/2024,Yes,84.0
+02822998,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,24/01/2021,27/01/2021,Yes,92.0
+10093655,T001,React.js Advanced,External,1200,Tunisian IT Academy,11/02/2024,13/02/2024,Yes,93.0
+03566953,T007,Database Optimization,Internal,400,Arabsoft,11/10/2024,12/10/2024,Yes,80.0
+01837544,T016,Node.js Development,External,1100,Tunisian IT Academy,18/09/2024,20/09/2024,Yes,85.0
+04824906,T009,Cybersecurity Fundamentals,External,1100,Tunisian IT Academy,22/12/2023,24/12/2023,Yes,87.0
+03029496,T001,React.js Advanced,External,1200,Tunisian IT Academy,14/11/2022,16/11/2022,Yes,80.0
+10187567,T020,Employee Wellness,Internal,150,Arabsoft,17/08/2024,17/08/2024,Yes,100.0
+04824305,T020,Employee Wellness,Internal,150,Arabsoft,11/05/2024,11/05/2024,Yes,90.0
+02121462,T005,Python for Data Science,External,1300,Tunisian Learning Hub,10/07/2024,14/07/2024,Yes,83.0
+03846813,T014,Data Visualization,External,800,Tunisian Learning Hub,02/04/2022,03/04/2022,Yes,80.0
+02211282,T020,Employee Wellness,Internal,150,Arabsoft,16/11/2024,16/11/2024,Yes,98.0
+03697812,T020,Employee Wellness,Internal,150,Arabsoft,13/07/2024,13/07/2024,Yes,81.0
+02927914,T005,Python for Data Science,External,1300,Tunisian Learning Hub,22/11/2024,26/11/2024,Yes,86.0
+02521956,T016,Node.js Development,External,1100,Tunisian IT Academy,13/12/2024,15/12/2024,Yes,95.0
+10025804,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,16/01/2022,17/01/2022,Yes,100.0
+10144607,T005,Python for Data Science,External,1300,Tunisian Learning Hub,30/07/2022,03/08/2022,Yes,80.0
+01776870,T006,Leadership for CTOs,External,2000,Tunisian Business School,29/10/2024,31/10/2024,Yes,80.0
+01648486,T001,React.js Advanced,External,1200,Tunisian IT Academy,13/11/2023,15/11/2023,Yes,87.0
+02936752,T004,Kubernetes Essentials,External,1500,Tunisian IT Academy,13/11/2024,16/11/2024,Yes,100.0
+03490175,T020,Employee Wellness,Internal,150,Arabsoft,31/05/2024,31/05/2024,Yes,100.0
+01006836,T016,Node.js Development,External,1100,Tunisian IT Academy,01/05/2024,03/05/2024,Yes,94.0
+04521223,T019,SQL for Data Analysis,Internal,250,Arabsoft,19/12/2024,20/12/2024,Yes,81.0
+10760248,T017,PMP Certification Prep,External,1200,Tunisian Learning Hub,19/03/2022,21/03/2022,Yes,93.0
+03628194,T017,PMP Certification Prep,External,1200,Tunisian Learning Hub,23/03/2023,25/03/2023,Yes,80.0
+04210662,T004,Kubernetes Essentials,External,1500,Tunisian IT Academy,10/01/2024,13/01/2024,Yes,95.0
+03124737,T020,Employee Wellness,Internal,150,Arabsoft,23/01/2023,23/01/2023,Yes,97.0
+04882933,T015,Team Collaboration Skills,Internal,200,Arabsoft,22/10/2024,22/10/2024,Yes,100.0
+02735118,T001,React.js Advanced,External,1200,Tunisian IT Academy,20/10/2023,22/10/2023,Yes,100.0
+03859590,T014,Data Visualization,External,800,Tunisian Learning Hub,29/01/2023,30/01/2023,Yes,91.0
+03716663,T015,Team Collaboration Skills,Internal,200,Arabsoft,18/07/2024,18/07/2024,Yes,86.0
+02807448,T019,SQL for Data Analysis,Internal,250,Arabsoft,08/03/2023,09/03/2023,Yes,85.0
+01612432,T016,Node.js Development,External,1100,Tunisian IT Academy,08/05/2021,10/05/2021,Yes,80.0
+10499098,T014,Data Visualization,External,800,Tunisian Learning Hub,30/10/2024,31/10/2024,Yes,82.0
+02636478,T011,Scrum Master Training,External,1000,Tunisian Learning Hub,20/03/2025,21/03/2025,Yes,87.0
+10636380,T015,Team Collaboration Skills,Internal,200,Arabsoft,09/01/2024,09/01/2024,Yes,86.0
+10225301,T014,Data Visualization,External,800,Tunisian Learning Hub,08/01/2025,09/01/2025,Yes,89.0
+10504340,T016,Node.js Development,External,1100,Tunisian IT Academy,04/02/2021,06/02/2021,Yes,84.0
+10478673,T017,PMP Certification Prep,External,1200,Tunisian Learning Hub,16/11/2023,18/11/2023,Yes,96.0
+01748998,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,23/10/2024,24/10/2024,Yes,94.0
+01873609,T013,Cloud Infrastructure,External,1600,Tunisian IT Academy,12/04/2021,15/04/2021,Yes,90.0
+03385154,T016,Node.js Development,External,1100,Tunisian IT Academy,23/02/2025,25/02/2025,Yes,89.0
+03291357,T005,Python for Data Science,External,1300,Tunisian Learning Hub,30/06/2023,04/07/2023,Yes,86.0
+10754266,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,16/05/2023,17/05/2023,Yes,100.0
+01595025,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,23/04/2025,26/04/2025,Yes,80.0
+10766753,T016,Node.js Development,External,1100,Tunisian IT Academy,25/03/2025,27/03/2025,Yes,86.0
+10253392,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,04/04/2025,05/04/2025,Yes,91.0
+02219459,T015,Team Collaboration Skills,Internal,200,Arabsoft,06/04/2025,06/04/2025,Yes,80.0
+04644861,T020,Employee Wellness,Internal,150,Arabsoft,09/01/2025,09/01/2025,Yes,84.0
+03981166,T015,Team Collaboration Skills,Internal,200,Arabsoft,09/12/2023,09/12/2023,Yes,87.0
+03516055,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,15/05/2022,16/05/2022,Yes,100.0
+04808878,T020,Employee Wellness,Internal,150,Arabsoft,28/09/2024,28/09/2024,Yes,94.0
+02731578,T003,Software Testing Basics,Internal,300,Arabsoft,04/04/2025,05/04/2025,Yes,94.0
+04706569,T020,Employee Wellness,Internal,150,Arabsoft,20/02/2025,20/02/2025,Yes,100.0
+01016880,T005,Python for Data Science,External,1300,Tunisian Learning Hub,22/04/2025,26/04/2025,Yes,84.0
+03607041,T016,Node.js Development,External,1100,Tunisian IT Academy,16/03/2023,18/03/2023,Yes,96.0
+02036284,T012,Automated Testing Tools,Internal,350,Arabsoft,23/12/2024,24/12/2024,Yes,88.0
+04995907,T005,Python for Data Science,External,1300,Tunisian Learning Hub,27/12/2024,31/12/2024,Yes,87.0
+02140193,T016,Node.js Development,External,1100,Tunisian IT Academy,08/08/2024,10/08/2024,Yes,87.0
+10942996,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,14/07/2022,17/07/2022,Yes,80.0
+04256145,T020,Employee Wellness,Internal,150,Arabsoft,10/02/2025,10/02/2025,Yes,91.0
+01420468,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,09/09/2022,12/09/2022,Yes,98.0
+01629453,T014,Data Visualization,External,800,Tunisian Learning Hub,19/05/2024,20/05/2024,Yes,96.0
+04828215,T007,Database Optimization,Internal,400,Arabsoft,15/03/2024,16/03/2024,Yes,94.0
+02547475,T001,React.js Advanced,External,1200,Tunisian IT Academy,01/08/2022,03/08/2022,Yes,96.0
+01492471,T020,Employee Wellness,Internal,150,Arabsoft,27/10/2023,27/10/2023,Yes,93.0
+02163196,T012,Automated Testing Tools,Internal,350,Arabsoft,05/08/2021,06/08/2021,Yes,91.0
+01641069,T015,Team Collaboration Skills,Internal,200,Arabsoft,14/07/2023,14/07/2023,Yes,85.0
+04795562,T003,Software Testing Basics,Internal,300,Arabsoft,23/03/2025,24/03/2025,Yes,89.0
+02198796,T012,Automated Testing Tools,Internal,350,Arabsoft,05/05/2021,06/05/2021,Yes,94.0
+10962686,T005,Python for Data Science,External,1300,Tunisian Learning Hub,01/02/2024,05/02/2024,Yes,95.0
+10597060,T015,Team Collaboration Skills,Internal,200,Arabsoft,30/01/2025,30/01/2025,Yes,90.0
+04176062,T018,Network Security,External,1300,Tunisian IT Academy,30/12/2024,01/01/2025,Yes,88.0
+03519063,T017,PMP Certification Prep,External,1200,Tunisian Learning Hub,31/10/2021,02/11/2021,Yes,86.0
+01686873,T009,Cybersecurity Fundamentals,External,1100,Tunisian IT Academy,15/04/2025,17/04/2025,Yes,100.0
+01618178,T014,Data Visualization,External,800,Tunisian Learning Hub,09/07/2024,10/07/2024,Yes,80.0
+04138266,T015,Team Collaboration Skills,Internal,200,Arabsoft,10/12/2023,10/12/2023,Yes,80.0
+02819993,T020,Employee Wellness,Internal,150,Arabsoft,05/08/2024,05/08/2024,Yes,87.0
+10779193,T009,Cybersecurity Fundamentals,External,1100,Tunisian IT Academy,05/01/2025,07/01/2025,Yes,83.0
+02366189,T015,Team Collaboration Skills,Internal,200,Arabsoft,09/07/2024,09/07/2024,Yes,86.0
+04599503,T019,SQL for Data Analysis,Internal,250,Arabsoft,23/09/2024,24/09/2024,Yes,84.0
+02368880,T014,Data Visualization,External,800,Tunisian Learning Hub,04/12/2024,05/12/2024,Yes,84.0
+02575208,T015,Team Collaboration Skills,Internal,200,Arabsoft,24/04/2023,24/04/2023,Yes,100.0
+03822162,T015,Team Collaboration Skills,Internal,200,Arabsoft,26/11/2023,26/11/2023,Yes,94.0
+02743069,T013,Cloud Infrastructure,External,1600,Tunisian IT Academy,24/04/2022,27/04/2022,Yes,93.0
+01034691,T020,Employee Wellness,Internal,150,Arabsoft,19/02/2025,19/02/2025,Yes,98.0
+04032557,T015,Team Collaboration Skills,Internal,200,Arabsoft,14/07/2024,14/07/2024,Yes,81.0
+04037574,T016,Node.js Development,External,1100,Tunisian IT Academy,08/12/2024,10/12/2024,Yes,100.0
+10376535,T016,Node.js Development,External,1100,Tunisian IT Academy,01/08/2022,03/08/2022,Yes,91.0
+10199984,T016,Node.js Development,External,1100,Tunisian IT Academy,02/05/2023,04/05/2023,Yes,98.0
+02832629,T014,Data Visualization,External,800,Tunisian Learning Hub,14/11/2024,15/11/2024,Yes,80.0
+01234564,T005,Python for Data Science,External,1300,Tunisian Learning Hub,08/02/2023,12/02/2023,Yes,80.0
+04594489,T015,Team Collaboration Skills,Internal,200,Arabsoft,16/04/2023,16/04/2023,Yes,98.0
+02718979,T015,Team Collaboration Skills,Internal,200,Arabsoft,30/11/2024,30/11/2024,Yes,94.0
+10030022,T020,Employee Wellness,Internal,150,Arabsoft,02/08/2024,02/08/2024,Yes,84.0
+10145047,T001,React.js Advanced,External,1200,Tunisian IT Academy,01/10/2024,03/10/2024,Yes,80.0
+04857351,T014,Data Visualization,External,800,Tunisian Learning Hub,04/08/2023,05/08/2023,Yes,98.0
+04617796,T005,Python for Data Science,External,1300,Tunisian Learning Hub,07/05/2025,11/05/2025,No,
+02199241,T015,Team Collaboration Skills,Internal,200,Arabsoft,12/02/2023,12/02/2023,Yes,80.0
+02518339,T016,Node.js Development,External,1100,Tunisian IT Academy,22/10/2023,24/10/2023,Yes,100.0
+10385947,T007,Database Optimization,Internal,400,Arabsoft,12/09/2024,13/09/2024,Yes,80.0
+01110029,T015,Team Collaboration Skills,Internal,200,Arabsoft,18/04/2025,18/04/2025,Yes,97.0
+03199510,T016,Node.js Development,External,1100,Tunisian IT Academy,01/07/2024,03/07/2024,Yes,89.0
+10466786,T019,SQL for Data Analysis,Internal,250,Arabsoft,14/12/2021,15/12/2021,Yes,90.0
+02092305,T002,Agile Project Management,External,1000,Tunisian Learning Hub,05/11/2022,07/11/2022,Yes,80.0
+02985907,T019,SQL for Data Analysis,Internal,250,Arabsoft,31/05/2024,01/06/2024,Yes,84.0
+01346716,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,06/04/2025,07/04/2025,Yes,94.0
+02646136,T015,Team Collaboration Skills,Internal,200,Arabsoft,27/04/2025,27/04/2025,Yes,82.0
+04711761,T009,Cybersecurity Fundamentals,External,1100,Tunisian IT Academy,20/03/2024,22/03/2024,Yes,100.0
+01601375,T013,Cloud Infrastructure,External,1600,Tunisian IT Academy,24/02/2023,27/02/2023,Yes,85.0
+01171005,T014,Data Visualization,External,800,Tunisian Learning Hub,06/08/2023,07/08/2023,Yes,86.0
+02121857,T014,Data Visualization,External,800,Tunisian Learning Hub,19/03/2025,20/03/2025,Yes,80.0
+04124333,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,15/09/2022,18/09/2022,Yes,80.0
+02099431,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,04/06/2023,05/06/2023,Yes,92.0
+01480212,T005,Python for Data Science,External,1300,Tunisian Learning Hub,01/04/2025,05/04/2025,Yes,100.0
+02866272,T015,Team Collaboration Skills,Internal,200,Arabsoft,03/07/2022,03/07/2022,Yes,98.0
+04574476,T011,Scrum Master Training,External,1000,Tunisian Learning Hub,02/11/2022,03/11/2022,Yes,91.0
+03412418,T019,SQL for Data Analysis,Internal,250,Arabsoft,10/06/2024,11/06/2024,Yes,83.0
+10128742,T016,Node.js Development,External,1100,Tunisian IT Academy,10/06/2022,12/06/2022,Yes,92.0
+02400073,T020,Employee Wellness,Internal,150,Arabsoft,21/01/2023,21/01/2023,Yes,97.0
+01410424,T005,Python for Data Science,External,1300,Tunisian Learning Hub,24/12/2023,28/12/2023,Yes,80.0
+10941411,T004,Kubernetes Essentials,External,1500,Tunisian IT Academy,17/10/2024,20/10/2024,Yes,100.0
+04442010,T005,Python for Data Science,External,1300,Tunisian Learning Hub,30/01/2025,03/02/2025,Yes,91.0
+02894243,T020,Employee Wellness,Internal,150,Arabsoft,13/03/2025,13/03/2025,Yes,99.0
+04002419,T015,Team Collaboration Skills,Internal,200,Arabsoft,27/02/2023,27/02/2023,Yes,95.0
+10449072,T007,Database Optimization,Internal,400,Arabsoft,23/03/2021,24/03/2021,Yes,86.0
+10029070,T005,Python for Data Science,External,1300,Tunisian Learning Hub,07/05/2025,11/05/2025,No,
+10893696,T020,Employee Wellness,Internal,150,Arabsoft,21/02/2023,21/02/2023,Yes,98.0
+04671991,T005,Python for Data Science,External,1300,Tunisian Learning Hub,08/05/2025,12/05/2025,No,
+02874265,T015,Team Collaboration Skills,Internal,200,Arabsoft,16/06/2023,16/06/2023,Yes,96.0
+01082889,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,08/02/2023,09/02/2023,Yes,91.0
+02148666,T015,Team Collaboration Skills,Internal,200,Arabsoft,04/06/2024,04/06/2024,Yes,86.0
+03675587,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,25/01/2025,26/01/2025,Yes,95.0
+04831748,T015,Team Collaboration Skills,Internal,200,Arabsoft,28/09/2023,28/09/2023,Yes,100.0
+10395005,T014,Data Visualization,External,800,Tunisian Learning Hub,02/09/2023,03/09/2023,Yes,80.0
+02305060,T019,SQL for Data Analysis,Internal,250,Arabsoft,19/08/2022,20/08/2022,Yes,80.0
+10655475,T004,Kubernetes Essentials,External,1500,Tunisian IT Academy,19/03/2025,22/03/2025,Yes,92.0
+01521905,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,11/09/2024,14/09/2024,Yes,86.0
+04286533,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,01/05/2025,02/05/2025,Yes,96.0
+01897263,T018,Network Security,External,1300,Tunisian IT Academy,07/01/2025,09/01/2025,Yes,94.0
+03430051,T001,React.js Advanced,External,1200,Tunisian IT Academy,22/05/2025,24/05/2025,No,
+04250997,T015,Team Collaboration Skills,Internal,200,Arabsoft,02/05/2023,02/05/2023,Yes,89.0
+01812497,T007,Database Optimization,Internal,400,Arabsoft,21/02/2025,22/02/2025,Yes,99.0
+01228577,T019,SQL for Data Analysis,Internal,250,Arabsoft,24/02/2025,25/02/2025,Yes,80.0
+04127839,T019,SQL for Data Analysis,Internal,250,Arabsoft,09/04/2022,10/04/2022,Yes,80.0
+04380192,T016,Node.js Development,External,1100,Tunisian IT Academy,20/04/2025,22/04/2025,Yes,91.0
+03686274,T015,Team Collaboration Skills,Internal,200,Arabsoft,18/07/2024,18/07/2024,Yes,80.0
+02755505,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,25/04/2024,28/04/2024,Yes,84.0
+03025978,T019,SQL for Data Analysis,Internal,250,Arabsoft,04/10/2023,05/10/2023,Yes,99.0
+04658293,T002,Agile Project Management,External,1000,Tunisian Learning Hub,10/04/2025,12/04/2025,Yes,85.0
+10380323,T001,React.js Advanced,External,1200,Tunisian IT Academy,13/07/2024,15/07/2024,Yes,87.0
+04929801,T001,React.js Advanced,External,1200,Tunisian IT Academy,30/11/2024,02/12/2024,Yes,80.0
+10578234,T015,Team Collaboration Skills,Internal,200,Arabsoft,11/08/2023,11/08/2023,Yes,85.0
+03530065,T019,SQL for Data Analysis,Internal,250,Arabsoft,07/05/2023,08/05/2023,Yes,82.0
+01233877,T005,Python for Data Science,External,1300,Tunisian Learning Hub,06/07/2024,10/07/2024,Yes,82.0
+04207343,T015,Team Collaboration Skills,Internal,200,Arabsoft,20/01/2022,20/01/2022,Yes,100.0
+04781470,T020,Employee Wellness,Internal,150,Arabsoft,07/05/2025,07/05/2025,Yes,97.0
+01661112,T004,Kubernetes Essentials,External,1500,Tunisian IT Academy,14/01/2024,17/01/2024,Yes,81.0
+03476311,T001,React.js Advanced,External,1200,Tunisian IT Academy,23/10/2024,25/10/2024,Yes,87.0
+10769095,T019,SQL for Data Analysis,Internal,250,Arabsoft,05/05/2025,06/05/2025,Yes,89.0
+04918159,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,27/02/2024,28/02/2024,Yes,100.0
+02942180,T005,Python for Data Science,External,1300,Tunisian Learning Hub,27/09/2023,01/10/2023,Yes,98.0
+04346785,T011,Scrum Master Training,External,1000,Tunisian Learning Hub,08/02/2023,09/02/2023,Yes,82.0
+01092624,T019,SQL for Data Analysis,Internal,250,Arabsoft,19/08/2023,20/08/2023,Yes,80.0
+02174767,T005,Python for Data Science,External,1300,Tunisian Learning Hub,17/02/2025,21/02/2025,Yes,80.0
+04932666,T001,React.js Advanced,External,1200,Tunisian IT Academy,07/10/2024,09/10/2024,Yes,83.0
+02883058,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,20/02/2025,23/02/2025,Yes,90.0
+03360672,T005,Python for Data Science,External,1300,Tunisian Learning Hub,06/05/2025,10/05/2025,Yes,93.0
+02808877,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,20/11/2024,23/11/2024,Yes,85.0
+03504922,T020,Employee Wellness,Internal,150,Arabsoft,14/01/2025,14/01/2025,Yes,89.0
+10253062,T017,PMP Certification Prep,External,1200,Tunisian Learning Hub,02/05/2024,04/05/2024,Yes,87.0
+10578753,T001,React.js Advanced,External,1200,Tunisian IT Academy,05/12/2024,07/12/2024,Yes,80.0
+04622889,T005,Python for Data Science,External,1300,Tunisian Learning Hub,10/05/2024,14/05/2024,Yes,100.0
+02986512,T016,Node.js Development,External,1100,Tunisian IT Academy,09/04/2025,11/04/2025,Yes,80.0
+04918218,T015,Team Collaboration Skills,Internal,200,Arabsoft,24/08/2022,24/08/2022,Yes,93.0
+01011100,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,30/10/2024,31/10/2024,Yes,100.0
+01566584,T016,Node.js Development,External,1100,Tunisian IT Academy,20/10/2024,22/10/2024,Yes,92.0
+04729259,T020,Employee Wellness,Internal,150,Arabsoft,22/11/2020,22/11/2020,Yes,90.0
+01079479,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,29/07/2024,30/07/2024,Yes,91.0
+01390483,T019,SQL for Data Analysis,Internal,250,Arabsoft,03/04/2025,04/04/2025,Yes,83.0
+01778990,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,14/08/2024,17/08/2024,Yes,98.0
+10450774,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,01/07/2024,02/07/2024,Yes,80.0
+02340245,T015,Team Collaboration Skills,Internal,200,Arabsoft,09/04/2025,09/04/2025,Yes,100.0
+03084385,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,19/05/2024,22/05/2024,Yes,80.0
+01187386,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,21/08/2024,22/08/2024,Yes,91.0
+01509831,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,30/09/2024,01/10/2024,Yes,90.0
+04420743,T012,Automated Testing Tools,Internal,350,Arabsoft,25/04/2024,26/04/2024,Yes,94.0
+03074121,T015,Team Collaboration Skills,Internal,200,Arabsoft,30/03/2024,30/03/2024,Yes,80.0
+04079873,T001,React.js Advanced,External,1200,Tunisian IT Academy,29/06/2024,01/07/2024,Yes,89.0
+10070398,T015,Team Collaboration Skills,Internal,200,Arabsoft,27/04/2025,27/04/2025,Yes,100.0
+01469512,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,09/04/2025,12/04/2025,Yes,80.0
+10973403,T015,Team Collaboration Skills,Internal,200,Arabsoft,27/06/2021,27/06/2021,Yes,93.0
+10301489,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,25/08/2024,26/08/2024,Yes,88.0
+02984810,T016,Node.js Development,External,1100,Tunisian IT Academy,20/02/2025,22/02/2025,Yes,96.0
+04279057,T004,Kubernetes Essentials,External,1500,Tunisian IT Academy,26/02/2025,01/03/2025,Yes,91.0
+10545283,T015,Team Collaboration Skills,Internal,200,Arabsoft,29/10/2020,29/10/2020,Yes,85.0
+01975148,T013,Cloud Infrastructure,External,1600,Tunisian IT Academy,25/06/2023,28/06/2023,Yes,94.0
+03317646,T005,Python for Data Science,External,1300,Tunisian Learning Hub,07/03/2022,11/03/2022,Yes,100.0
+01745272,T020,Employee Wellness,Internal,150,Arabsoft,26/03/2025,26/03/2025,Yes,90.0
+02329768,T002,Agile Project Management,External,1000,Tunisian Learning Hub,10/09/2024,12/09/2024,Yes,91.0
+01442036,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,22/05/2025,23/05/2025,No,
+01553714,T020,Employee Wellness,Internal,150,Arabsoft,04/10/2024,04/10/2024,Yes,80.0
+02001790,T002,Agile Project Management,External,1000,Tunisian Learning Hub,15/12/2024,17/12/2024,Yes,80.0
+04071073,T020,Employee Wellness,Internal,150,Arabsoft,06/09/2023,06/09/2023,Yes,96.0
+04760338,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,02/05/2023,05/05/2023,Yes,99.0
+03969706,T001,React.js Advanced,External,1200,Tunisian IT Academy,10/06/2022,12/06/2022,Yes,88.0
+04069202,T003,Software Testing Basics,Internal,300,Arabsoft,09/05/2025,10/05/2025,Yes,89.0
+10372351,T004,Kubernetes Essentials,External,1500,Tunisian IT Academy,16/07/2024,19/07/2024,Yes,91.0
+10900599,T013,Cloud Infrastructure,External,1600,Tunisian IT Academy,04/12/2022,07/12/2022,Yes,80.0
+10836980,T015,Team Collaboration Skills,Internal,200,Arabsoft,20/03/2024,20/03/2024,Yes,97.0
+01268023,T020,Employee Wellness,Internal,150,Arabsoft,11/09/2024,11/09/2024,Yes,100.0
+04510197,T007,Database Optimization,Internal,400,Arabsoft,13/03/2025,14/03/2025,Yes,82.0
+01075688,T020,Employee Wellness,Internal,150,Arabsoft,17/03/2025,17/03/2025,Yes,88.0
+03219032,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,10/03/2025,11/03/2025,Yes,96.0
+10594880,T005,Python for Data Science,External,1300,Tunisian Learning Hub,18/10/2023,22/10/2023,Yes,81.0
+01284810,T016,Node.js Development,External,1100,Tunisian IT Academy,04/11/2024,06/11/2024,Yes,91.0
+10017166,T015,Team Collaboration Skills,Internal,200,Arabsoft,15/03/2025,15/03/2025,Yes,100.0
+10540301,T019,SQL for Data Analysis,Internal,250,Arabsoft,08/11/2024,09/11/2024,Yes,83.0
+10854916,T009,Cybersecurity Fundamentals,External,1100,Tunisian IT Academy,11/01/2025,13/01/2025,Yes,91.0
+02476809,T014,Data Visualization,External,800,Tunisian Learning Hub,10/09/2023,11/09/2023,Yes,82.0
+02829300,T012,Automated Testing Tools,Internal,350,Arabsoft,02/12/2021,03/12/2021,Yes,96.0
+01056568,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,16/01/2025,19/01/2025,Yes,84.0
+03296798,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,10/01/2023,11/01/2023,Yes,88.0
+01677169,T020,Employee Wellness,Internal,150,Arabsoft,16/01/2022,16/01/2022,Yes,100.0
+02748182,T005,Python for Data Science,External,1300,Tunisian Learning Hub,23/12/2024,27/12/2024,Yes,97.0
+03025978,T014,Data Visualization,External,800,Tunisian Learning Hub,16/06/2024,17/06/2024,Yes,83.0
+01612432,T015,Team Collaboration Skills,Internal,200,Arabsoft,23/05/2023,23/05/2023,Yes,80.0
+02174767,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,03/05/2025,04/05/2025,Yes,100.0
+01553714,T011,Scrum Master Training,External,1000,Tunisian Learning Hub,24/04/2024,25/04/2024,Yes,85.0
+01778990,T015,Team Collaboration Skills,Internal,200,Arabsoft,15/10/2024,15/10/2024,Yes,98.0
+10187567,T017,PMP Certification Prep,External,1200,Tunisian Learning Hub,14/06/2021,16/06/2021,Yes,80.0
+04071073,T015,Team Collaboration Skills,Internal,200,Arabsoft,30/10/2023,30/10/2023,Yes,99.0
+10376535,T001,React.js Advanced,External,1200,Tunisian IT Academy,29/05/2024,31/05/2024,Yes,80.0
+03607041,T019,SQL for Data Analysis,Internal,250,Arabsoft,19/03/2025,20/03/2025,Yes,91.0
+03317646,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,12/04/2022,15/04/2022,Yes,86.0
+04510197,T018,Network Security,External,1300,Tunisian IT Academy,31/10/2020,02/11/2020,Yes,83.0
+02874265,T002,Agile Project Management,External,1000,Tunisian Learning Hub,30/04/2023,02/05/2023,Yes,82.0
+10030022,T019,SQL for Data Analysis,Internal,250,Arabsoft,22/03/2022,23/03/2022,Yes,91.0
+02936752,T020,Employee Wellness,Internal,150,Arabsoft,07/09/2024,07/09/2024,Yes,93.0
+01220039,T019,SQL for Data Analysis,Internal,250,Arabsoft,21/07/2023,22/07/2023,Yes,90.0
+10597060,T005,Python for Data Science,External,1300,Tunisian Learning Hub,27/12/2023,31/12/2023,Yes,100.0
+10655475,T009,Cybersecurity Fundamentals,External,1100,Tunisian IT Academy,22/09/2024,24/09/2024,Yes,80.0
+04681316,T005,Python for Data Science,External,1300,Tunisian Learning Hub,02/05/2024,06/05/2024,Yes,99.0
+10973403,T016,Node.js Development,External,1100,Tunisian IT Academy,15/03/2021,17/03/2021,Yes,93.0
+02894243,T014,Data Visualization,External,800,Tunisian Learning Hub,23/04/2024,24/04/2024,Yes,80.0
+10145047,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,22/02/2025,25/02/2025,Yes,80.0
+02942180,T015,Team Collaboration Skills,Internal,200,Arabsoft,02/03/2024,02/03/2024,Yes,89.0
+02121462,T015,Team Collaboration Skills,Internal,200,Arabsoft,20/03/2024,20/03/2024,Yes,99.0
+04828215,T020,Employee Wellness,Internal,150,Arabsoft,28/10/2024,28/10/2024,Yes,91.0
+01837544,T015,Team Collaboration Skills,Internal,200,Arabsoft,22/01/2025,22/01/2025,Yes,100.0
+03317646,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,13/04/2022,14/04/2022,Yes,80.0
+04037574,T005,Python for Data Science,External,1300,Tunisian Learning Hub,08/07/2024,12/07/2024,Yes,85.0
+04729259,T015,Team Collaboration Skills,Internal,200,Arabsoft,23/02/2021,23/02/2021,Yes,80.0
+03697812,T015,Team Collaboration Skills,Internal,200,Arabsoft,19/09/2024,19/09/2024,Yes,94.0
+02819993,T017,PMP Certification Prep,External,1200,Tunisian Learning Hub,02/05/2022,04/05/2022,Yes,94.0
+03430051,T016,Node.js Development,External,1100,Tunisian IT Academy,22/05/2025,24/05/2025,No,
+04127839,T015,Team Collaboration Skills,Internal,200,Arabsoft,22/01/2024,22/01/2024,Yes,87.0
+04831748,T013,Cloud Infrastructure,External,1600,Tunisian IT Academy,01/03/2023,04/03/2023,Yes,80.0
+02329768,T011,Scrum Master Training,External,1000,Tunisian Learning Hub,01/03/2022,02/03/2022,Yes,93.0
+02866272,T006,Leadership for CTOs,External,2000,Tunisian Business School,27/04/2025,29/04/2025,Yes,96.0
+04995907,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,13/05/2024,14/05/2024,Yes,98.0
+10499098,T001,React.js Advanced,External,1200,Tunisian IT Academy,31/08/2024,02/09/2024,Yes,96.0
+10578234,T019,SQL for Data Analysis,Internal,250,Arabsoft,14/06/2023,15/06/2023,Yes,80.0
+04882933,T005,Python for Data Science,External,1300,Tunisian Learning Hub,05/07/2024,09/07/2024,Yes,91.0
+01509831,T016,Node.js Development,External,1100,Tunisian IT Academy,12/07/2024,14/07/2024,Yes,100.0
+02121857,T020,Employee Wellness,Internal,150,Arabsoft,31/03/2025,31/03/2025,Yes,80.0
+03476311,T019,SQL for Data Analysis,Internal,250,Arabsoft,02/03/2025,03/03/2025,Yes,88.0
+10093655,T020,Employee Wellness,Internal,150,Arabsoft,13/02/2023,13/02/2023,Yes,87.0
+04644861,T005,Python for Data Science,External,1300,Tunisian Learning Hub,15/07/2023,19/07/2023,Yes,84.0
+03199510,T019,SQL for Data Analysis,Internal,250,Arabsoft,03/01/2025,04/01/2025,Yes,88.0
+03124737,T019,SQL for Data Analysis,Internal,250,Arabsoft,05/07/2024,06/07/2024,Yes,81.0
+04594489,T001,React.js Advanced,External,1200,Tunisian IT Academy,08/04/2024,10/04/2024,Yes,80.0
+02366189,T020,Employee Wellness,Internal,150,Arabsoft,21/01/2023,21/01/2023,Yes,92.0
+10769095,T020,Employee Wellness,Internal,150,Arabsoft,24/09/2024,24/09/2024,Yes,82.0
+03822162,T011,Scrum Master Training,External,1000,Tunisian Learning Hub,21/09/2023,22/09/2023,Yes,81.0
+01233877,T014,Data Visualization,External,800,Tunisian Learning Hub,05/10/2024,06/10/2024,Yes,94.0
+04521223,T005,Python for Data Science,External,1300,Tunisian Learning Hub,15/08/2024,19/08/2024,Yes,80.0
+01469512,T016,Node.js Development,External,1100,Tunisian IT Academy,14/12/2024,16/12/2024,Yes,98.0
+04176062,T007,Database Optimization,Internal,400,Arabsoft,16/03/2022,17/03/2022,Yes,90.0
+01748998,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,30/09/2024,03/10/2024,Yes,80.0
+03716663,T006,Leadership for CTOs,External,2000,Tunisian Business School,19/09/2024,21/09/2024,Yes,86.0
+10760248,T020,Employee Wellness,Internal,150,Arabsoft,16/04/2021,16/04/2021,Yes,100.0
+03822162,T002,Agile Project Management,External,1000,Tunisian Learning Hub,06/07/2024,08/07/2024,Yes,80.0
+03412418,T016,Node.js Development,External,1100,Tunisian IT Academy,13/08/2023,15/08/2023,Yes,88.0
+01492471,T019,SQL for Data Analysis,Internal,250,Arabsoft,02/02/2024,03/02/2024,Yes,89.0
+01011100,T001,React.js Advanced,External,1200,Tunisian IT Academy,20/05/2023,22/05/2023,Yes,92.0
+02735118,T016,Node.js Development,External,1100,Tunisian IT Academy,10/07/2024,12/07/2024,Yes,90.0
+02121857,T016,Node.js Development,External,1100,Tunisian IT Academy,17/11/2024,19/11/2024,Yes,87.0
+04176062,T015,Team Collaboration Skills,Internal,200,Arabsoft,21/06/2024,21/06/2024,Yes,100.0
+01410424,T016,Node.js Development,External,1100,Tunisian IT Academy,05/10/2024,07/10/2024,Yes,100.0
+01897263,T013,Cloud Infrastructure,External,1600,Tunisian IT Academy,14/10/2024,17/10/2024,Yes,99.0
+02476809,T005,Python for Data Science,External,1300,Tunisian Learning Hub,01/07/2024,05/07/2024,Yes,86.0
+01234564,T015,Team Collaboration Skills,Internal,200,Arabsoft,03/07/2024,03/07/2024,Yes,84.0
+03504922,T001,React.js Advanced,External,1200,Tunisian IT Academy,26/02/2025,28/02/2025,Yes,80.0
+01075688,T015,Team Collaboration Skills,Internal,200,Arabsoft,20/06/2024,20/06/2024,Yes,96.0
+03607041,T015,Team Collaboration Skills,Internal,200,Arabsoft,03/09/2023,03/09/2023,Yes,95.0
+10578753,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,13/02/2025,16/02/2025,Yes,98.0
+10754266,T001,React.js Advanced,External,1200,Tunisian IT Academy,28/03/2025,30/03/2025,Yes,91.0
+02340245,T016,Node.js Development,External,1100,Tunisian IT Academy,29/06/2024,01/07/2024,Yes,80.0
+01521905,T016,Node.js Development,External,1100,Tunisian IT Academy,15/08/2024,17/08/2024,Yes,100.0
+02985907,T005,Python for Data Science,External,1300,Tunisian Learning Hub,13/12/2023,17/12/2023,Yes,80.0
+10854916,T018,Network Security,External,1300,Tunisian IT Academy,11/02/2025,13/02/2025,Yes,88.0
+10769095,T015,Team Collaboration Skills,Internal,200,Arabsoft,02/05/2024,02/05/2024,Yes,93.0
+04286533,T016,Node.js Development,External,1100,Tunisian IT Academy,07/02/2025,09/02/2025,Yes,100.0
+01618178,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,16/08/2023,19/08/2023,Yes,100.0
+10253062,T015,Team Collaboration Skills,Internal,200,Arabsoft,07/03/2025,07/03/2025,Yes,97.0
+04729259,T006,Leadership for CTOs,External,2000,Tunisian Business School,01/10/2021,03/10/2021,Yes,90.0
+04037574,T015,Team Collaboration Skills,Internal,200,Arabsoft,26/09/2022,26/09/2022,Yes,96.0
+02636478,T020,Employee Wellness,Internal,150,Arabsoft,27/01/2025,27/01/2025,Yes,100.0
+04932666,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,12/02/2025,15/02/2025,Yes,83.0
+02927914,T015,Team Collaboration Skills,Internal,200,Arabsoft,19/11/2024,19/11/2024,Yes,100.0
+01641069,T020,Employee Wellness,Internal,150,Arabsoft,14/09/2024,14/09/2024,Yes,94.0
+01268023,T015,Team Collaboration Skills,Internal,200,Arabsoft,28/09/2024,28/09/2024,Yes,96.0
+04079873,T015,Team Collaboration Skills,Internal,200,Arabsoft,15/10/2024,15/10/2024,Yes,97.0
+02575208,T014,Data Visualization,External,800,Tunisian Learning Hub,06/07/2024,07/07/2024,Yes,92.0
+02942180,T016,Node.js Development,External,1100,Tunisian IT Academy,24/05/2023,26/05/2023,Yes,100.0
+02198796,T015,Team Collaboration Skills,Internal,200,Arabsoft,18/02/2025,18/02/2025,Yes,85.0
+04256145,T014,Data Visualization,External,800,Tunisian Learning Hub,11/01/2025,12/01/2025,Yes,83.0
+10597060,T014,Data Visualization,External,800,Tunisian Learning Hub,23/09/2024,24/09/2024,Yes,80.0
+03296798,T014,Data Visualization,External,800,Tunisian Learning Hub,20/10/2022,21/10/2022,Yes,92.0
+10030022,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,24/11/2024,27/11/2024,Yes,93.0
+03025978,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,21/06/2024,24/06/2024,Yes,90.0
+04828215,T015,Team Collaboration Skills,Internal,200,Arabsoft,06/09/2024,06/09/2024,Yes,100.0
+01492471,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,04/01/2024,07/01/2024,Yes,86.0
+10540301,T016,Node.js Development,External,1100,Tunisian IT Academy,11/12/2024,13/12/2024,Yes,98.0
+03074121,T018,Network Security,External,1300,Tunisian IT Academy,30/04/2025,02/05/2025,Yes,82.0
+10225301,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,26/08/2022,27/08/2022,Yes,90.0
+04824906,T015,Team Collaboration Skills,Internal,200,Arabsoft,01/11/2023,01/11/2023,Yes,97.0
+10941411,T013,Cloud Infrastructure,External,1600,Tunisian IT Academy,09/07/2022,12/07/2022,Yes,98.0
+02755505,T019,SQL for Data Analysis,Internal,250,Arabsoft,19/05/2024,20/05/2024,Yes,83.0
+03430051,T020,Employee Wellness,Internal,150,Arabsoft,22/05/2025,22/05/2025,No,
+01648486,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,09/12/2021,12/12/2021,Yes,85.0
+01056568,T019,SQL for Data Analysis,Internal,250,Arabsoft,10/01/2025,11/01/2025,Yes,80.0
+04824305,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,26/01/2024,27/01/2024,Yes,91.0
+03219032,T019,SQL for Data Analysis,Internal,250,Arabsoft,21/06/2021,22/06/2021,Yes,93.0
+10962686,T020,Employee Wellness,Internal,150,Arabsoft,28/01/2022,28/01/2022,Yes,97.0
+03291357,T014,Data Visualization,External,800,Tunisian Learning Hub,25/02/2024,26/02/2024,Yes,92.0
+01075688,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,23/06/2024,24/06/2024,Yes,94.0
+03607041,T001,React.js Advanced,External,1200,Tunisian IT Academy,28/11/2022,30/11/2022,Yes,85.0
+10962686,T014,Data Visualization,External,800,Tunisian Learning Hub,21/04/2023,22/04/2023,Yes,82.0
+10466786,T014,Data Visualization,External,800,Tunisian Learning Hub,27/01/2023,28/01/2023,Yes,94.0
+02121462,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,05/03/2024,06/03/2024,Yes,98.0
+04658293,T011,Scrum Master Training,External,1000,Tunisian Learning Hub,12/03/2025,13/03/2025,Yes,95.0
+04071073,T001,React.js Advanced,External,1200,Tunisian IT Academy,19/08/2023,21/08/2023,Yes,81.0
+03296798,T015,Team Collaboration Skills,Internal,200,Arabsoft,20/09/2022,20/09/2022,Yes,80.0
+10766753,T019,SQL for Data Analysis,Internal,250,Arabsoft,15/05/2023,16/05/2023,Yes,94.0
+01075688,T016,Node.js Development,External,1100,Tunisian IT Academy,03/12/2024,05/12/2024,Yes,88.0
+04671991,T016,Node.js Development,External,1100,Tunisian IT Academy,03/02/2025,05/02/2025,Yes,84.0
+02366189,T019,SQL for Data Analysis,Internal,250,Arabsoft,26/01/2020,27/01/2020,Yes,91.0
+02305060,T016,Node.js Development,External,1100,Tunisian IT Academy,20/10/2022,22/10/2022,Yes,88.0
+01897263,T015,Team Collaboration Skills,Internal,200,Arabsoft,26/09/2023,26/09/2023,Yes,100.0
+02986512,T015,Team Collaboration Skills,Internal,200,Arabsoft,31/03/2025,31/03/2025,Yes,97.0
+10942996,T015,Team Collaboration Skills,Internal,200,Arabsoft,19/08/2023,19/08/2023,Yes,97.0
+04594489,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,01/03/2022,04/03/2022,Yes,80.0
+02211282,T007,Database Optimization,Internal,400,Arabsoft,17/11/2024,18/11/2024,Yes,96.0
+04831748,T009,Cybersecurity Fundamentals,External,1100,Tunisian IT Academy,05/06/2021,07/06/2021,Yes,96.0
+02476809,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,26/02/2024,29/02/2024,Yes,83.0
+10499098,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,12/08/2024,13/08/2024,Yes,95.0
+01075688,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,11/09/2024,14/09/2024,Yes,80.0
+04176062,T013,Cloud Infrastructure,External,1600,Tunisian IT Academy,03/09/2023,06/09/2023,Yes,94.0
+01748998,T014,Data Visualization,External,800,Tunisian Learning Hub,22/02/2025,23/02/2025,Yes,80.0
+10253392,T005,Python for Data Science,External,1300,Tunisian Learning Hub,14/02/2024,18/02/2024,Yes,80.0
+10962686,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,05/11/2023,08/11/2023,Yes,80.0
+04711761,T018,Network Security,External,1300,Tunisian IT Academy,10/10/2024,12/10/2024,Yes,100.0
+02518339,T020,Employee Wellness,Internal,150,Arabsoft,15/08/2024,15/08/2024,Yes,86.0
+02984810,T020,Employee Wellness,Internal,150,Arabsoft,08/01/2024,08/01/2024,Yes,100.0
+02822998,T020,Employee Wellness,Internal,150,Arabsoft,05/10/2024,05/10/2024,Yes,87.0
+01677169,T015,Team Collaboration Skills,Internal,200,Arabsoft,27/09/2022,27/09/2022,Yes,80.0
+04286533,T014,Data Visualization,External,800,Tunisian Learning Hub,27/02/2025,28/02/2025,Yes,80.0
+01509831,T001,React.js Advanced,External,1200,Tunisian IT Academy,15/02/2023,17/02/2023,Yes,96.0
+02985907,T014,Data Visualization,External,800,Tunisian Learning Hub,27/10/2023,28/10/2023,Yes,87.0
+04124333,T014,Data Visualization,External,800,Tunisian Learning Hub,16/05/2022,17/05/2022,Yes,83.0
+10093655,T014,Data Visualization,External,800,Tunisian Learning Hub,16/08/2021,17/08/2021,Yes,89.0
+10900599,T009,Cybersecurity Fundamentals,External,1100,Tunisian IT Academy,10/09/2022,12/09/2022,Yes,99.0
+01612432,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,04/04/2023,07/04/2023,Yes,96.0
+01975148,T020,Employee Wellness,Internal,150,Arabsoft,23/04/2023,23/04/2023,Yes,100.0
+04824906,T007,Database Optimization,Internal,400,Arabsoft,14/05/2023,15/05/2023,Yes,83.0
+04658293,T015,Team Collaboration Skills,Internal,200,Arabsoft,29/04/2025,29/04/2025,Yes,80.0
+01748998,T019,SQL for Data Analysis,Internal,250,Arabsoft,17/01/2025,18/01/2025,Yes,81.0
+01390483,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,07/06/2024,08/06/2024,Yes,96.0
+01595025,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,20/03/2025,21/03/2025,Yes,85.0
+01434161,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,13/03/2020,14/03/2020,Yes,85.0
+10145047,T005,Python for Data Science,External,1300,Tunisian Learning Hub,03/06/2024,07/06/2024,Yes,88.0
+10766753,T001,React.js Advanced,External,1200,Tunisian IT Academy,15/10/2022,17/10/2022,Yes,85.0
+03240755,T007,Database Optimization,Internal,400,Arabsoft,23/10/2022,24/10/2022,Yes,86.0
+04995907,T016,Node.js Development,External,1100,Tunisian IT Academy,16/06/2024,18/06/2024,Yes,85.0
+01778990,T005,Python for Data Science,External,1300,Tunisian Learning Hub,08/11/2024,12/11/2024,Yes,83.0
+02984810,T019,SQL for Data Analysis,Internal,250,Arabsoft,18/12/2024,19/12/2024,Yes,80.0
+01553714,T002,Agile Project Management,External,1000,Tunisian Learning Hub,04/09/2024,06/09/2024,Yes,93.0
+03859590,T019,SQL for Data Analysis,Internal,250,Arabsoft,25/01/2025,26/01/2025,Yes,94.0
+01509831,T015,Team Collaboration Skills,Internal,200,Arabsoft,31/08/2023,31/08/2023,Yes,80.0
+01677169,T001,React.js Advanced,External,1200,Tunisian IT Academy,03/12/2022,05/12/2022,Yes,80.0
+02547475,T015,Team Collaboration Skills,Internal,200,Arabsoft,20/09/2021,20/09/2021,Yes,80.0
+10187567,T002,Agile Project Management,External,1000,Tunisian Learning Hub,25/05/2021,27/05/2021,Yes,80.0
+02731578,T015,Team Collaboration Skills,Internal,200,Arabsoft,30/12/2024,30/12/2024,Yes,90.0
+10225301,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,22/07/2021,25/07/2021,Yes,80.0
+04644861,T014,Data Visualization,External,800,Tunisian Learning Hub,30/01/2025,31/01/2025,Yes,80.0
+10545283,T011,Scrum Master Training,External,1000,Tunisian Learning Hub,22/11/2020,23/11/2020,Yes,82.0
+04210662,T015,Team Collaboration Skills,Internal,200,Arabsoft,27/06/2022,27/06/2022,Yes,93.0
+01171005,T005,Python for Data Science,External,1300,Tunisian Learning Hub,29/01/2025,02/02/2025,Yes,86.0
+01442036,T001,React.js Advanced,External,1200,Tunisian IT Academy,22/05/2025,24/05/2025,No,
+01601375,T018,Network Security,External,1300,Tunisian IT Academy,18/05/2023,20/05/2023,Yes,85.0
+01641069,T002,Agile Project Management,External,1000,Tunisian Learning Hub,05/01/2024,07/01/2024,Yes,87.0
+01553714,T017,PMP Certification Prep,External,1200,Tunisian Learning Hub,07/05/2025,09/05/2025,Yes,81.0
+03969706,T014,Data Visualization,External,800,Tunisian Learning Hub,13/12/2024,14/12/2024,Yes,86.0
+02121857,T005,Python for Data Science,External,1300,Tunisian Learning Hub,12/02/2025,16/02/2025,Yes,99.0
+01661112,T018,Network Security,External,1300,Tunisian IT Academy,14/12/2024,16/12/2024,Yes,100.0
+02400073,T015,Team Collaboration Skills,Internal,200,Arabsoft,02/04/2023,02/04/2023,Yes,80.0
+02199241,T005,Python for Data Science,External,1300,Tunisian Learning Hub,05/05/2024,09/05/2024,Yes,92.0
+04279057,T020,Employee Wellness,Internal,150,Arabsoft,04/05/2023,04/05/2023,Yes,99.0
+04256145,T001,React.js Advanced,External,1200,Tunisian IT Academy,22/02/2025,24/02/2025,Yes,80.0
+01034691,T012,Automated Testing Tools,Internal,350,Arabsoft,28/03/2024,29/03/2024,Yes,96.0
+10017166,T020,Employee Wellness,Internal,150,Arabsoft,07/11/2024,07/11/2024,Yes,100.0
+04279057,T018,Network Security,External,1300,Tunisian IT Academy,10/12/2024,12/12/2024,Yes,82.0
+01233877,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,14/12/2024,15/12/2024,Yes,85.0
+01686873,T015,Team Collaboration Skills,Internal,200,Arabsoft,25/06/2021,25/06/2021,Yes,100.0
+01745272,T015,Team Collaboration Skills,Internal,200,Arabsoft,16/02/2025,16/02/2025,Yes,93.0
+02718979,T020,Employee Wellness,Internal,150,Arabsoft,05/02/2025,05/02/2025,Yes,97.0
+01011100,T014,Data Visualization,External,800,Tunisian Learning Hub,19/10/2024,20/10/2024,Yes,91.0
+02036284,T020,Employee Wellness,Internal,150,Arabsoft,24/04/2024,24/04/2024,Yes,96.0
+03530065,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,13/11/2022,16/11/2022,Yes,80.0
+01897263,T020,Employee Wellness,Internal,150,Arabsoft,04/05/2023,04/05/2023,Yes,100.0
+01975148,T007,Database Optimization,Internal,400,Arabsoft,24/10/2021,25/10/2021,Yes,96.0
+03124737,T005,Python for Data Science,External,1300,Tunisian Learning Hub,03/05/2021,07/05/2021,Yes,83.0
+04824906,T004,Kubernetes Essentials,External,1500,Tunisian IT Academy,26/05/2024,29/05/2024,Yes,91.0
+01171005,T020,Employee Wellness,Internal,150,Arabsoft,26/07/2023,26/07/2023,Yes,80.0
+04706569,T015,Team Collaboration Skills,Internal,200,Arabsoft,21/02/2025,21/02/2025,Yes,96.0
+10395005,T016,Node.js Development,External,1100,Tunisian IT Academy,08/03/2025,10/03/2025,Yes,97.0
+03084385,T001,React.js Advanced,External,1200,Tunisian IT Academy,06/12/2023,08/12/2023,Yes,84.0
+01601375,T020,Employee Wellness,Internal,150,Arabsoft,28/09/2022,28/09/2022,Yes,100.0
+03686274,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,23/05/2024,24/05/2024,Yes,91.0
+02936752,T015,Team Collaboration Skills,Internal,200,Arabsoft,23/03/2025,23/03/2025,Yes,96.0
+04929801,T014,Data Visualization,External,800,Tunisian Learning Hub,21/09/2024,22/09/2024,Yes,80.0
+10450774,T005,Python for Data Science,External,1300,Tunisian Learning Hub,05/03/2025,09/03/2025,Yes,85.0
+02936752,T007,Database Optimization,Internal,400,Arabsoft,07/08/2024,08/08/2024,Yes,85.0
+04594489,T014,Data Visualization,External,800,Tunisian Learning Hub,02/02/2023,03/02/2023,Yes,90.0
+03981166,T020,Employee Wellness,Internal,150,Arabsoft,19/06/2024,19/06/2024,Yes,89.0
+03240755,T009,Cybersecurity Fundamentals,External,1100,Tunisian IT Academy,29/04/2023,01/05/2023,Yes,93.0
+02807448,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,25/05/2021,26/05/2021,Yes,100.0
+10199984,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,10/04/2024,11/04/2024,Yes,90.0
+02883058,T015,Team Collaboration Skills,Internal,200,Arabsoft,18/04/2025,18/04/2025,Yes,80.0
+01442036,T014,Data Visualization,External,800,Tunisian Learning Hub,22/05/2025,23/05/2025,No,
+01268023,T007,Database Optimization,Internal,400,Arabsoft,10/09/2023,11/09/2023,Yes,100.0
+02340245,T001,React.js Advanced,External,1200,Tunisian IT Academy,30/01/2025,01/02/2025,Yes,97.0
+02148666,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,17/03/2024,20/03/2024,Yes,80.0
+10962686,T019,SQL for Data Analysis,Internal,250,Arabsoft,16/01/2025,17/01/2025,Yes,91.0
+02748182,T001,React.js Advanced,External,1200,Tunisian IT Academy,17/06/2022,19/06/2022,Yes,81.0
+10941411,T020,Employee Wellness,Internal,150,Arabsoft,16/09/2024,16/09/2024,Yes,94.0
+01410424,T020,Employee Wellness,Internal,150,Arabsoft,08/11/2024,08/11/2024,Yes,95.0
+04681316,T014,Data Visualization,External,800,Tunisian Learning Hub,04/09/2024,05/09/2024,Yes,86.0
+03240755,T020,Employee Wellness,Internal,150,Arabsoft,20/08/2022,20/08/2022,Yes,85.0
+01434161,T015,Team Collaboration Skills,Internal,200,Arabsoft,20/07/2023,20/07/2023,Yes,85.0
+03360672,T016,Node.js Development,External,1100,Tunisian IT Academy,06/05/2025,08/05/2025,Yes,84.0
+04442010,T015,Team Collaboration Skills,Internal,200,Arabsoft,14/09/2022,14/09/2022,Yes,83.0
+03385154,T019,SQL for Data Analysis,Internal,250,Arabsoft,12/04/2025,13/04/2025,Yes,84.0
+02140193,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,16/10/2024,17/10/2024,Yes,87.0
+03199510,T010,Machine Learning Basics,External,1400,Tunisian Learning Hub,06/02/2024,09/02/2024,Yes,92.0
+10540301,T015,Team Collaboration Skills,Internal,200,Arabsoft,26/02/2025,26/02/2025,Yes,100.0
+01410424,T019,SQL for Data Analysis,Internal,250,Arabsoft,27/10/2024,28/10/2024,Yes,80.0
+10499098,T015,Team Collaboration Skills,Internal,200,Arabsoft,12/10/2024,12/10/2024,Yes,93.0
+03040804,T017,PMP Certification Prep,External,1200,Tunisian Learning Hub,12/08/2024,14/08/2024,Yes,90.0
+02476809,T016,Node.js Development,External,1100,Tunisian IT Academy,20/04/2024,22/04/2024,Yes,96.0
+02148666,T005,Python for Data Science,External,1300,Tunisian Learning Hub,15/01/2024,19/01/2024,Yes,86.0
+01232085,T018,Network Security,External,1300,Tunisian IT Academy,28/12/2023,30/12/2023,Yes,99.0
+04127839,T014,Data Visualization,External,800,Tunisian Learning Hub,09/03/2022,10/03/2022,Yes,92.0
+02211282,T009,Cybersecurity Fundamentals,External,1100,Tunisian IT Academy,05/07/2024,07/07/2024,Yes,82.0
+04644861,T001,React.js Advanced,External,1200,Tunisian IT Academy,02/07/2023,04/07/2023,Yes,92.0
+03519063,T020,Employee Wellness,Internal,150,Arabsoft,06/12/2023,06/12/2023,Yes,100.0
+02731578,T020,Employee Wellness,Internal,150,Arabsoft,20/08/2023,20/08/2023,Yes,85.0
+02121857,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,10/05/2025,11/05/2025,No,
+04617796,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,07/05/2025,08/05/2025,Yes,94.0
+10578234,T014,Data Visualization,External,800,Tunisian Learning Hub,16/01/2025,17/01/2025,Yes,94.0
+04079873,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,22/10/2023,23/10/2023,Yes,92.0
+10466786,T016,Node.js Development,External,1100,Tunisian IT Academy,11/05/2021,13/05/2021,Yes,100.0
+10779193,T018,Network Security,External,1300,Tunisian IT Academy,04/09/2024,06/09/2024,Yes,100.0
+10578234,T020,Employee Wellness,Internal,150,Arabsoft,04/04/2023,04/04/2023,Yes,85.0
+03476311,T020,Employee Wellness,Internal,150,Arabsoft,27/01/2025,27/01/2025,Yes,80.0
+10766753,T005,Python for Data Science,External,1300,Tunisian Learning Hub,01/10/2022,05/10/2022,Yes,88.0
+04918159,T020,Employee Wellness,Internal,150,Arabsoft,29/11/2023,29/11/2023,Yes,99.0
+01837544,T014,Data Visualization,External,800,Tunisian Learning Hub,04/12/2024,05/12/2024,Yes,86.0
+02986512,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,28/01/2025,29/01/2025,Yes,100.0
+10478673,T011,Scrum Master Training,External,1000,Tunisian Learning Hub,10/08/2023,11/08/2023,Yes,80.0
+03969706,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,25/04/2022,26/04/2022,Yes,100.0
+10376535,T014,Data Visualization,External,800,Tunisian Learning Hub,03/02/2025,04/02/2025,Yes,83.0
+04346785,T002,Agile Project Management,External,1000,Tunisian Learning Hub,20/04/2025,22/04/2025,Yes,100.0
+10376535,T020,Employee Wellness,Internal,150,Arabsoft,01/02/2023,01/02/2023,Yes,100.0
+03675587,T016,Node.js Development,External,1100,Tunisian IT Academy,10/05/2025,12/05/2025,No,
+02198796,T003,Software Testing Basics,Internal,300,Arabsoft,28/06/2021,29/06/2021,Yes,85.0
+04079873,T005,Python for Data Science,External,1300,Tunisian Learning Hub,05/03/2025,09/03/2025,Yes,80.0
+02305060,T020,Employee Wellness,Internal,150,Arabsoft,08/09/2022,08/09/2022,Yes,100.0
+10597060,T008,UI/UX Design Principles,External,900,Tunisian Design Institute,07/01/2025,08/01/2025,Yes,90.0
+10372351,T018,Network Security,External,1300,Tunisian IT Academy,28/04/2024,30/04/2024,Yes,92.0
+03566953,T020,Employee Wellness,Internal,150,Arabsoft,10/03/2024,10/03/2024,Yes,92.0

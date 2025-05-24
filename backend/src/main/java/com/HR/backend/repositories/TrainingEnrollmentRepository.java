@@ -8,4 +8,5 @@ import java.util.List;
 public interface TrainingEnrollmentRepository extends JpaRepository<TrainingEnrollment, Long> {
     List<TrainingEnrollment> findByEmployeeEmail(String employeeEmail);
     List<TrainingEnrollment> findByStatus(String status);
+    List<TrainingEnrollment> findByTrainingId(Long trainingId);
 }

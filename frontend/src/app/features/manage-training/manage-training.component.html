@@ -4,13 +4,13 @@
   <div class="content-container">
     <!-- View Toggle Buttons -->
     <div class="view-toggle">
-      <button class="toggle-btn" [class.active]="currentView === 'create'" (click)="currentView = 'create'">
+      <button class="toggle-btn" [class.active]="currentView === 'create'" (click)="setView('create')">
         <i class="fas fa-plus-circle"></i> Create Training
       </button>
-      <button class="toggle-btn" [class.active]="currentView === 'list'" (click)="currentView = 'list'">
+      <button class="toggle-btn" [class.active]="currentView === 'list'" (click)="setView('list')">
         <i class="fas fa-list"></i> Training List
       </button>
-      <button class="toggle-btn" [class.active]="currentView === 'enrollments'" (click)="currentView = 'enrollments'">
+      <button class="toggle-btn" [class.active]="currentView === 'enrollments'" (click)="setView('enrollments')">
         <i class="fas fa-user-clock"></i> Pending Enrollments
       </button>
     </div>
@@ -23,10 +23,10 @@
       <i class="fas fa-spinner fa-spin"></i> Loading...
     </div>
 
-    <!-- Create Training View -->
+    <!-- Create/Update Training View -->
     <div *ngIf="currentView === 'create' && !isLoading && !errorMessage" class="training-form-card">
-      <h3><i class="fas fa-chalkboard-teacher"></i> Create New Training</h3>
-      <form (submit)="createTraining()" class="form-grid">
+      <h3><i class="fas fa-chalkboard-teacher"></i> {{ isEditing ? 'Update Training' : 'Create New Training' }}</h3>
+      <form (submit)="isEditing ? updateTraining() : createTraining()" class="form-grid">
         <div class="form-group">
           <label for="title"><i class="fas fa-heading"></i> Title</label>
           <input type="text" id="title" class="form-control" placeholder="Enter training title"
@@ -60,7 +60,10 @@
         <div class="form-actions">
           <button type="submit" class="btn btn-primary" [disabled]="isLoading">
             <i class="fas" [class.fa-save]="!isLoading" [class.fa-spinner]="isLoading" [class.fa-spin]="isLoading"></i>
-            Create
+            {{ isEditing ? 'Update' : 'Create' }}
+          </button>
+          <button type="button" class="btn btn-outline-danger" (click)="cancelEdit()" *ngIf="isEditing">
+            <i class="fas fa-times"></i> Cancel
           </button>
         </div>
       </form>
@@ -77,6 +80,7 @@
             <th>Start Date</th>
             <th>End Date</th>
             <th>Capacity</th>
+            <th>Actions</th>
           </tr>
           </thead>
           <tbody>
@@ -85,6 +89,15 @@
             <td>{{ training.startDate | date }}</td>
             <td>{{ training.endDate | date }}</td>
             <td>{{ training.enrolledCount }} / {{ training.capacity }}</td>
+            <td class="actions">
+              <button class="btn btn-outline-primary" (click)="editTraining(training)">
+                <i class="fas fa-edit"></i> Update
+              </button>
+              <button class="btn btn-outline-danger" (click)="deleteTraining(training.id)"
+                      [disabled]="isLoading">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </td>
           </tr>
           </tbody>
         </table>

@@ -34,6 +34,7 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
   };
   errorMessage: string = '';
   isLoading: boolean = false;
+  isEditing: boolean = false;
   currentView: 'create' | 'list' | 'enrollments' = 'create';
   private wsSub!: Subscription;
 
@@ -45,7 +46,7 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.currentView = 'create';
+    this.setView('create');
     this.fetchTrainings();
     this.fetchEnrollments();
     this.setupWebSocket();
@@ -53,6 +54,13 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.wsSub?.unsubscribe();
+  }
+
+  setView(view: 'create' | 'list' | 'enrollments'): void {
+    this.currentView = view;
+    if (view === 'create') {
+      this.cancelEdit();
+    }
   }
 
   fetchTrainings(): void {
@@ -91,17 +99,7 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
       next: () => {
         this.toastService.show('Training created successfully', 'success');
         this.fetchTrainings();
-        this.newTraining = {
-          id: 0,
-          title: '',
-          description: '',
-          startDate: '',
-          endDate: '',
-          capacity: 0,
-          enrolledCount: 0,
-          category: '',
-          rating: 0
-        };
+        this.resetForm();
         this.isLoading = false;
       },
       error: (err) => {
@@ -110,6 +108,69 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
         this.isLoading = false;
       }
     });
+  }
+
+  updateTraining(): void {
+    this.isLoading = true;
+    this.apiService.updateTraining(this.newTraining).subscribe({
+      next: () => {
+        this.toastService.show('Training updated successfully', 'success');
+        this.fetchTrainings();
+        this.resetForm();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+        this.toastService.show(err.message, 'error');
+        this.isLoading = false;
+      }
+    });
+  }
+
+  deleteTraining(trainingId: number): void {
+    if (!confirm('Are you sure you want to delete this training?')) {
+      return;
+    }
+    this.isLoading = true;
+    this.apiService.deleteTraining(trainingId).subscribe({
+      next: () => {
+        this.toastService.show('Training deleted successfully', 'success');
+        this.fetchTrainings();
+        this.fetchEnrollments();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+        this.toastService.show(err.message, 'error');
+        this.isLoading = false;
+      }
+    });
+  }
+
+  editTraining(training: Training): void {
+    this.newTraining = { ...training };
+    this.isEditing = true;
+    this.currentView = 'create';
+  }
+
+  cancelEdit(): void {
+    this.resetForm();
+    this.isEditing = false;
+  }
+
+  private resetForm(): void {
+    this.newTraining = {
+      id: 0,
+      title: '',
+      description: '',
+      startDate: '',
+      endDate: '',
+      capacity: 0,
+      enrolledCount: 0,
+      category: '',
+      rating: 0
+    };
+    this.isEditing = false;
   }
 
   reviewEnrollment(enrollmentId: number, status: string): void {

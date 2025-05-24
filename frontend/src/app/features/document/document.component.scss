@@ -44,7 +44,7 @@
   }
 }
 
-.documents-card, .requests-card {
+.document-card, .documents-card, .requests-card {
   background: white;
   padding: 30px;
   border-radius: 12px;
@@ -317,7 +317,7 @@
 }
 
 @media (max-width: 576px) {
-  .documents-card, .requests-card {
+  .document-card, .documents-card, .requests-card {
     padding: 20px;
 
     h3, h4 {

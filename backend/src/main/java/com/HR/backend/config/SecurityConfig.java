@@ -48,7 +48,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/leave/submit", "/api/leave/my-requests", "/api/leave/cancel/**","/api/leave/balance").authenticated()
                         .requestMatchers("/api/leave/pending", "/api/leave/review/**").hasAuthority("HR_MANAGER")
                         .requestMatchers("/api/training/all", "/api/training/my-enrollments", "/api/training/enroll/**", "/api/training/cancel/**").authenticated()
-                        .requestMatchers("/api/training/create", "/api/training/review/**", "/api/training/pending-enrollments").hasAuthority("HR_MANAGER")
+                        .requestMatchers("/api/training/create", "/api/training/update/**", "/api/training/delete/**", "/api/training/review/**", "/api/training/pending-enrollments").hasAuthority("HR_MANAGER")
                         .requestMatchers("/api/documents/generate", "/api/documents/upload").hasAuthority("HR_MANAGER")
                         .requestMatchers("/api/documents/my-requests").authenticated()
                         .requestMatchers("/api/documents/pending-requests", "/api/documents/review-request/**").hasAuthority("HR_MANAGER")

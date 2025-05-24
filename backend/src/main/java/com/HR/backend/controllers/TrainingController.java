@@ -28,6 +28,20 @@ public class TrainingController {
         return trainingService.createTraining(training, token);
     }
 
+    @PutMapping("/update/{trainingId}")
+    @PreAuthorize("hasAuthority('HR_MANAGER')")
+    public Training updateTraining(@PathVariable Long trainingId, @RequestBody Training training, @RequestHeader("Authorization") String token) {
+        training.setId(trainingId);
+        return trainingService.updateTraining(training, token);
+    }
+
+    @DeleteMapping("/delete/{trainingId}")
+    @PreAuthorize("hasAuthority('HR_MANAGER')")
+    public ResponseEntity<Void> deleteTraining(@PathVariable Long trainingId, @RequestHeader("Authorization") String token) {
+        trainingService.deleteTraining(trainingId, token);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/enroll/{trainingId}")
     public TrainingEnrollment enroll(@PathVariable Long trainingId,
                                      @RequestHeader("Authorization") String token) {

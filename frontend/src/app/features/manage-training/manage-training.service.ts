@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import {Training, TrainingEnrollment} from '../../core/models/training.model';
+import { Training, TrainingEnrollment } from '../../core/models/training.model';
 
 @Injectable({
   providedIn: 'root'
@@ -22,9 +22,16 @@ export class ManageTrainingService {
     });
   }
 
-  // Training
   createTraining(training: Training): Observable<Training> {
     return this.http.post<Training>(`${this.apiUrl}/training/create`, training, { headers: this.getAuthHeaders() });
+  }
+
+  updateTraining(training: Training): Observable<Training> {
+    return this.http.put<Training>(`${this.apiUrl}/training/update/${training.id}`, training, { headers: this.getAuthHeaders() });
+  }
+
+  deleteTraining(trainingId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/training/delete/${trainingId}`, { headers: this.getAuthHeaders() });
   }
 
   getAllTrainings(): Observable<Training[]> {
@@ -44,6 +51,7 @@ export class ManageTrainingService {
       params: { employeeEmail }
     });
   }
+
   getPendingEnrollments(): Observable<TrainingEnrollment[]> {
     return this.http.get<TrainingEnrollment[]>(`${this.apiUrl}/training/pending-enrollments`, {
       headers: this.getAuthHeaders()
