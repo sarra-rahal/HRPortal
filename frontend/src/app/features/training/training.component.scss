@@ -8,7 +8,7 @@
 .content-container {
   flex: 1;
   padding: 40px 20px;
-  max-width: 1200px;
+  max-width: 1700px;
   margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
@@ -44,7 +44,7 @@
   }
 }
 
-.trainings-card, .enrollments-card {
+.trainings-card, .enrollments-card, .training-form-card {
   background: white;
   padding: 30px;
   border-radius: 12px;
@@ -90,6 +90,51 @@
       box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
     }
   }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #555;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+
+    &:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    }
+  }
+
+  textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+  }
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
 }
 
 .loading {
@@ -177,7 +222,7 @@
   overflow-x: auto;
 }
 
-.enrollments-table {
+.enrollments-table, .proposals-table {
   width: 100%;
   border-collapse: collapse;
   background: white;
@@ -212,7 +257,7 @@
 
 .status-badge {
   display: inline-block;
-  width: 100px; /* Fixed width for uniform size */
+  width: 100px;
   text-align: center;
   padding: 6px 0;
   border-radius: 12px;
@@ -220,19 +265,24 @@
   font-weight: 500;
 
   &.pending {
-    background: #f7e08b; /* Muted yellow */
+    background: #f7e08b;
     color: #333;
   }
 
   &.approved {
-    background: #6abf69; /* Muted green */
+    background: #6abf69;
     color: #fff;
   }
 
   &.rejected {
-    background: #e57373; /* Muted red */
+    background: #e57373;
     color: #fff;
   }
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
 }
 
 .btn {
@@ -276,6 +326,23 @@
       color: #cccccc;
     }
   }
+
+  &.btn-outline-primary {
+    border: 2px solid #007bff;
+    color: #007bff;
+    background: transparent;
+
+    &:hover:not(:disabled) {
+      background: #007bff;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      border-color: #cccccc;
+      color: #cccccc;
+    }
+  }
 }
 
 .no-data {
@@ -298,11 +365,15 @@
     grid-template-columns: 1fr;
   }
 
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
   .trainings-grid {
     grid-template-columns: 1fr;
   }
 
-  .enrollments-table {
+  .enrollments-table, .proposals-table {
     font-size: 0.9rem;
 
     th, td {
@@ -314,10 +385,15 @@
     flex-direction: column;
     gap: 10px;
   }
+
+  .actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
 @media (max-width: 576px) {
-  .trainings-card, .enrollments-card {
+  .trainings-card, .enrollments-card, .training-form-card {
     padding: 20px;
 
     h3 {

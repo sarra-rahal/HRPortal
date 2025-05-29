@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { WebsocketService } from '../../core/services/websocket.service';
 import { Subscription } from 'rxjs';
-import { Training, TrainingEnrollment } from '../../core/models/training.model';
+import { Training, TrainingEnrollment, TrainingProposal } from '../../core/models/training.model';
 import { NavbarComponent } from '../../layout/navbar/navbar.component';
 import { SidebarComponent } from '../../layout/sidebar/sidebar.component';
 import { FooterComponent } from '../../layout/footer/footer.component';
@@ -21,6 +21,7 @@ import { ToastService } from '../../core/services/toast.service';
 export class ManageTrainingComponent implements OnInit, OnDestroy {
   trainings: Training[] = [];
   enrollments: TrainingEnrollment[] = [];
+  proposals: TrainingProposal[] = [];
   newTraining: Training = {
     id: 0,
     title: '',
@@ -30,12 +31,14 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
     capacity: 0,
     enrolledCount: 0,
     category: '',
-    rating: 0
+    rating: 0,
+    hostCompany: '',
+    type: 'INTERNAL'
   };
   errorMessage: string = '';
   isLoading: boolean = false;
   isEditing: boolean = false;
-  currentView: 'create' | 'list' | 'enrollments' = 'create';
+  currentView: 'create' | 'list' | 'enrollments' | 'proposals' = 'create';
   private wsSub!: Subscription;
 
   constructor(
@@ -49,6 +52,7 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
     this.setView('create');
     this.fetchTrainings();
     this.fetchEnrollments();
+    this.fetchProposals();
     this.setupWebSocket();
   }
 
@@ -56,7 +60,7 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
     this.wsSub?.unsubscribe();
   }
 
-  setView(view: 'create' | 'list' | 'enrollments'): void {
+  setView(view: 'create' | 'list' | 'enrollments' | 'proposals'): void {
     this.currentView = view;
     if (view === 'create') {
       this.cancelEdit();
@@ -71,8 +75,8 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
         this.isLoading = false;
       },
       error: (err) => {
-        this.errorMessage = err.message;
-        this.toastService.show('Error fetching trainings: ' + err.message, 'error');
+        this.errorMessage = 'Error fetching trainings: ' + err.message;
+        this.toastService.show(this.errorMessage, 'error');
         this.isLoading = false;
       }
     });
@@ -86,8 +90,23 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
         this.isLoading = false;
       },
       error: (err) => {
-        this.errorMessage = err.message;
-        this.toastService.show('Error fetching enrollments: ' + err.message, 'error');
+        this.errorMessage = 'Error fetching enrollments: ' + err.message;
+        this.toastService.show(this.errorMessage, 'error');
+        this.isLoading = false;
+      }
+    });
+  }
+
+  fetchProposals(): void {
+    this.isLoading = true;
+    this.apiService.getPendingProposals().subscribe({
+      next: (proposals) => {
+        this.proposals = proposals;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.errorMessage = 'Error fetching proposals: ' + err.message;
+        this.toastService.show(this.errorMessage, 'error');
         this.isLoading = false;
       }
     });
@@ -104,7 +123,7 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.errorMessage = err.message;
-        this.toastService.show(err.message, 'error');
+        this.toastService.show(this.errorMessage, 'error');
         this.isLoading = false;
       }
     });
@@ -121,7 +140,7 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.errorMessage = err.message;
-        this.toastService.show(err.message, 'error');
+        this.toastService.show(this.errorMessage, 'error');
         this.isLoading = false;
       }
     });
@@ -141,7 +160,7 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.errorMessage = err.message;
-        this.toastService.show(err.message, 'error');
+        this.toastService.show(this.errorMessage, 'error');
         this.isLoading = false;
       }
     });
@@ -158,21 +177,6 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
     this.isEditing = false;
   }
 
-  private resetForm(): void {
-    this.newTraining = {
-      id: 0,
-      title: '',
-      description: '',
-      startDate: '',
-      endDate: '',
-      capacity: 0,
-      enrolledCount: 0,
-      category: '',
-      rating: 0
-    };
-    this.isEditing = false;
-  }
-
   reviewEnrollment(enrollmentId: number, status: string): void {
     this.isLoading = true;
     this.apiService.reviewEnrollment(enrollmentId, status).subscribe({
@@ -183,10 +187,44 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.errorMessage = err.message;
-        this.toastService.show(err.message, 'error');
+        this.toastService.show(this.errorMessage, 'error');
         this.isLoading = false;
       }
     });
+  }
+
+  reviewProposal(proposalId: number, status: string): void {
+    this.isLoading = true;
+    this.apiService.reviewTrainingProposal(proposalId, status).subscribe({
+      next: () => {
+        this.toastService.show(`Training proposal ${status.toLowerCase()} successfully`, 'success');
+        this.fetchProposals();
+        this.fetchTrainings();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+        this.toastService.show(this.errorMessage, 'error');
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private resetForm(): void {
+    this.newTraining = {
+      id: 0,
+      title: '',
+      description: '',
+      startDate: '',
+      endDate: '',
+      capacity: 0,
+      enrolledCount: 0,
+      category: '',
+      rating: 0,
+      hostCompany: '',
+      type: 'INTERNAL'
+    };
+    this.isEditing = false;
   }
 
   private setupWebSocket(): void {
@@ -195,6 +233,7 @@ export class ManageTrainingComponent implements OnInit, OnDestroy {
       next: (message) => {
         console.log('WebSocket Notification:', message);
         this.fetchEnrollments();
+        this.fetchProposals();
       },
       error: (err) => console.error('WebSocket error:', err)
     });

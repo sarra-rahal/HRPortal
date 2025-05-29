@@ -4,31 +4,44 @@
   </button>
   <ul class="sidebar-menu">
     <li *ngIf="role === 'EMPLOYEE'">
-      <a routerLink="/leave" (click)="toggleSidebar()"><i class="fas fa-calendar-times"></i> Leave</a>
+      <a (click)="toggleLeaveMenu()" class="menu-item"><i class="fas fa-calendar-times"></i> Leave <i class="fas" [class.fa-chevron-down]="!isLeaveMenuOpen" [class.fa-chevron-up]="isLeaveMenuOpen"></i></a>
+      <ul class="sub-menu" [class.open]="isLeaveMenuOpen">
+        <li><a routerLink="/leave" [queryParams]="{ view: 'sick' }" (click)="toggleSidebar()"><i class="fas fa-thermometer"></i> Sick Leave</a></li>
+        <li><a routerLink="/leave" [queryParams]="{ view: 'annual' }" (click)="toggleSidebar()"><i class="fas fa-umbrella-beach"></i> Annual Leave</a></li>
+        <li><a routerLink="/leave" [queryParams]="{ view: 'history' }" (click)="toggleSidebar()"><i class="fas fa-history"></i> History</a></li>
+      </ul>
     </li>
     <li *ngIf="role === 'EMPLOYEE'">
-      <a routerLink="/training" (click)="toggleSidebar()"><i class="fas fa-chalkboard-teacher"></i> Training</a>
+      <a (click)="toggleTrainingMenu()" class="menu-item"><i class="fas fa-chalkboard-teacher"></i> Training <i class="fas" [class.fa-chevron-down]="!isTrainingMenuOpen" [class.fa-chevron-up]="isTrainingMenuOpen"></i></a>
+      <ul class="sub-menu" [class.open]="isTrainingMenuOpen">
+        <li><a routerLink="/training" [queryParams]="{ view: 'available' }" (click)="toggleSidebar()"><i class="fas fa-book-open"></i> Existing Programs</a></li>
+        <li><a routerLink="/training" [queryParams]="{ view: 'enrollments' }" (click)="toggleSidebar()"><i class="fas fa-history"></i> Training Requests History</a></li>
+        <li><a routerLink="/training" [queryParams]="{ view: 'propose' }" (click)="toggleSidebar()"><i class="fas fa-lightbulb"></i> Propose New Training</a></li>
+      </ul>
     </li>
 <!--    <li *ngIf="role === 'EMPLOYEE'">-->
-<!--      <a routerLink="/advance" (click)="toggleSidebar()"><i class="fas fa-wallet"></i> Advance on Salary</a>-->
+<!--      <a routerLink="/documents" (click)="toggleSidebar()"><i class="fas fa-folder-open"></i> Documents</a>-->
 <!--    </li>-->
-    <li *ngIf="role === 'EMPLOYEE'">
-      <a routerLink="/documents" (click)="toggleSidebar()"><i class="fas fa-folder-open"></i> Documents</a>
-    </li>
     <li *ngIf="role === 'HR_MANAGER'">
       <a routerLink="/manage-leaves" (click)="toggleSidebar()"><i class="fas fa-calendar-times"></i> Manage Leave Requests</a>
     </li>
     <li *ngIf="role === 'HR_MANAGER'">
-      <a routerLink="/manage-training" (click)="toggleSidebar()"><i class="fas fa-chalkboard-teacher"></i> Manage Training</a>
+      <a (click)="toggleManageTrainingMenu()" class="menu-item"><i class="fas fa-chalkboard-teacher"></i> Manage Training <i class="fas" [class.fa-chevron-down]="!isManageTrainingMenuOpen" [class.fa-chevron-up]="isManageTrainingMenuOpen"></i></a>
+      <ul class="sub-menu" [class.open]="isManageTrainingMenuOpen">
+        <li><a routerLink="/manage-training" [queryParams]="{ view: 'create' }" (click)="toggleSidebar()"><i class="fas fa-plus-circle"></i> Create Training</a></li>
+        <li><a routerLink="/manage-training" [queryParams]="{ view: 'list' }" (click)="toggleSidebar()"><i class="fas fa-list"></i> Training List</a></li>
+        <li><a routerLink="/manage-training" [queryParams]="{ view: 'enrollments' }" (click)="toggleSidebar()"><i class="fas fa-user-clock"></i> Participation Requests</a></li>
+        <li><a routerLink="/manage-training" [queryParams]="{ view: 'proposals' }" (click)="toggleSidebar()"><i class="fas fa-lightbulb"></i> Proposed Trainings</a></li>
+      </ul>
     </li>
 <!--    <li *ngIf="role === 'HR_MANAGER'">-->
-<!--      <a routerLink="/manage-advance" (click)="toggleSidebar()"><i class="fas fa-wallet"></i> Manage Advance on Salary</a>-->
+<!--      <a routerLink="/manage-documents" (click)="toggleSidebar()"><i class="fas fa-folder-open"></i> Manage Documents</a>-->
+<!--    </li>-->
+<!--    <li *ngIf="role === 'HR_MANAGER'">-->
+<!--      <a routerLink="/employees" (click)="toggleSidebar()"><i class="fas fa-users"></i> Manage Employees and Departments</a>-->
 <!--    </li>-->
     <li *ngIf="role === 'HR_MANAGER'">
-      <a routerLink="/manage-documents" (click)="toggleSidebar()"><i class="fas fa-folder-open"></i> Manage Documents</a>
-    </li>
-    <li *ngIf="role === 'HR_MANAGER'">
-      <a routerLink="/employees" (click)="toggleSidebar()"><i class="fas fa-users"></i> Manage Employees and Departments</a>
+      <a routerLink="/analytics" (click)="toggleSidebar()"><i class="fas fa-dashboard"></i> Analysis </a>
     </li>
   </ul>
 </div>

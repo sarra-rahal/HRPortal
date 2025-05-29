@@ -4,73 +4,131 @@
   <div class="content-container">
     <div class="leaves-card">
       <h1><i class="fas fa-calendar-check"></i> Manage Leave Requests</h1>
+      <!-- View Toggle Buttons -->
+      <div class="view-toggle">
+        <button class="toggle-btn" [class.active]="currentView === 'sick'" (click)="currentView = 'sick'">
+          <i class="fas fa-thermometer"></i> Pending Sick Leave Requests
+        </button>
+        <button class="toggle-btn" [class.active]="currentView === 'annual'" (click)="currentView = 'annual'">
+          <i class="fas fa-umbrella-beach"></i> Pending Annual Leave Requests
+        </button>
+      </div>
 
       <div *ngIf="error" class="error-message">{{ error }}</div>
       <div *ngIf="loading" class="loading">
         <i class="fas fa-spinner fa-spin"></i> Loading...
       </div>
 
-      <div class="table-container" *ngIf="!loading && requests.length; else noRequests">
-        <table class="leaves-table">
-          <thead>
-          <tr>
-            <th>Employee</th>
-            <th>Type</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Duration</th>
-            <th>Reason</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let req of requests">
-            <td>{{ req.employeeName }}</td>
-            <td>{{ req.leaveType }}</td>
-            <td>{{ req.startDate | date }}</td>
-            <td>{{ req.endDate | date }}</td>
-            <td>{{ req.duration }}</td>
-            <td>{{ req.reason || '-' }}</td>
-            <td>
-              <span class="status-badge pending">{{ req.status }}</span>
-            </td>
-            <td class="actions">
-              <div class="action-group">
-                <input #comment type="text" placeholder="Add comment (optional)" class="form-control">
-                <div class="button-group">
-                  <button class="btn btn-outline-success"
-                          [disabled]="processingRequests.has(req.id)"
-                          (click)="confirmReview(req.id, 'APPROVED', comment.value, comment)">
-                    <i class="fas" [class.fa-check]="!processingRequests.has(req.id)"
-                       [class.fa-spinner]="processingRequests.has(req.id)"
-                       [class.fa-spin]="processingRequests.has(req.id)"></i> Approve
-                  </button>
-                  <button class="btn btn-outline-danger"
-                          [disabled]="processingRequests.has(req.id)"
-                          (click)="confirmReview(req.id, 'DENIED', comment.value, comment)">
-                    <i class="fas" [class.fa-times]="!processingRequests.has(req.id)"
-                       [class.fa-spinner]="processingRequests.has(req.id)"
-                       [class.fa-spin]="processingRequests.has(req.id)"></i> Reject
-                  </button>
-                  <button class="btn btn-outline-primary"
-                          [disabled]="processingRequests.has(req.id)"
-                          (click)="confirmSendNote(req.id, comment.value, comment)">
-                    <i class="fas" [class.fa-paper-plane]="!processingRequests.has(req.id)"
-                       [class.fa-spinner]="processingRequests.has(req.id)"
-                       [class.fa-spin]="processingRequests.has(req.id)"></i> Send Note
-                  </button>
+      <!-- Sick Leave Requests -->
+      <div *ngIf="currentView === 'sick' && !loading" class="table-container">
+        <h3><i class="fas fa-thermometer"></i> Pending Sick Leave Requests</h3>
+        <div *ngIf="sickRequests.length; else noSickRequests">
+          <table class="leaves-table">
+            <thead>
+            <tr>
+              <th>Employee</th>
+              <th>Type</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Duration</th>
+              <th>Reason</th>
+              <th>Certificate</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let req of sickRequests">
+              <td>{{ req.employeeName }}</td>
+              <td>{{ req.leaveType }}</td>
+              <td>{{ req.startDate | date }}</td>
+              <td>{{ req.endDate | date }}</td>
+              <td>{{ req.duration }}</td>
+              <td>{{ req.reason || '-' }}</td>
+              <td>
+                <a *ngIf="req.certificate" [href]="req.certificate" download="certificate">Download</a>
+                <span *ngIf="!req.certificate">-</span>
+              </td>
+              <td>
+                <span class="status-badge pending">{{ req.status }}</span>
+              </td>
+              <td class="actions">
+                <div class="action-group">
+                  <input #comment type="text" placeholder="Add comment (optional)" class="form-control">
+                  <div class="button-group">
+                    <button class="btn btn-outline-success" [disabled]="processingRequests.has(req.id)" (click)="confirmReview(req.id, 'APPROVED', comment.value, comment)">
+                      <i class="fas" [class.fa-check]="!processingRequests.has(req.id)" [class.fa-spinner]="processingRequests.has(req.id)" [class.fa-spin]="processingRequests.has(req.id)"></i> Approve
+                    </button>
+                    <button class="btn btn-outline-danger" [disabled]="processingRequests.has(req.id)" (click)="confirmReview(req.id, 'DENIED', comment.value, comment)">
+                      <i class="fas" [class.fa-times]="!processingRequests.has(req.id)" [class.fa-spinner]="processingRequests.has(req.id)" [class.fa-spin]="processingRequests.has(req.id)"></i> Reject
+                    </button>
+                    <button class="btn btn-outline-primary" [disabled]="processingRequests.has(req.id)" (click)="confirmSendNote(req.id, comment.value, comment)">
+                      <i class="fas" [class.fa-paper-plane]="!processingRequests.has(req.id)" [class.fa-spinner]="processingRequests.has(req.id)" [class.fa-spin]="processingRequests.has(req.id)"></i> Send Note
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </td>
-          </tr>
-          </tbody>
-        </table>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #noSickRequests>
+          <p class="no-data"><i class="fas fa-info-circle"></i> No pending sick leave requests.</p>
+        </ng-template>
       </div>
 
-      <ng-template #noRequests>
-        <p class="no-data"><i class="fas fa-info-circle"></i> No pending leave requests.</p>
-      </ng-template>
+      <!-- Annual Leave Requests -->
+      <div *ngIf="currentView === 'annual' && !loading" class="table-container">
+        <h3><i class="fas fa-umbrella-beach"></i> Pending Annual Leave Requests</h3>
+        <div *ngIf="annualRequests.length; else noAnnualRequests">
+          <table class="leaves-table">
+            <thead>
+            <tr>
+              <th>Employee</th>
+              <th>Type</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Duration</th>
+              <th>Reason</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let req of annualRequests">
+              <td>{{ req.employeeName }}</td>
+              <td>{{ req.leaveType }}</td>
+              <td>{{ req.startDate | date }}</td>
+              <td>{{ req.endDate | date }}</td>
+              <td>{{ req.duration }}</td>
+              <td>{{ req.reason || '-' }}</td>
+              <td>
+                <span class="status-badge pending">{{ req.status }}</span>
+              </td>
+              <td class="actions">
+                <div class="action-group">
+                  <input #comment type="text" placeholder="Add comment (optional)" class="form-control">
+                  <div class="button-group">
+                    <button class="btn btn-outline-success" [disabled]="processingRequests.has(req.id)" (click)="confirmReview(req.id, 'APPROVED', comment.value, comment)">
+                      <i class="fas" [class.fa-check]="!processingRequests.has(req.id)" [class.fa-spinner]="processingRequests.has(req.id)" [class.fa-spin]="processingRequests.has(req.id)"></i> Approve
+                    </button>
+                    <button class="btn btn-outline-danger" [disabled]="processingRequests.has(req.id)" (click)="confirmReview(req.id, 'DENIED', comment.value, comment)">
+                      <i class="fas" [class.fa-times]="!processingRequests.has(req.id)" [class.fa-spinner]="processingRequests.has(req.id)" [class.fa-spin]="processingRequests.has(req.id)"></i> Reject
+                    </button>
+                    <button class="btn btn-outline-primary" [disabled]="processingRequests.has(req.id)" (click)="confirmSendNote(req.id, comment.value, comment)">
+                      <i class="fas" [class.fa-paper-plane]="!processingRequests.has(req.id)" [class.fa-spinner]="processingRequests.has(req.id)" [class.fa-spin]="processingRequests.has(req.id)"></i> Send Note
+                    </button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #noAnnualRequests>
+          <p class="no-data"><i class="fas fa-info-circle"></i> No pending annual leave requests.</p>
+        </ng-template>
+      </div>
     </div>
   </div>
 </div>

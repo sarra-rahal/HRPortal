@@ -20,7 +20,7 @@
     top: 20px;
     width: 45px;
     height: 45px;
-    background: #007bff;
+    background: #28a745;
     border: none;
     border-radius: 50% 0 0 50%;
     color: white;
@@ -33,7 +33,7 @@
     transition: background 0.3s;
 
     &:hover {
-      background: #0056b3;
+      background: #218838;
     }
   }
 
@@ -45,7 +45,36 @@
     li {
       margin: 10px 0;
 
-      a {
+      .menu-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 12px 15px;
+        color: white;
+        text-decoration: none;
+        font-size: 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.3s, color 0.3s, transform 0.2s;
+
+        &:hover {
+          background: linear-gradient(90deg, #28a745, #218838);
+          color: #ffffff;
+          transform: translateX(5px);
+        }
+
+        &:active {
+          background: #1e7e34;
+          transform: translateX(2px);
+        }
+
+        i {
+          font-size: 1.2rem;
+        }
+      }
+
+      a:not(.menu-item) {
         display: flex;
         align-items: center;
         gap: 10px;
@@ -54,15 +83,64 @@
         text-decoration: none;
         font-size: 1rem;
         border-radius: 8px;
-        transition: background 0.3s, color 0.3s;
+        transition: background 0.3s, color 0.3s, transform 0.2s;
 
         &:hover {
-          background: rgba(73, 80, 87, 0.8);
-          color: #cce5ff;
+          background: linear-gradient(90deg, #28a745, #218838);
+          color: #ffffff;
+          transform: translateX(5px);
+        }
+
+        &:active {
+          background: #1e7e34;
+          transform: translateX(2px);
         }
 
         i {
           font-size: 1.2rem;
+        }
+      }
+
+      .sub-menu {
+        list-style: none;
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+
+        &.open {
+          max-height: 200px;
+        }
+
+        li {
+          margin: 5px 0;
+
+          a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 25px;
+            color: #d1d4d8;
+            text-decoration: none;
+            font-size: 0.95rem;
+            border-radius: 6px;
+            transition: background 0.3s, color 0.3s, transform 0.2s;
+
+            &:hover {
+              background: linear-gradient(90deg, #28a745, #218838);
+              color: #ffffff;
+              transform: translateX(5px);
+            }
+
+            &:active {
+              background: #1e7e34;
+              transform: translateX(2px);
+            }
+
+            i {
+              font-size: 1.1rem;
+            }
+          }
         }
       }
     }

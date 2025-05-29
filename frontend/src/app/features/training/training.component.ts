@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { WebsocketService } from '../../core/services/websocket.service';
 import { Subscription } from 'rxjs';
-import { Training, TrainingEnrollment } from '../../core/models/training.model';
+import { Training, TrainingEnrollment, TrainingProposal } from '../../core/models/training.model';
 import { NavbarComponent } from '../../layout/navbar/navbar.component';
 import { SidebarComponent } from '../../layout/sidebar/sidebar.component';
 import { FooterComponent } from '../../layout/footer/footer.component';
@@ -22,6 +22,19 @@ export class TrainingComponent implements OnInit, OnDestroy {
   trainings: Training[] = [];
   filteredTrainings: Training[] = [];
   enrollments: TrainingEnrollment[] = [];
+  proposals: TrainingProposal[] = [];
+  newProposal: TrainingProposal = {
+    id: 0,
+    title: '',
+    description: '',
+    category: '',
+    proposedBy: '',
+    status: 'PENDING',
+    createdAt: '',
+    updatedAt: '',
+    hostCompany: '',
+    type: 'INTERNAL'
+  };
   employeeEmail: string = '';
   errorMessage: string = '';
   isLoading: boolean = false;
@@ -29,9 +42,10 @@ export class TrainingComponent implements OnInit, OnDestroy {
   selectedCategory: string = '';
   selectedStatus: string = '';
   categories: string[] = [];
-  private wsSub!: Subscription;
-  currentView: 'available' | 'enrollments' = 'available';
+  private wsSub?: Subscription;
+  currentView: 'available' | 'enrollments' | 'propose' = 'available';
   cancellingEnrollment: number | null = null;
+  editingProposal: boolean = false;
 
   constructor(
     private apiService: TrainingService,
@@ -51,6 +65,7 @@ export class TrainingComponent implements OnInit, OnDestroy {
     this.currentView = 'available';
     this.fetchTrainings();
     this.fetchEnrollments();
+    this.fetchProposals();
     this.setupWebSocket();
   }
 
@@ -58,7 +73,15 @@ export class TrainingComponent implements OnInit, OnDestroy {
     this.wsSub?.unsubscribe();
   }
 
+  setView(view: 'available' | 'enrollments' | 'propose'): void {
+    this.currentView = view;
+    if (view === 'propose') {
+      this.cancelEditProposal();
+    }
+  }
+
   fetchTrainings(): void {
+    this.isLoading = true;
     this.apiService.getAllTrainings().subscribe({
       next: (trainings) => {
         this.trainings = trainings;
@@ -75,6 +98,7 @@ export class TrainingComponent implements OnInit, OnDestroy {
   }
 
   fetchEnrollments(): void {
+    this.isLoading = true;
     this.apiService.getMyEnrollments().subscribe({
       next: (enrollments) => {
         this.enrollments = enrollments;
@@ -88,16 +112,114 @@ export class TrainingComponent implements OnInit, OnDestroy {
     });
   }
 
+  fetchProposals(): void {
+    this.isLoading = true;
+    this.apiService.getMyProposals().subscribe({
+      next: (proposals) => {
+        this.proposals = proposals;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.errorMessage = 'Error fetching proposals: ' + err.message;
+        this.toastService.show(this.errorMessage, 'error');
+        this.isLoading = false;
+      }
+    });
+  }
+
+  proposeTraining(): void {
+    this.isLoading = true;
+    this.newProposal.proposedBy = this.employeeEmail;
+    this.apiService.proposeTraining(this.newProposal).subscribe({
+      next: () => {
+        this.toastService.show('Training proposal submitted successfully', 'success');
+        this.fetchProposals();
+        this.resetProposalForm();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+        this.toastService.show(this.errorMessage, 'error');
+        this.isLoading = false;
+      }
+    });
+  }
+
+  updateProposal(): void {
+    this.isLoading = true;
+    this.apiService.updateTrainingProposal(this.newProposal.id, this.newProposal).subscribe({
+      next: () => {
+        this.toastService.show('Training proposal updated successfully', 'success');
+        this.fetchProposals();
+        this.resetProposalForm();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+        this.toastService.show(this.errorMessage, 'error');
+        this.isLoading = false;
+      }
+    });
+  }
+
+  cancelProposal(proposalId: number): void {
+    if (confirm('Are you sure you want to cancel this proposal?')) {
+      this.isLoading = true;
+      this.apiService.cancelTrainingProposal(proposalId).subscribe({
+        next: () => {
+          this.toastService.show('Training proposal cancelled successfully', 'success');
+          this.fetchProposals();
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.errorMessage = err.message;
+          this.toastService.show(this.errorMessage, 'error');
+          this.isLoading = false;
+        }
+      });
+    }
+  }
+
+  editProposal(proposal: TrainingProposal): void {
+    this.newProposal = { ...proposal };
+    this.editingProposal = true;
+    this.currentView = 'propose';
+  }
+
+  cancelEditProposal(): void {
+    this.resetProposalForm();
+    this.editingProposal = false;
+  }
+
+  private resetProposalForm(): void {
+    this.newProposal = {
+      id: 0,
+      title: '',
+      description: '',
+      category: '',
+      proposedBy: this.employeeEmail,
+      status: 'PENDING',
+      createdAt: '',
+      updatedAt: '',
+      hostCompany: '',
+      type: 'INTERNAL'
+    };
+    this.editingProposal = false;
+  }
+
   enroll(trainingId: number): void {
+    this.isLoading = true;
     this.apiService.enroll(trainingId).subscribe({
       next: () => {
-        this.toastService.show('Enrollment submitted successfully', 'success');
+        this.toastService.show('Enrollment successful', 'success');
         this.fetchEnrollments();
         this.fetchTrainings();
+        this.isLoading = false;
       },
       error: (err) => {
         this.errorMessage = 'Error enrolling: ' + err.message;
         this.toastService.show(this.errorMessage, 'error');
+        this.isLoading = false;
       }
     });
   }
@@ -136,19 +258,19 @@ export class TrainingComponent implements OnInit, OnDestroy {
     const now = new Date();
     const start = new Date(training.startDate);
     const end = new Date(training.endDate);
-    if (now < start) return 'UPCOMING';
-    if (now > end) return 'COMPLETED';
-    return 'IN_PROGRESS';
+    if (now < start) {
+      return 'UPCOMING';
+    } else if (now > end) {
+      return 'COMPLETED';
+    } else {
+      return 'IN_PROGRESS';
+    }
   }
 
   isEnrollButtonDisabled(training: Training): boolean {
-    return this.enrollments.some(e => e.training.id === training.id) ||
+    return this.enrollments.some(e => e.training?.id === training.id) ||
       training.enrolledCount >= training.capacity ||
       this.getTrainingStatus(training) !== 'UPCOMING';
-  }
-
-  showDetails(training: Training): void {
-    console.log('Show details for:', training);
   }
 
   private setupWebSocket(): void {
@@ -157,6 +279,7 @@ export class TrainingComponent implements OnInit, OnDestroy {
         console.log('WebSocket Notification:', message);
         this.fetchEnrollments();
         this.fetchTrainings();
+        this.fetchProposals();
       },
       error: (err) => console.error('WebSocket error:', err)
     });

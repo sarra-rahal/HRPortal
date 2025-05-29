@@ -9,5 +9,5 @@ export const authGuard: CanActivateFn = (route, state) => {
     router.navigate(['/sign-in']);
     return false;
   }
-  return true; // Backend will handle role-based
+  return true;
 };

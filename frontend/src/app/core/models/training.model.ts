@@ -6,8 +6,10 @@ export interface Training {
   endDate: string;
   capacity: number;
   enrolledCount: number;
-  category : string ;
-  rating : number ;
+  category: string;
+  rating: number;
+  hostCompany: string;
+  type: 'INTERNAL' | 'EXTERNAL';
 }
 
 export interface TrainingEnrollment {
@@ -15,4 +17,17 @@ export interface TrainingEnrollment {
   training: Training;
   employeeEmail: string;
   status: string;
+}
+
+export interface TrainingProposal {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  proposedBy: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  hostCompany: string;
+  type: 'INTERNAL' | 'EXTERNAL';
 }

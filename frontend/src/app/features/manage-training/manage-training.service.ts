@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Training, TrainingEnrollment } from '../../core/models/training.model';
+import { Training, TrainingEnrollment, TrainingProposal } from '../../core/models/training.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,6 @@ export class ManageTrainingService {
 
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
-    console.log('Token being sent for request:', token);
     if (!token) {
       console.error('No token found in localStorage - redirecting to sign-in');
     }
@@ -45,15 +44,21 @@ export class ManageTrainingService {
     });
   }
 
-  getMyEnrollments(employeeEmail: string): Observable<TrainingEnrollment[]> {
-    return this.http.get<TrainingEnrollment[]>(`${this.apiUrl}/training/my-enrollments`, {
-      headers: this.getAuthHeaders(),
-      params: { employeeEmail }
+  getPendingEnrollments(): Observable<TrainingEnrollment[]> {
+    return this.http.get<TrainingEnrollment[]>(`${this.apiUrl}/training/pending-enrollments`, {
+      headers: this.getAuthHeaders()
     });
   }
 
-  getPendingEnrollments(): Observable<TrainingEnrollment[]> {
-    return this.http.get<TrainingEnrollment[]>(`${this.apiUrl}/training/pending-enrollments`, {
+  reviewTrainingProposal(proposalId: number, status: string): Observable<TrainingProposal> {
+    return this.http.put<TrainingProposal>(`${this.apiUrl}/training/proposal/review/${proposalId}`, null, {
+      headers: this.getAuthHeaders(),
+      params: { status }
+    });
+  }
+
+  getPendingProposals(): Observable<TrainingProposal[]> {
+    return this.http.get<TrainingProposal[]>(`${this.apiUrl}/training/pending-proposals`, {
       headers: this.getAuthHeaders()
     });
   }

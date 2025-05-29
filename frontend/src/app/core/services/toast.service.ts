@@ -1,4 +1,4 @@
-// src/app/core/services/toast.service.ts
+// src/app/core/service/toast.service.ts
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 

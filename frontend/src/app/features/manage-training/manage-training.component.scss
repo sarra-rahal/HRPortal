@@ -8,7 +8,7 @@
 .content-container {
   flex: 1;
   padding: 40px 20px;
-  max-width: 1200px;
+  max-width: 1700px;
   margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
@@ -44,7 +44,7 @@
   }
 }
 
-.training-form-card, .trainings-card, .enrollments-card {
+.training-form-card, .trainings-card, .enrollments-card, .proposals-card {
   background: white;
   padding: 30px;
   border-radius: 12px;
@@ -132,7 +132,7 @@
   overflow-x: auto;
 }
 
-.trainings-table, .enrollments-table {
+.trainings-table, .enrollments-table, .proposals-table {
   width: 100%;
   border-collapse: collapse;
   background: white;
@@ -292,7 +292,7 @@
     grid-template-columns: 1fr;
   }
 
-  .trainings-table, .enrollments-table {
+  .trainings-table, .enrollments-table, .proposals-table {
     font-size: 0.9rem;
 
     th, td {
@@ -312,7 +312,7 @@
 }
 
 @media (max-width: 576px) {
-  .training-form-card, .trainings-card, .enrollments-card {
+  .training-form-card, .trainings-card, .enrollments-card, .proposals-card {
     padding: 20px;
 
     h3 {

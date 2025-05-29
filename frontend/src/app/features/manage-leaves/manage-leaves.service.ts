@@ -1,6 +1,24 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
+
+interface LeaveRequest {
+  id: number;
+  employeeCin: string;
+  leaveType: string;
+  startDate: string;
+  endDate: string;
+  duration: number;
+  reason: string;
+  status: string;
+  employeeName?: string;
+  certificate?: string;
+}
+
+interface ReviewRequest {
+  status: string;
+  hrComment: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -12,21 +30,21 @@ export class ManageLeavesService {
 
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
-    console.log('Token being sent:', token);
     return new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
     });
   }
 
-  getAllLeaveRequests(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/leave/pending`, { headers: this.getAuthHeaders() });
+  getAllLeaveRequests(): Observable<LeaveRequest[]> {
+    return this.http.get<LeaveRequest[]>(`${this.apiUrl}/leave/all`, { headers: this.getAuthHeaders() });
   }
 
-  reviewLeaveRequest(id: number, reviewData: { status: string; hrComment: string }): Observable<any> {
-    return this.http.put(`${this.apiUrl}/leave/review/${id}`, reviewData, { headers: this.getAuthHeaders() });
+  reviewLeaveRequest(id: number, review: ReviewRequest): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/leave/review/${id}`, review, { headers: this.getAuthHeaders() });
   }
 
-  sendnote(id: number, comment: string): Observable<any> {
-    return this.http.put(`${this.apiUrl}/leave/note/${id}`, comment, { headers: this.getAuthHeaders() });
+  sendNote(id: number, note: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/leave/send-note/${id}`, note, { headers: this.getAuthHeaders() });
   }
 }

@@ -12,6 +12,9 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class SidebarComponent {
   isSidebarOpen = false;
+  isLeaveMenuOpen = false;
+  isTrainingMenuOpen = false;
+  isManageTrainingMenuOpen = false;
 
   constructor(private authService: AuthService) {}
 
@@ -21,6 +24,18 @@ export class SidebarComponent {
 
   toggleSidebar(): void {
     this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  toggleLeaveMenu(): void {
+    this.isLeaveMenuOpen = !this.isLeaveMenuOpen;
+  }
+
+  toggleTrainingMenu(): void {
+    this.isTrainingMenuOpen = !this.isTrainingMenuOpen;
+  }
+
+  toggleManageTrainingMenu(): void {
+    this.isManageTrainingMenuOpen = !this.isManageTrainingMenuOpen;
   }
 
   @HostListener('document:click', ['$event'])

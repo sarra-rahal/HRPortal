@@ -8,7 +8,7 @@
 .content-container {
   flex: 1;
   padding: 40px 20px;
-  max-width: 1200px;
+  max-width: 1700px;
   margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
@@ -22,13 +22,47 @@
   border-left: 5px solid #28a745;
   animation: fadeIn 0.5s ease-in;
 
-  h1 {
+  h1, h3 {
     color: #333;
     font-size: 2.2rem;
     margin-bottom: 30px;
     display: flex;
     align-items: center;
     gap: 10px;
+  }
+
+  h3 {
+    font-size: 1.8rem;
+  }
+}
+
+.view-toggle {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  justify-content: center;
+}
+
+.toggle-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.3s, transform 0.2s;
+
+  &.active {
+    background: #0056b3;
+    transform: scale(1.05);
+  }
+
+  &:hover:not(.active) {
+    background: #0056b3;
   }
 }
 
@@ -54,6 +88,7 @@
 
 .table-container {
   overflow-x: auto;
+  margin-bottom: 30px;
 }
 
 .leaves-table {
@@ -90,7 +125,7 @@
 
   .status-badge {
     display: inline-block;
-    width: 100px; /* Fixed width for uniform size */
+    width: 100px;
     text-align: center;
     padding: 6px 0;
     border-radius: 12px;
@@ -98,17 +133,17 @@
     font-weight: 500;
 
     &.pending {
-      background: #f7e08b; /* Muted yellow */
+      background: #f7e08b;
       color: #333;
     }
 
     &.approved {
-      background: #6abf69; /* Muted green */
+      background: #6abf69;
       color: #fff;
     }
 
     &.denied {
-      background: #e57373; /* Muted red */
+      background: #e57373;
       color: #fff;
     }
   }
@@ -133,6 +168,11 @@
           border-color: #007bff;
           box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
         }
+      }
+
+      .button-group {
+        display: flex;
+        gap: 10px;
       }
     }
   }
@@ -180,6 +220,18 @@
       color: #cccccc;
     }
   }
+
+  &.btn-outline-primary {
+    border: 2px solid #007bff;
+    color: #007bff;
+    background: transparent;
+
+    &:hover:not(:disabled) {
+      background: #007bff;
+      color: white;
+      transform: translateY(-2px);
+    }
+  }
 }
 
 .no-data {
@@ -215,9 +267,19 @@
       margin-bottom: 10px;
     }
 
+    .button-group {
+      flex-direction: column;
+      gap: 5px;
+    }
+
     .btn {
       width: 100%;
     }
+  }
+
+  .view-toggle {
+    flex-direction: column;
+    gap: 10px;
   }
 }
 
@@ -225,7 +287,7 @@
   .leaves-card {
     padding: 20px;
 
-    h1 {
+    h1, h3 {
       font-size: 1.8rem;
     }
   }

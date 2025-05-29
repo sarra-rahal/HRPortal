@@ -46,23 +46,15 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
                                        WebSocketHandler wsHandler, Map<String, Object> attributes) {
             String authHeader = request.getHeaders().getFirst("Authorization");
-            System.out.println("WebSocket Auth Header: " + authHeader + ", URI: " + request.getURI());
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 String token = authHeader.substring(7);
-                System.out.println("Token: " + token);
                 if (jwtUtil.isTokenValid(token)) {
                     String email = jwtUtil.extractEmail(token);
                     attributes.put("email", email);
-                    System.out.println("Handshake successful for: " + email);
                     return true;
-                } else {
-                    System.out.println("Invalid token");
                 }
-            } else {
-                System.out.println("No or invalid Authorization header");
             }
             response.setStatusCode(org.springframework.http.HttpStatus.UNAUTHORIZED);
-            System.out.println("Handshake failed: Unauthorized");
             return false;
         }
 

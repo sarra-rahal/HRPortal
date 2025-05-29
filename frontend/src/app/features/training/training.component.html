@@ -4,17 +4,28 @@
   <div class="content-container">
     <!-- View Toggle Buttons -->
     <div class="view-toggle">
-      <button class="toggle-btn" [class.active]="currentView === 'available'" (click)="currentView = 'available'">
-        <i class="fas fa-book-open"></i> Available Trainings
+      <button class="toggle-btn" [class.active]="currentView === 'available'" (click)="setView('available')">
+        <i class="fas fa-book-open"></i> Existing Programs
       </button>
-      <button class="toggle-btn" [class.active]="currentView === 'enrollments'" (click)="currentView = 'enrollments'">
-        <i class="fas fa-user-check"></i> My Enrollments
+      <button class="toggle-btn" [class.active]="currentView === 'enrollments'" (click)="setView('enrollments')">
+        <i class="fas fa-history"></i> Training Requests History
+      </button>
+      <button class="toggle-btn" [class.active]="currentView === 'propose'" (click)="setView('propose')">
+        <i class="fas fa-lightbulb"></i> Propose New Training
       </button>
     </div>
 
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading">
+      <i class="fas fa-spinner fa-spin"></i> Loading...
+    </div>
+
     <!-- Available Trainings View -->
-    <div *ngIf="currentView === 'available'" class="trainings-card">
-      <h3><i class="fas fa-chalkboard-teacher"></i> Available Trainings</h3>
+    <div *ngIf="currentView === 'available' && !isLoading && !errorMessage" class="trainings-card">
+      <h3><i class="fas fa-chalkboard-teacher"></i> Existing Programs</h3>
       <!-- Filter Controls -->
       <div class="filter-section">
         <div class="filter-grid">
@@ -24,7 +35,7 @@
           <div class="filter-group">
             <select class="form-control" [(ngModel)]="selectedCategory" (ngModelChange)="filterTrainings()">
               <option value="">All Categories</option>
-              <option *ngFor="let category of categories" [value]="category">{{category}}</option>
+              <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
             </select>
           </div>
           <div class="filter-group">
@@ -38,25 +49,20 @@
         </div>
       </div>
 
-      <!-- Loading State -->
-      <div *ngIf="isLoading" class="loading">
-        <i class="fas fa-spinner fa-spin"></i> Loading...
-      </div>
-
       <!-- Available Trainings -->
-      <div *ngIf="!isLoading && errorMessage" class="error-message">{{errorMessage}}</div>
-
-      <div class="trainings-grid" *ngIf="!isLoading && !errorMessage">
+      <div class="trainings-grid" *ngIf="filteredTrainings.length; else noTrainings">
         <div class="training-card" *ngFor="let training of filteredTrainings">
           <div class="card-content">
-            <h5>{{training.title}}</h5>
-            <span class="category-badge">{{training.category}}</span>
-            <p>{{training.description}}</p>
+            <h5>{{ training.title }}</h5>
+            <span class="category-badge">{{ training.category }}</span>
+            <p>{{ training.description }}</p>
             <div class="training-details">
-              <div><strong>Status:</strong> {{getTrainingStatus(training)}}</div>
-              <div><strong>Dates:</strong> {{training.startDate | date}} - {{training.endDate | date}}</div>
-              <div><strong>Capacity:</strong> {{training.enrolledCount}}/{{training.capacity}}</div>
-              <div *ngIf="training.rating"><strong>Rating:</strong> {{training.rating}}/5</div>
+              <div><strong>Status:</strong> {{ getTrainingStatus(training) }}</div>
+              <div><strong>Dates:</strong> {{ training.startDate | date:'medium' }} - {{ training.endDate | date:'medium' }}</div>
+              <div><strong>Capacity:</strong> {{ training.enrolledCount }}/{{ training.capacity }}</div>
+              <div><strong>Host Company:</strong> {{ training.hostCompany }}</div>
+              <div><strong>Type:</strong> {{ training.type }}</div>
+              <div *ngIf="training.rating"><strong>Rating:</strong> {{ training.rating }}/5</div>
             </div>
           </div>
           <div class="card-actions">
@@ -66,17 +72,22 @@
           </div>
         </div>
       </div>
+      <ng-template #noTrainings>
+        <p class="no-data"><i class="fas fa-info-circle"></i> No trainings found.</p>
+      </ng-template>
     </div>
 
-    <!-- My Enrollments View -->
-    <div *ngIf="currentView === 'enrollments'" class="enrollments-card">
-      <h3><i class="fas fa-user-check"></i> My Enrollments</h3>
+    <!-- Training Requests History View -->
+    <div *ngIf="currentView === 'enrollments' && !isLoading && !errorMessage" class="enrollments-card">
+      <h3><i class="fas fa-history"></i> Training Requests History</h3>
       <div class="table-container">
         <table class="enrollments-table" *ngIf="enrollments.length; else noEnrollments">
           <thead>
           <tr>
             <th>Title</th>
             <th>Category</th>
+            <th>Host Company</th>
+            <th>Type</th>
             <th>Status</th>
             <th>Enrollment Status</th>
             <th>Actions</th>
@@ -84,20 +95,25 @@
           </thead>
           <tbody>
           <tr *ngFor="let enrollment of enrollments">
-            <td>{{enrollment.training.title}}</td>
-            <td>{{enrollment.training.category}}</td>
-            <td>{{getTrainingStatus(enrollment.training)}}</td>
+            <td>{{ enrollment.training.title }}</td>
+            <td>{{ enrollment.training.category }}</td>
+            <td>{{ enrollment.training.hostCompany }}</td>
+            <td>{{ enrollment.training.type }}</td>
+            <td>{{ getTrainingStatus(enrollment.training) }}</td>
             <td>
                 <span class="status-badge" [ngClass]="{
                   'pending': enrollment.status === 'PENDING',
                   'approved': enrollment.status === 'APPROVED',
                   'rejected': enrollment.status === 'REJECTED'
-                }">{{enrollment.status}}</span>
+                }">{{ enrollment.status }}</span>
             </td>
             <td>
-              <button class="btn btn-outline-danger" (click)="cancelEnrollment(enrollment.id)" [disabled]="enrollment.status !== 'PENDING' || cancellingEnrollment === enrollment.id">
-                <i class="fas" [class.fa-trash]="cancellingEnrollment !== enrollment.id" [class.fa-spinner]="cancellingEnrollment === enrollment.id" [class.fa-spin]="cancellingEnrollment === enrollment.id"></i>
-                Cancel
+              <button class="btn btn-outline-danger" (click)="cancelEnrollment(enrollment.id)"
+                      [disabled]="enrollment.status !== 'PENDING' || cancellingEnrollment === enrollment.id">
+                <i class="fas" [ngClass]="{
+                    'fa-trash': cancellingEnrollment !== enrollment.id,
+                    'fa-spinner fa-spin': cancellingEnrollment === enrollment.id
+                  }"></i> Cancel
               </button>
             </td>
           </tr>
@@ -105,6 +121,92 @@
         </table>
         <ng-template #noEnrollments>
           <p class="no-data"><i class="fas fa-info-circle"></i> No enrollments found.</p>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- Propose New Training View -->
+    <div *ngIf="currentView === 'propose' && !isLoading && !errorMessage" class="training-form-card">
+      <h3><i class="fas fa-lightbulb"></i> {{ editingProposal ? 'Update Training Proposal' : 'Propose New Training' }}</h3>
+      <form (ngSubmit)="editingProposal ? updateProposal() : proposeTraining()" class="form-grid">
+        <div class="form-group">
+          <label for="proposalTitle"><i class="fas fa-heading"></i> Title</label>
+          <input type="text" id="proposalTitle" class="form-control" placeholder="Enter training title"
+                 [(ngModel)]="newProposal.title" name="title" required>
+        </div>
+        <div class="form-group">
+          <label for="proposalDescription"><i class="fas fa-file-alt"></i> Description</label>
+          <textarea id="proposalDescription" class="form-control" placeholder="Enter training description"
+                    [(ngModel)]="newProposal.description" name="description" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="proposalCategory"><i class="fas fa-tag"></i> Category</label>
+          <input type="text" id="proposalCategory" class="form-control" placeholder="Enter category"
+                 [(ngModel)]="newProposal.category" name="category" required>
+        </div>
+        <div class="form-group">
+          <label for="hostCompany"><i class="fas fa-building"></i> Host Company</label>
+          <input type="text" id="hostCompany" class="form-control" placeholder="Enter host company"
+                 [(ngModel)]="newProposal.hostCompany" name="hostCompany" required>
+        </div>
+        <div class="form-group">
+          <label for="type"><i class="fas fa-cogs"></i> Type</label>
+          <select id="type" class="form-control" [(ngModel)]="newProposal.type" name="type" required>
+            <option value="INTERNAL">Internal</option>
+            <option value="EXTERNAL">External</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+            <i class="fas" [ngClass]="{'fa-save': !isLoading, 'fa-spinner fa-spin': isLoading}"></i>
+            {{ editingProposal ? 'Update' : 'Propose' }}
+          </button>
+          <button type="button" class="btn btn-outline-danger" (click)="cancelEditProposal()" *ngIf="editingProposal">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+        </div>
+      </form>
+      <h3><i class="fas fa-history"></i> Proposal History</h3>
+      <div class="table-container">
+        <table class="proposals-table" *ngIf="proposals.length; else noProposals">
+          <thead>
+          <tr>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Host Company</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let proposal of proposals">
+            <td>{{ proposal.title }}</td>
+            <td>{{ proposal.category }}</td>
+            <td>{{ proposal.hostCompany }}</td>
+            <td>{{ proposal.type }}</td>
+            <td>
+                <span class="status-badge" [ngClass]="{
+                  'pending': proposal.status === 'PENDING',
+                  'approved': proposal.status === 'APPROVED',
+                  'rejected': proposal.status === 'REJECTED'
+                }">{{ proposal.status }}</span>
+            </td>
+            <td>{{ proposal.createdAt | date:'medium' }}</td>
+            <td class="actions">
+              <button class="btn btn-outline-primary" (click)="editProposal(proposal)" [disabled]="proposal.status !== 'PENDING'">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button class="btn btn-outline-danger" (click)="cancelProposal(proposal.id)" [disabled]="proposal.status !== 'PENDING'">
+                <i class="fas fa-trash"></i> Cancel
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <ng-template #noProposals>
+          <p class="no-data"><i class="fas fa-info-circle"></i> No proposals found.</p>
         </ng-template>
       </div>
     </div>

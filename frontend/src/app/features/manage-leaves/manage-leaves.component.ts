@@ -15,7 +15,8 @@ interface LeaveRequest {
   duration: number;
   reason: string;
   status: string;
-  employeeName?: string; // Optional field for employee name
+  employeeName?: string;
+  certificate?: string;
 }
 
 @Component({
@@ -26,10 +27,12 @@ interface LeaveRequest {
   styleUrls: ['./manage-leaves.component.scss']
 })
 export class ManageLeavesComponent implements OnInit {
-  requests: LeaveRequest[] = [];
+  sickRequests: LeaveRequest[] = [];
+  annualRequests: LeaveRequest[] = [];
   error: string | null = null;
   loading: boolean = false;
-  processingRequests: Set<number> = new Set(); // Track requests being processed
+  processingRequests: Set<number> = new Set();
+  currentView: 'sick' | 'annual' = 'sick';
 
   constructor(private apiService: ManageLeavesService, private toastService: ToastService) {}
 
@@ -42,18 +45,26 @@ export class ManageLeavesComponent implements OnInit {
     this.error = null;
     this.apiService.getAllLeaveRequests().subscribe({
       next: (data) => {
-        this.requests = data
-          .filter(req => req.status === 'PENDING')
+        this.sickRequests = data
+          .filter(req => req.status === 'PENDING' && req.leaveType === 'SICK')
           .map(req => ({
             ...req,
-            employeeName: req.employeeName || req.employeeCin // Fallback to CIN if name unavailable
+            employeeName: req.employeeName || req.employeeCin
+          }));
+        this.annualRequests = data
+          .filter(req => req.status === 'PENDING' && req.leaveType === 'ANNUAL')
+          .map(req => ({
+            ...req,
+            employeeName: req.employeeName || req.employeeCin
           }));
         this.loading = false;
       },
       error: (err) => {
-        this.error = `Error fetching leave requests: ${err.error?.error || err.message}`;
+        this.error = err.error?.error || 'Error fetching leave requests';
         this.loading = false;
-        this.toastService.show(this.error, 'error');
+        if (this.error) {
+          this.toastService.show(this.error, 'error');
+        }
       }
     });
   }
@@ -71,17 +82,17 @@ export class ManageLeavesComponent implements OnInit {
       next: () => {
         this.processingRequests.delete(id);
         this.loadPendingRequests();
-        const message = status === 'APPROVED'
-          ? 'Leave request approved successfully'
-          : 'Leave request denied successfully';
+        const message = status === 'APPROVED' ? 'Leave request approved successfully' : 'Leave request denied successfully';
         this.toastService.show(message, 'success');
-        inputElement.value = ''; // Clear comment field
+        inputElement.value = '';
       },
       error: (err) => {
         this.processingRequests.delete(id);
-        const errorMessage = err.error?.error || `Error ${status.toLowerCase()} request: ${err.message}`;
-        this.toastService.show(errorMessage, 'error');
-        inputElement.value = ''; // Clear comment field even on error
+        this.error = err.error?.error || `Error ${status.toLowerCase()} request`;
+        if (this.error) {
+          this.toastService.show(this.error, 'error');
+        }
+        inputElement.value = '';
       }
     });
   }
@@ -98,19 +109,22 @@ export class ManageLeavesComponent implements OnInit {
 
   sendNote(id: number, comment: string, inputElement: HTMLInputElement): void {
     this.processingRequests.add(id);
-    this.apiService.sendnote(id, comment).subscribe({
+    this.apiService.sendNote(id, comment).subscribe({
       next: () => {
         this.processingRequests.delete(id);
         this.loadPendingRequests();
         this.toastService.show('Note sent successfully', 'success');
-        inputElement.value = ''; // Clear comment field
+        inputElement.value = '';
       },
       error: (err) => {
         this.processingRequests.delete(id);
-        const errorMessage = err.error?.error || `Error sending note: ${err.message}`;
-        this.toastService.show(errorMessage, 'error');
-        inputElement.value = ''; // Clear comment field even on error
+        this.error = err.error?.error || 'Error sending note';
+        if (this.error) {
+          this.toastService.show(this.error, 'error');
+        }
+        inputElement.value = '';
       }
     });
   }
 }
+

@@ -1,34 +1,36 @@
+
 <app-navbar></app-navbar>
 <app-sidebar></app-sidebar>
 <div class="main-container">
   <div class="content-container">
     <!-- View Toggle Buttons -->
     <div class="view-toggle">
-      <button class="toggle-btn" [class.active]="currentView === 'submit'" (click)="currentView = 'submit'">
-        <i class="fas fa-plus-circle"></i> {{ isEditing ? 'Edit Leave Request' : 'Submit Leave Request' }}
+      <button class="toggle-btn" [class.active]="currentView === 'sick'" (click)="navigateToView('sick')">
+        <i class="fas fa-thermometer"></i> Submit Sick Leave Request
       </button>
-      <button class="toggle-btn" [class.active]="currentView === 'history'" (click)="currentView = 'history'">
-        <i class="fas fa-history"></i> Leave History
+      <button class="toggle-btn" [class.active]="currentView === 'annual'" (click)="navigateToView('annual')">
+        <i class="fas fa-umbrella-beach"></i> Submit Annual Leave Request
       </button>
-      <button class="toggle-btn" [class.active]="currentView === 'balance'" (click)="currentView = 'balance'">
-        <i class="fas fa-balance-scale"></i> Leave Balance
+      <button class="toggle-btn" [class.active]="currentView === 'history'" (click)="navigateToView('history')">
+        <i class="fas fa-history"></i> History of Leave Requests
       </button>
     </div>
 
     <!-- Submit/Edit Leave Request View -->
-    <div *ngIf="currentView === 'submit'" class="leave-form-card">
-      <h3><i class="fas fa-calendar-alt"></i> {{ isEditing ? 'Edit Leave Request' : 'Submit a Leave Request' }}</h3>
+    <div *ngIf="currentView === 'sick' || currentView === 'annual'" class="leave-form-card">
+      <h3><i class="fas fa-calendar-alt"></i> {{ isEditing ? 'Edit Leave Request' : (currentView === 'sick' ? 'Submit Sick Leave Request' : 'Submit Annual Leave Request') }}</h3>
       <form [formGroup]="leaveForm" (ngSubmit)="onSubmit()">
+        <!-- Leave Type (Static Display) -->
         <div class="form-group">
-          <label for="leaveType"><i class="fas fa-list"></i> Leave Type</label>
-          <select id="leaveType" formControlName="leaveType" class="form-control">
-            <option value="">Select a leave type</option>
-            <option value="ANNUAL">Annual</option>
-            <option value="SICK">Sick</option>
-            <option value="UNPAID">Unpaid</option>
-          </select>
-          <div class="error" *ngIf="leaveForm.get('leaveType')?.touched && leaveForm.get('leaveType')?.hasError('required')">
-            Leave type is required.
+          <label><i class="fas fa-list"></i> Leave Type</label>
+          <div class="form-control static-text">{{ currentView === 'sick' ? 'Sick Leave' : 'Annual Leave' }}</div>
+          <input type="hidden" formControlName="leaveType">
+        </div>
+        <!-- Annual Leave Balance (Only for Annual View) -->
+        <div class="form-group" *ngIf="currentView === 'annual'">
+          <label><i class="fas fa-balance-scale"></i> Available Annual Leave Balance</label>
+          <div class="form-control static-text">
+            {{ leaveBalance ? leaveBalance.annual + ' days' : 'UNKNOWN' }}
           </div>
         </div>
         <div class="form-group">
@@ -45,8 +47,15 @@
             End date is required.
           </div>
         </div>
+        <div class="form-group" *ngIf="currentView === 'sick'">
+          <label for="certificate"><i class="fas fa-file-medical"></i> Sickness Certificate</label>
+          <input type="file" id="certificate" (change)="onFileChange($event)" class="form-control" accept=".pdf,.jpg,.png">
+          <div class="error" *ngIf="leaveForm.get('certificate')?.touched && leaveForm.get('certificate')?.hasError('required') && currentView === 'sick'">
+            Sickness certificate is required.
+          </div>
+        </div>
         <div class="form-group">
-          <label for="reason"> <i class="fas fa-comment"></i> Reason (Optional)</label>
+          <label for="reason"><i class="fas fa-comment"></i> Reason (Optional)</label>
           <textarea id="reason" formControlName="reason" class="form-control"></textarea>
         </div>
         <div class="form-actions">
@@ -54,7 +63,7 @@
             <i class="fas" [class.fa-save]="!isSubmitting" [class.fa-spinner]="isSubmitting" [class.fa-spin]="isSubmitting"></i>
             {{ isEditing ? 'Update' : 'Submit' }}
           </button>
-          <button type="button" class="btn btn-secondary" *ngIf="isEditing" (click)="isEditing = false; editingRequestId = null; leaveForm.reset()">
+          <button type="button" class="btn btn-secondary" *ngIf="isEditing" (click)="cancelEdit()">
             <i class="fas fa-times"></i> Cancel Edit
           </button>
         </div>
@@ -85,93 +94,129 @@
         </div>
       </div>
 
-      <!-- Loading State -->
-      <div *ngIf="isLoading" class="loading">
-        <i class="fas fa-spinner fa-spin"></i> Loading...
-      </div>
-
-      <!-- Leave Requests Table -->
-      <div *ngIf="!isLoading && error" class="error-message">{{ error }}</div>
-      <div class="table-container" *ngIf="!isLoading && !error">
-        <table class="leave-table" *ngIf="filteredRequests.length; else noRequests">
-          <thead>
-          <tr>
-            <th>Type</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Duration</th>
-            <th>Reason</th>
-            <th>Status</th>
-            <th>Submitted</th>
-            <th>HR Comment</th>
-            <th>Actions</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let req of filteredRequests">
-            <td>{{ req.leaveType }}</td>
-            <td>{{ req.startDate }}</td>
-            <td>{{ req.endDate }}</td>
-            <td>{{ req.duration }}</td>
-            <td>{{ req.reason || '-' }}</td>
-            <td>
+      <!-- Sick Leave History -->
+      <div class="history-sub-card">
+        <h4><i class="fas fa-thermometer"></i> Sick Leave History</h4>
+        <div *ngIf="isLoading" class="loading">
+          <i class="fas fa-spinner fa-spin"></i> Loading...
+        </div>
+        <div *ngIf="!isLoading && error" class="error-message">{{ error }}</div>
+        <div class="table-container" *ngIf="!isLoading && !error">
+          <table class="leave-table" *ngIf="filteredSickRequests.length; else noSickRequests">
+            <thead>
+            <tr>
+              <th>Type</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Duration</th>
+              <th>Reason</th>
+              <th>Certificate</th>
+              <th>Status</th>
+              <th>Submitted</th>
+              <th>HR Comment</th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let req of filteredSickRequests">
+              <td>{{ req.leaveType }}</td>
+              <td>{{ req.startDate }}</td>
+              <td>{{ req.endDate }}</td>
+              <td>{{ req.duration }}</td>
+              <td>{{ req.reason || '-' }}</td>
+              <td>
+                <a *ngIf="req.certificate" [href]="req.certificate" download="certificate">Download</a>
+                <span *ngIf="!req.certificate">-</span>
+              </td>
+              <td>
                 <span class="status-badge" [ngClass]="{
                   'pending': req.status === 'PENDING',
                   'approved': req.status === 'APPROVED',
                   'denied': req.status === 'DENIED'
                 }">{{ req.status }}</span>
-            </td>
-            <td>{{ req.submittedAt | date }}</td>
-            <td>{{ req.hrComment || '-' }}</td>
-            <td class="actions">
-              <button class="btn btn-outline-primary" (click)="editRequest(req)" [hidden]="req.status === 'APPROVED'">
-                <i class="fas fa-edit"></i> Edit
-              </button>
-              <button name="C" class="btn btn-outline-danger" (click)="cancelRequest(req.id,'C')" [hidden]="req.status !== 'PENDING' || cancellingRequest === req.id">
-                <i class="fas" [class.fa-trash]="cancellingRequest !== req.id" [class.fa-spinner]="cancellingRequest === req.id" [class.fa-spin]="cancellingRequest === req.id"></i>
-                Cancel
-              </button>
-              <button class="btn btn-outline-danger" (click)="cancelRequest(req.id,'D')" [hidden]="req.status !== 'DENIED' || cancellingRequest === req.id">
-                <i class="fas" [class.fa-trash]="cancellingRequest !== req.id" [class.fa-spinner]="cancellingRequest === req.id" [class.fa-spin]="cancellingRequest === req.id"></i>
-                Delete
-              </button>
-              <button class="btn btn-outline-green" (click)="generateLeaveCertif(req)" [hidden]="req.status !== 'APPROVED' || genLCRequest === req.id">
-                <i class="fas" [class.fa-file]="genLCRequest !== req.id" [class.fa-spinner]="genLCRequest === req.id" [class.fa-spin]="genLCRequest === req.id"></i>
-                Request a leave certificate
-              </button>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-        <ng-template #noRequests>
-          <p class="no-data">No leave requests found.</p>
-        </ng-template>
+              </td>
+              <td>{{ req.submittedAt | date }}</td>
+              <td>{{ req.hrComment || '-' }}</td>
+              <td class="actions">
+                <button class="btn btn-outline-primary" (click)="editRequest(req)" [hidden]="req.status === 'APPROVED'">
+                  <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="btn btn-outline-danger" (click)="cancelRequest(req.id, 'C')" [hidden]="req.status !== 'PENDING' || cancellingRequest === req.id">
+                  <i class="fas" [class.fa-trash]="cancellingRequest !== req.id" [class.fa-spinner]="cancellingRequest === req.id" [class.fa-spin]="cancellingRequest === req.id"></i>
+                  Cancel
+                </button>
+                <button class="btn btn-outline-danger" (click)="cancelRequest(req.id, 'D')" [hidden]="req.status !== 'DENIED' || cancellingRequest === req.id">
+                  <i class="fas" [class.fa-trash]="cancellingRequest !== req.id" [class.fa-spinner]="cancellingRequest === req.id" [class.fa-spin]="cancellingRequest === req.id"></i>
+                  Delete
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <ng-template #noSickRequests>
+            <p class="no-data">No sick leave requests found.</p>
+          </ng-template>
+        </div>
       </div>
-    </div>
 
-    <!-- Leave Balance View -->
-    <div *ngIf="currentView === 'balance'" class="balance-card">
-      <h3><i class="fas fa-balance-scale"></i> Leave Balance</h3>
-      <div *ngIf="isLoading" class="loading">
-        <i class="fas fa-spinner fa-spin"></i> Loading...
-      </div>
-      <div *ngIf="!isLoading && error" class="error-message">{{ error }}</div>
-      <div *ngIf="!isLoading && !error && leaveBalance" class="balance-grid">
-        <div class="balance-item">
-          <h4>Annual Leave</h4>
-          <p>{{ leaveBalance.personal }} days remaining</p>
+      <!-- Annual Leave History -->
+      <div class="history-sub-card">
+        <h4><i class="fas fa-umbrella-beach"></i> Annual Leave History</h4>
+        <div *ngIf="isLoading" class="loading">
+          <i class="fas fa-spinner fa-spin"></i> Loading...
         </div>
-        <div class="balance-item">
-          <h4>Sick Leave</h4>
-          <p>{{ leaveBalance.sick }} days remaining</p>
+        <div *ngIf="!isLoading && error" class="error-message">{{ error }}</div>
+        <div class="table-container" *ngIf="!isLoading && !error">
+          <table class="leave-table" *ngIf="filteredAnnualRequests.length; else noAnnualRequests">
+            <thead>
+            <tr>
+              <th>Type</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Duration</th>
+              <th>Reason</th>
+              <th>Status</th>
+              <th>Submitted</th>
+              <th>HR Comment</th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let req of filteredAnnualRequests">
+              <td>{{ req.leaveType }}</td>
+              <td>{{ req.startDate }}</td>
+              <td>{{ req.endDate }}</td>
+              <td>{{ req.duration }}</td>
+              <td>{{ req.reason || '-' }}</td>
+              <td>
+                <span class="status-badge" [ngClass]="{
+                  'pending': req.status === 'PENDING',
+                  'approved': req.status === 'APPROVED',
+                  'denied': req.status === 'DENIED'
+                }">{{ req.status }}</span>
+              </td>
+              <td>{{ req.submittedAt | date }}</td>
+              <td>{{ req.hrComment || '-' }}</td>
+              <td class="actions">
+                <button class="btn btn-outline-primary" (click)="editRequest(req)" [hidden]="req.status === 'APPROVED'">
+                  <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="btn btn-outline-danger" (click)="cancelRequest(req.id, 'C')" [hidden]="req.status !== 'PENDING' || cancellingRequest === req.id">
+                  <i class="fas" [class.fa-trash]="cancellingRequest !== req.id" [class.fa-spinner]="cancellingRequest === req.id" [class.fa-spin]="cancellingRequest === req.id"></i>
+                  Cancel
+                </button>
+                <button class="btn btn-outline-danger" (click)="cancelRequest(req.id, 'D')" [hidden]="req.status !== 'DENIED' || cancellingRequest === req.id">
+                  <i class="fas" [class.fa-trash]="cancellingRequest !== req.id" [class.fa-spinner]="cancellingRequest === req.id" [class.fa-spin]="cancellingRequest === req.id"></i>
+                  Delete
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <ng-template #noAnnualRequests>
+            <p class="no-data">No annual leave requests found.</p>
+          </ng-template>
         </div>
-        <div class="balance-item">
-          <h4>Unpaid Leave</h4>
-          <p>{{ leaveBalance.unpaid }} days remaining</p>
-        </div>
-      </div>
-      <div *ngIf="!isLoading && !error && !leaveBalance" class="no-data">
-        No leave balance data available.
       </div>
     </div>
   </div>

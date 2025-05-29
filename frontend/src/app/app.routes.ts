@@ -13,6 +13,7 @@ import {ManageDocumentComponent} from './features/manage-document/manage-documen
 import {DocumentComponent} from './features/document/document.component';
 import {ResetPasswordComponent} from './auth/reset-password/reset-password.component';
 import {ManageEmployeesComponent} from './features/manage-employees/manage-employees.component';
+import {AnalyticsComponent} from './features/analytics/analytics.component';
 
 export const routes: Routes = [
   { path: 'sign-up', component: SignUpComponent },
@@ -28,6 +29,7 @@ export const routes: Routes = [
   { path: 'manage-documents', component: ManageDocumentComponent, canActivate: [authGuard]},
   { path: 'documents', component: DocumentComponent,canActivate: [authGuard] },
   { path: 'employees', component: ManageEmployeesComponent, canActivate: [authGuard] },
+  { path: 'analytics', component: AnalyticsComponent, canActivate: [authGuard] },
   { path: '', redirectTo: '/sign-in', pathMatch: 'full' },
   { path: '**', redirectTo: '/sign-in' }
 ];
